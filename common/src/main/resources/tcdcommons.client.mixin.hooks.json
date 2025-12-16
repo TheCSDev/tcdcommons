@@ -1,0 +1,19 @@
+{
+	"package": "com.thecsdev.commonmc.client.mixin.hooks",
+	"required": true,
+	"minVersion": "0.8",
+	"compatibilityLevel": "JAVA_21",
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"client": [
+		"AccessorDrawContext",
+		"AccessorGameRenderer",
+		"AccessorGuiRenderer",
+		"AccessorNativeImage",
+		"AccessorScreen",
+		"AccessorTElement",
+		"AccessorButton",
+		"AccessorLocalPlayer"
+	]
+}

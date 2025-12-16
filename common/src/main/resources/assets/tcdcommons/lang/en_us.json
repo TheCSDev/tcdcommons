@@ -1,0 +1,30 @@
+{
+	"tcdcommons": "TCDCommons API",
+
+	"tcdcommons.config.common": "Client/server properties",
+	"tcdcommons.config.client": "Client properties",
+	"tcdcommons.config.client.update_item_groups_on_join": "Update item groups on join",
+	"tcdcommons.config.client.update_item_groups_on_join.tooltip": "Performance feature. The vanilla game updates item groups when opening inventory, causing a lag spike on large mod-packs. This feature performs that operation during loading screens so the lag spike doesn't happen in-game.",
+	"tcdcommons.config.server": "Server properties",
+	"tcdcommons.config.property_value": "Value",
+
+	"tcdcommons.stat_type.minecraft.killed": "Killed",
+	"tcdcommons.stat_type.minecraft.killed_by": "Died to",
+	"tcdcommons.stat_type.morestats.damaged": "Damage dealt",
+	"tcdcommons.stat_type.morestats.damaged_by": "Damage taken",
+	"tcdcommons.stat_type.morestats.totem_popped_by": "Totems popped by",
+
+	"tcdcommons.gui.screen.text_dialog.default_title": "Dialog",
+	"tcdcommons.gui.screen.text_dialog.error_title": "Something went wrong",
+
+	"tcdcommons.gui.dropdown.default_label": "Select an option...",
+	"tcdcommons.gui.filechooser.mode.explore": "File explorer",
+
+	"tcdcommons.gui.filechooser.mode.choose_file": "Choose a file",
+	"tcdcommons.gui.filechooser.mode.create_file": "Create a file",
+	"tcdcommons.gui.filechooser.quick_access": "Quick access",
+	"tcdcommons.gui.filechooser.quick_access.mount_points": "Mount points",
+	"tcdcommons.gui.filechooser.ctxmenu.open_in": "Open in",
+	"tcdcommons.gui.filechooser.ctxmenu.open_in.assoc_app": "Associated application",
+	"tcdcommons.gui.filechooser.action.input_filename.placeholder": "File name"
+}
