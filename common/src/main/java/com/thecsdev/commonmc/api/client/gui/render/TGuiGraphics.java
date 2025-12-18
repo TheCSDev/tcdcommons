@@ -1,5 +1,6 @@
 package com.thecsdev.commonmc.api.client.gui.render;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.platform.cursor.CursorType;
 import com.thecsdev.common.util.annotations.Virtual;
@@ -30,6 +31,7 @@ import org.joml.Vector3f;
 import java.util.Objects;
 
 import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.getGuiRenderer;
+import static net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
 
 /**
  * An extension of the game's {@link GuiGraphics}, featuring additional
@@ -255,7 +257,7 @@ public abstract class TGuiGraphics
 		fillColor(x + width, y, 1, height, color);         //right side
 		fillColor(x - 1, y + height, width + 2, 1, color); //bottom side
 	}
-	// --------------------------------------------------
+	// ==================================================
 	/**
 	 * Draws a rectangular texture from the loaded resource-packs.
 	 * @param id The texture's {@link Identifier}.
@@ -265,11 +267,12 @@ public abstract class TGuiGraphics
 	 * @param height Height on the screen.
 	 * @param color Texture ARGB color. It is recommended to use white (aka -1).
 	 */
-	public @Virtual void drawTexture(
+	public final void drawTexture(
 			@NotNull Identifier id,
 			int x, int y, int width, int height,
-			int color) {
-		this.drawTexture(id, x, y, width, height, 0, 0, 1, 1, 1, 1, color);
+			int color)
+	{
+		drawTexture(GUI_TEXTURED, id, x, y, width, height, color);
 	}
 
 	/**
@@ -287,13 +290,59 @@ public abstract class TGuiGraphics
 	 * @param textureHeight Texture image height.
 	 * @param color Texture ARGB color. It is recommended to use white (aka -1).
 	 */
-	public abstract void drawTexture(
+	public final void drawTexture(
 			@NotNull Identifier id,
 			int x, int y, int width, int height,
 			float uvX, float uvY, int uvWidth, int uvHeight,
 			int textureWidth, int textureHeight,
-			int color);
+			int color)
+	{
+		drawTexture(GUI_TEXTURED, id, x, y, width, height, uvX, uvY, uvWidth, uvHeight, textureWidth, textureHeight, color);
+	}
+	// --------------------------------------------------
+	/**
+	 * Draws a rectangular texture from the loaded resource-packs,
+	 * using the {@link RenderPipeline} of your choosing.
+	 * @param renderPipeline The {@link RenderPipeline} to use.
+	 * @param id The texture's {@link Identifier}.
+	 * @param x X coordinate on the screen.
+	 * @param y Y coordinate on the screen.
+	 * @param width Width on the screen.
+	 * @param height Height on the screen.
+	 * @param color Texture ARGB color. It is recommended to use white (aka -1).
+	 */
+	public final void drawTexture(
+			@NotNull RenderPipeline renderPipeline, @NotNull Identifier id,
+			int x, int y, int width, int height,
+			int color)
+	{
+		drawTexture(renderPipeline, id, x, y, width, height, 0, 0, 1, 1, 1, 1, color);
+	}
 
+	/**
+	 * Draws a rectangular texture from the loaded resource-packs,
+	 * using the {@link RenderPipeline} of your choosing.
+	 * @param renderPipeline The {@link RenderPipeline} to use.
+	 * @param id The texture's {@link Identifier}.
+	 * @param x X coordinate on the screen.
+	 * @param y Y coordinate on the screen.
+	 * @param width Width on the screen.
+	 * @param height Height on the screen.
+	 * @param uvX X coordinate on the texture UV coordinates.
+	 * @param uvY Y coordinate on the texture UV coordinates.
+	 * @param uvWidth Width on the UV coordinates.
+	 * @param uvHeight Height on the UV coordinates.
+	 * @param textureWidth Texture image width.
+	 * @param textureHeight Texture image height.
+	 * @param color Texture ARGB color. It is recommended to use white (aka -1).
+	 */
+	public abstract void drawTexture(
+			@NotNull RenderPipeline renderPipeline, @NotNull Identifier id,
+			int x, int y, int width, int height,
+			float uvX, float uvY, int uvWidth, int uvHeight,
+			int textureWidth, int textureHeight,
+			int color);
+	// ==================================================
 	/**
 	 * Draws a rectangular sprite using the game's GUI sprite system.
 	 * @param id The sprite's {@link Identifier}.
@@ -304,11 +353,31 @@ public abstract class TGuiGraphics
 	 * @param color Sprite ARGB color. It is recommended to use white (aka -1).
 	 * @see AtlasIds#GUI
 	 */
-	public abstract void drawGuiSprite(
+	public final void drawGuiSprite(
 			@NotNull Identifier id,
 			int x, int y, int width, int height,
+			int color)
+	{
+		drawGuiSprite(GUI_TEXTURED, id, x, y, width, height, color);
+	}
+
+	/**
+	 * Draws a rectangular sprite using the game's GUI sprite system,
+	 * using the {@link RenderPipeline} of your choosing.
+	 * @param renderPipeline The {@link RenderPipeline} to use.
+	 * @param id The sprite's {@link Identifier}.
+	 * @param x Sprite X coordinate.
+	 * @param y Sprite Y coordinate.
+	 * @param width Sprite width.
+	 * @param height Sprite height.
+	 * @param color Sprite ARGB color. It is recommended to use white (aka -1).
+	 * @see AtlasIds#GUI
+	 */
+	public abstract void drawGuiSprite(
+			@NotNull RenderPipeline renderPipeline, @NotNull Identifier id,
+			int x, int y, int width, int height,
 			int color);
-	// --------------------------------------------------
+	// ==================================================
 	/**
 	 * Draws a rectangular 9-slided texture from the loaded resource-packs.
 	 * @param id The texture's {@link Identifier}.
@@ -325,36 +394,19 @@ public abstract class TGuiGraphics
 	 * @param color Texture ARGB color. It is recommended to use white (aka -1).
 	 * @param sliceSize The size of the sliced pieces around the centerpiece.
 	 */
-	public @Virtual void draw9SlicedTexture(
+	public final void draw9SlicedTexture(
 			@NotNull Identifier id,
 			int x, int y, int width, int height,
 			float u, float v, int uvWidth, int uvHeight,
 			int textureWidth, int textureHeight,
 			int color, int sliceSize)
 	{
-		//calculations
-		final int s2 = sliceSize * 2;
-
-		//draw 9-slice if possible...
-		if(s2 < width || s2 < height)
-		{
-			//the four corners
-			drawTexture(id, x, y, sliceSize, sliceSize, u, v, sliceSize, sliceSize, textureWidth, textureHeight, color);
-			drawTexture(id, x + width - sliceSize, y, sliceSize, sliceSize, u + uvWidth - sliceSize, v, sliceSize, sliceSize, textureWidth, textureHeight, color);
-			drawTexture(id, x, y + height - sliceSize, sliceSize, sliceSize, u, v + uvHeight - sliceSize, sliceSize, sliceSize, textureWidth, textureHeight, color);
-			drawTexture(id, x + width - sliceSize, y + height - sliceSize, sliceSize, sliceSize, u + uvWidth - sliceSize, v + uvHeight - sliceSize, sliceSize, sliceSize, textureWidth, textureHeight, color);
-
-			//the four sides
-			drawTexture(id, x + sliceSize, y, width - s2, sliceSize, u + sliceSize, v, uvWidth - s2, sliceSize, textureWidth, textureHeight, color);
-			drawTexture(id, x, y + sliceSize, sliceSize, height - s2, u, v + sliceSize, sliceSize, uvHeight - s2, textureWidth, textureHeight, color);
-			drawTexture(id, x + width - sliceSize, y + sliceSize, sliceSize, height - s2, u + uvWidth - sliceSize, v + sliceSize, sliceSize, uvHeight - s2, textureWidth, textureHeight, color);
-			drawTexture(id, x + sliceSize, y + height - sliceSize, width - s2, sliceSize, u + sliceSize, v + uvHeight - sliceSize, uvWidth - s2, sliceSize, textureWidth, textureHeight, color);
-
-			//the middle
-			drawRepeatingTexture(id, x + sliceSize, y + sliceSize, width - s2, height - s2, u + sliceSize, v + sliceSize, uvWidth - s2, uvHeight - s2, textureWidth, textureHeight, color);
-		}
-		//...else the slicing is larger than the element itself - draw the full texture
-		else drawTexture(id, x, y, width, height, u, v, uvWidth, uvHeight, textureWidth, textureHeight, color);
+		draw9SlicedTexture(
+				GUI_TEXTURED, id,
+				x, y, width, height,
+				u, v, uvWidth, uvHeight,
+				textureWidth, textureHeight,
+				color, sliceSize);
 	}
 
 	/**
@@ -372,8 +424,89 @@ public abstract class TGuiGraphics
 	 * @param textureHeight Texture image height.
 	 * @param color Texture ARGB color. It is recommended to use white (aka -1).
 	 */
-	public @Virtual void drawRepeatingTexture(
+	public final void drawRepeatingTexture(
 			@NotNull Identifier id,
+			int x, int y, int width, int height,
+			float u, float v, int uvWidth, int uvHeight,
+			int textureWidth, int textureHeight,
+			int color)
+	{
+		drawRepeatingTexture(
+				GUI_TEXTURED, id,
+				x, y, width, height,
+				u, v, uvWidth, uvHeight,
+				textureWidth, textureHeight,
+				color);
+	}
+	// --------------------------------------------------
+	/**
+	 * Draws a rectangular 9-slided texture from the loaded resource-packs,
+	 * using the {@link RenderPipeline} of your choosing.
+	 * @param renderPipeline The {@link RenderPipeline} to use.
+	 * @param id The texture's {@link Identifier}.
+	 * @param x X coordinate on the screen.
+	 * @param y Y coordinate on the screen.
+	 * @param width Width on the screen.
+	 * @param height Height on the screen.
+	 * @param u X coordinate on the texture UV coordinates.
+	 * @param v Y coordinate on the texture UV coordinates.
+	 * @param uvWidth Width on the UV coordinates.
+	 * @param uvHeight Height on the UV coordinates.
+	 * @param textureWidth Texture image width.
+	 * @param textureHeight Texture image height.
+	 * @param color Texture ARGB color. It is recommended to use white (aka -1).
+	 * @param sliceSize The size of the sliced pieces around the centerpiece.
+	 */
+	public final void draw9SlicedTexture(
+			@NotNull RenderPipeline renderPipeline, @NotNull Identifier id,
+			int x, int y, int width, int height,
+			float u, float v, int uvWidth, int uvHeight,
+			int textureWidth, int textureHeight,
+			int color, int sliceSize)
+	{
+		//calculations
+		final int s2 = sliceSize * 2;
+
+		//draw 9-slice if possible...
+		if(s2 < width || s2 < height)
+		{
+			//the four corners
+			drawTexture(renderPipeline, id, x, y, sliceSize, sliceSize, u, v, sliceSize, sliceSize, textureWidth, textureHeight, color);
+			drawTexture(renderPipeline, id, x + width - sliceSize, y, sliceSize, sliceSize, u + uvWidth - sliceSize, v, sliceSize, sliceSize, textureWidth, textureHeight, color);
+			drawTexture(renderPipeline, id, x, y + height - sliceSize, sliceSize, sliceSize, u, v + uvHeight - sliceSize, sliceSize, sliceSize, textureWidth, textureHeight, color);
+			drawTexture(renderPipeline, id, x + width - sliceSize, y + height - sliceSize, sliceSize, sliceSize, u + uvWidth - sliceSize, v + uvHeight - sliceSize, sliceSize, sliceSize, textureWidth, textureHeight, color);
+
+			//the four sides
+			drawTexture(renderPipeline, id, x + sliceSize, y, width - s2, sliceSize, u + sliceSize, v, uvWidth - s2, sliceSize, textureWidth, textureHeight, color);
+			drawTexture(renderPipeline, id, x, y + sliceSize, sliceSize, height - s2, u, v + sliceSize, sliceSize, uvHeight - s2, textureWidth, textureHeight, color);
+			drawTexture(renderPipeline, id, x + width - sliceSize, y + sliceSize, sliceSize, height - s2, u + uvWidth - sliceSize, v + sliceSize, sliceSize, uvHeight - s2, textureWidth, textureHeight, color);
+			drawTexture(renderPipeline, id, x + sliceSize, y + height - sliceSize, width - s2, sliceSize, u + sliceSize, v + uvHeight - sliceSize, uvWidth - s2, sliceSize, textureWidth, textureHeight, color);
+
+			//the middle
+			drawRepeatingTexture(renderPipeline, id, x + sliceSize, y + sliceSize, width - s2, height - s2, u + sliceSize, v + sliceSize, uvWidth - s2, uvHeight - s2, textureWidth, textureHeight, color);
+		}
+		//...else the slicing is larger than the element itself - draw the full texture
+		else drawTexture(renderPipeline, id, x, y, width, height, u, v, uvWidth, uvHeight, textureWidth, textureHeight, color);
+	}
+
+	/**
+	 * Draws a repeating texture in a given rectangular area,
+	 * using the {@link RenderPipeline} of your choosing.
+	 * @param id The texture's {@link Identifier}.
+	 * @param x X coordinate on the screen.
+	 * @param y Y coordinate on the screen.
+	 * @param width Width on the screen.
+	 * @param height Height on the screen.
+	 * @param u X coordinate on the texture UV coordinates.
+	 * @param v Y coordinate on the texture UV coordinates.
+	 * @param uvWidth Width on the UV coordinates.
+	 * @param uvHeight Height on the UV coordinates.
+	 * @param textureWidth Texture image width.
+	 * @param textureHeight Texture image height.
+	 * @param color Texture ARGB color. It is recommended to use white (aka -1).
+	 */
+	public final void drawRepeatingTexture(
+			@NotNull RenderPipeline renderPipeline, @NotNull Identifier id,
 			int x, int y, int width, int height,
 			float u, float v, int uvWidth, int uvHeight,
 			int textureWidth, int textureHeight,
@@ -387,10 +520,10 @@ public abstract class TGuiGraphics
 				if(x1 + nextW > endX) nextW -= (x1 + nextW) - endX;
 				if(y1 + nextH > endY) nextH -= (y1 + nextH) - endY;
 				if(nextW < 1 || nextH < 1) continue;
-				drawTexture(id, x1, y1, nextW, nextH, u, v, nextW, nextH, textureWidth, textureHeight, color);
+				drawTexture(renderPipeline, id, x1, y1, nextW, nextH, u, v, nextW, nextH, textureWidth, textureHeight, color);
 			}
 	}
-	// --------------------------------------------------
+	// ==================================================
 	/**
 	 * Draws a button.
 	 * @param x The X coordinate.
@@ -439,7 +572,7 @@ public abstract class TGuiGraphics
 	 * This size is used for {@link InventoryScreen#renderEntityInInventoryFollowsMouse(GuiGraphics, int, int, int, int, int, float, float, float, LivingEntity)}.
 	 */
 	@ApiStatus.Internal
-	static final int computeEntitySize(@NotNull Entity entity, int viewportW, int viewportH) {
+	private static final int computeEntitySize(@NotNull Entity entity, int viewportW, int viewportH) {
 		//calculations
 		final int maxSize = Math.min(viewportW, viewportH);
 		if(maxSize == 0) return 5; //can't have zeros or too small outputs
@@ -489,7 +622,7 @@ public abstract class TGuiGraphics
 	 * Modified implementation of {@link InventoryScreen#renderEntityInInventoryFollowsMouse(GuiGraphics, int, int, int, int, int, float, float, float, LivingEntity)}
 	 * that supports rendering entities of any type.
 	 */
-	final @ApiStatus.Internal void renderEntityInInventoryFollowsMouse(
+	private final @ApiStatus.Internal void renderEntityInInventoryFollowsMouse(
 			int x1, int y1, int x2, int y2, int size,
 			float mouseX, float mouseY,
 			@NotNull Entity entity)
@@ -543,7 +676,7 @@ public abstract class TGuiGraphics
 	 * that supports rendering entities of any type.
 	 */
 	@SuppressWarnings("ConstantValue") //incorrect, they are not constant and can be null
-	final @ApiStatus.Internal void renderEntityInInventory(
+	private final @ApiStatus.Internal void renderEntityInInventory(
 			int x1, int y1, int x2, int y2,
 			float scale,
 			@NotNull Vector3f translation, @NotNull Quaternionf rotation,

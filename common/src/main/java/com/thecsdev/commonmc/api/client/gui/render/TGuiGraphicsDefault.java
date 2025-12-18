@@ -1,7 +1,7 @@
 package com.thecsdev.commonmc.api.client.gui.render;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ import static net.minecraft.resources.Identifier.withDefaultNamespace;
  * allows for an easier rewrite and portability.
  */
 @ApiStatus.Internal
-public final class TGuiGraphicsDefault extends TGuiGraphics
+final class TGuiGraphicsDefault extends TGuiGraphics
 {
 	// ==================================================
 	public TGuiGraphicsDefault(GuiGraphics drawContext, int mouseX, int mouseY, float deltaTicks) {
@@ -27,12 +27,20 @@ public final class TGuiGraphicsDefault extends TGuiGraphics
 		getNative().fill(x, y, x + width, y + height, color);
 	}
 	// --------------------------------------------------
-	public final @Override void drawTexture(@NotNull Identifier id, int x, int y, int width, int height, float uvX, float uvY, int uvWidth, int uvHeight, int textureWidth, int textureHeight, int color) {
-		getNative().blit(RenderPipelines.GUI_TEXTURED_PREMULTIPLIED_ALPHA, id, x, y, uvX, uvY, width, height, uvWidth, uvHeight, textureWidth, textureHeight, color);
+	public final @Override void drawTexture(
+			@NotNull RenderPipeline renderPipeline, @NotNull Identifier id,
+			int x, int y, int width, int height,
+			float uvX, float uvY, int uvWidth, int uvHeight,
+			int textureWidth, int textureHeight, int color)
+	{
+		getNative().blit(renderPipeline, id, x, y, uvX, uvY, width, height, uvWidth, uvHeight, textureWidth, textureHeight, color);
 	}
 
-	public final @Override void drawGuiSprite(@NotNull Identifier id, int x, int y, int width, int height, int color) {
-		getNative().blitSprite(RenderPipelines.GUI_TEXTURED_PREMULTIPLIED_ALPHA, id, x, y, width, height, color);
+	public final @Override void drawGuiSprite(
+			@NotNull RenderPipeline renderPipeline, @NotNull Identifier id,
+			int x, int y, int width, int height, int color)
+	{
+		getNative().blitSprite(renderPipeline, id, x, y, width, height, color);
 	}
 	// --------------------------------------------------
 	private static final @ApiStatus.Internal Identifier[] SPRITE_BUTTONS = new Identifier[] {
