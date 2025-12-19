@@ -36,14 +36,14 @@ public final class BlockStats extends SubjectStats<Block>
 		final var subject = getSubject();
 		final var map     = new LinkedHashMap<Stat<Block>, Integer>();
 		for(final var st : StatsProvider.getBlockStatTypes())
-			map.put(st.get(subject), getStatsProvider().getValue(st, subject));
+			map.put(st.get(subject), getStatsProvider().getIntValue(st, subject));
 		return map;
 	}
 	// ==================================================
 	/**
 	 * Returns the value of {@link Stats#BLOCK_MINED}.
 	 */
-	public final int getTimesMined() { return getStatsProvider().getValue(Stats.BLOCK_MINED, getSubject()); }
+	public final int getTimesMined() { return getStatsProvider().getIntValue(Stats.BLOCK_MINED, getSubject()); }
 	// ==================================================
 	/**
 	 * Obtains a list of all {@link BlockStats}.

@@ -51,7 +51,7 @@ public final class CustomStat extends SubjectStats<Identifier>
 	/**
 	 * Returns the raw (unformatted) numeric value of the "General" stat.
 	 */
-	public final int getValue() { return getStatsProvider().getValue(this.stat); }
+	public final int getValue() { return getStatsProvider().getIntValue(this.stat); }
 
 	/**
 	 * Returns {@link #getValue()} formatted using {@link Stat#format(int)}.

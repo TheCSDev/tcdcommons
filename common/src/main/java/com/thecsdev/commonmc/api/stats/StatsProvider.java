@@ -12,6 +12,7 @@ import net.minecraft.stats.StatsCounter;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,16 +29,22 @@ public abstract class StatsProvider
 	 * @param stat The {@link Stat} whose value is to be obtained.
 	 * @see StatsCounter
 	 */
-	public abstract <T> int getValue(Stat<T> stat);
+	public abstract <T> int getIntValue(Stat<T> stat);
 
 	/**
 	 * Returns the {@link Integer} value of a given {@link StatType} and its corresponding {@link Stat}.
 	 * @param type The {@link StatType}.
 	 * @param subject The subject about whom stat value is to be obtained.
 	 * @see StatsCounter
-	 * @apiNote You should not override this, as it calls {@link #getValue(Stat)} by default.
+	 * @apiNote You should not override this, as it calls {@link #getIntValue(Stat)} by default.
 	 */
-	public @Virtual <T> int getValue(StatType<T> type, T subject) { return getValue(type.get(subject)); }
+	public @Virtual <T> int getIntValue(@NotNull StatType<T> type, @NotNull T subject)
+			throws NullPointerException
+	{
+		Objects.requireNonNull(type);
+		Objects.requireNonNull(subject);
+		return getIntValue(type.get(subject));
+	}
 	// ==================================================
 	/**
 	 * Returns an unmodifiable {@link List} of all registered {@link StatType}s

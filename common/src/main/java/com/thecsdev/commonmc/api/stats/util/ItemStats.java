@@ -39,7 +39,7 @@ public final class ItemStats extends SubjectStats<Item>
 		final var subject = getSubject();
 		final var map     = new LinkedHashMap<Stat<Item>, Integer>();
 		for(final var st : StatsProvider.getItemStatTypes())
-			map.put(st.get(subject), getStatsProvider().getValue(st, subject));
+			map.put(st.get(subject), getStatsProvider().getIntValue(st, subject));
 		return map;
 	}
 	// ==================================================
@@ -55,27 +55,27 @@ public final class ItemStats extends SubjectStats<Item>
 	/**
 	 * Returns the value of {@link Stats#ITEM_BROKEN}.
 	 */
-	public final int getTimesBroken() { return getStatsProvider().getValue(Stats.ITEM_BROKEN, getSubject()); }
+	public final int getTimesBroken() { return getStatsProvider().getIntValue(Stats.ITEM_BROKEN, getSubject()); }
 
 	/**
 	 * Returns the value of {@link Stats#ITEM_CRAFTED}.
 	 */
-	public final int getTimesCrafted() { return getStatsProvider().getValue(Stats.ITEM_CRAFTED, getSubject()); }
+	public final int getTimesCrafted() { return getStatsProvider().getIntValue(Stats.ITEM_CRAFTED, getSubject()); }
 
 	/**
 	 * Returns the value of {@link Stats#ITEM_DROPPED}.
 	 */
-	public final int getTimesDropped() { return getStatsProvider().getValue(Stats.ITEM_DROPPED, getSubject()); }
+	public final int getTimesDropped() { return getStatsProvider().getIntValue(Stats.ITEM_DROPPED, getSubject()); }
 
 	/**
 	 * Returns the value of {@link Stats#ITEM_USED}.
 	 */
-	public final int getTimesUsed() { return getStatsProvider().getValue(Stats.ITEM_USED, getSubject()); }
+	public final int getTimesUsed() { return getStatsProvider().getIntValue(Stats.ITEM_USED, getSubject()); }
 
 	/**
 	 * Returns the value of {@link Stats#ITEM_PICKED_UP}.
 	 */
-	public final int getTimesPickedUp() { return getStatsProvider().getValue(Stats.ITEM_PICKED_UP, getSubject()); }
+	public final int getTimesPickedUp() { return getStatsProvider().getIntValue(Stats.ITEM_PICKED_UP, getSubject()); }
 	// ==================================================
 	/**
 	 * Obtains a list of all {@link ItemStats}.

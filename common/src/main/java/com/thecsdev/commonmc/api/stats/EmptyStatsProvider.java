@@ -15,6 +15,6 @@ public final class EmptyStatsProvider extends StatsProvider
 	// ==================================================
 	private EmptyStatsProvider() {}
 	// ==================================================
-	public final @Override <T> int getValue(Stat<T> stat) { return 0; }
+	public final @Override <T> int getIntValue(Stat<T> stat) { return 0; }
 	// ==================================================
 }
