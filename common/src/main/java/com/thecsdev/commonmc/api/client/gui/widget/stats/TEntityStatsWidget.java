@@ -6,7 +6,7 @@ import com.thecsdev.common.util.enumerations.CompassDirection;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.misc.TEntityElement;
 import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
-import com.thecsdev.commonmc.api.stats.StatsProvider;
+import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.util.EntityStats;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -37,7 +37,7 @@ public final class TEntityStatsWidget extends TStatsWidget
 	private final TEntityElement el_entity = new TEntityElement(EntityType.MARKER);
 	// ==================================================
 	public TEntityStatsWidget() { this(null); }
-	public TEntityStatsWidget(@NotNull EntityType<?> subject, @NotNull StatsProvider provider) { this(new EntityStats(subject, provider)); }
+	public TEntityStatsWidget(@NotNull EntityType<?> subject, @NotNull IStatsProvider provider) { this(new EntityStats(subject, provider)); }
 	public TEntityStatsWidget(@Nullable EntityStats stats) {
 		//initialize properties
 		this.stats.addChangeListener((p, o, n) -> refresh());

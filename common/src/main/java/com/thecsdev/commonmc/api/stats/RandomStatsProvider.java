@@ -5,9 +5,9 @@ import net.minecraft.stats.Stat;
 import java.util.Random;
 
 /**
- * A {@link StatsProvider} that always returns random statistics.
+ * A {@link IStatsProvider} that always returns random statistics.
  */
-public final class RandomStatsProvider extends StatsProvider
+public final class RandomStatsProvider implements IStatsProvider
 {
 	// ==================================================
 	/**

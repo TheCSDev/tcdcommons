@@ -3,15 +3,15 @@ package com.thecsdev.commonmc.api.stats;
 import net.minecraft.stats.Stat;
 
 /**
- * A {@link StatsProvider} that always returns {@code 0} for every single stat.
+ * A {@link IStatsProvider} that always returns {@code 0} for every single stat.
  */
-public final class EmptyStatsProvider extends StatsProvider
+public final class EmptyStatsProvider implements IStatsProvider
 {
 	// ==================================================
 	/**
 	 * The main instance of {@link EmptyStatsProvider}.
 	 */
-	public static final StatsProvider INSTANCE = new EmptyStatsProvider();
+	public static final IStatsProvider INSTANCE = new EmptyStatsProvider();
 	// ==================================================
 	private EmptyStatsProvider() {}
 	// ==================================================

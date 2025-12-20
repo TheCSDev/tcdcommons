@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.thecsdev.commonmc.api.stats.StatsProvider.getStatTypeName;
+import static com.thecsdev.commonmc.api.stats.IStatsProvider.getStatTypeName;
 import static net.minecraft.network.chat.Component.literal;
 
 /**

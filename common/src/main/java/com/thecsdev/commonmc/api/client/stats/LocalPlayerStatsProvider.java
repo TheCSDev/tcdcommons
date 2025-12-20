@@ -1,7 +1,7 @@
 package com.thecsdev.commonmc.api.client.stats;
 
+import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.PlayerStatsProvider;
-import com.thecsdev.commonmc.api.stats.StatsProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.stats.Stat;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * A {@link StatsProvider} that provides statistics of a {@link LocalPlayer}.
+ * A {@link IStatsProvider} that provides statistics of a {@link LocalPlayer}.
  */
 public final class LocalPlayerStatsProvider extends PlayerStatsProvider<@NotNull LocalPlayer>
 {

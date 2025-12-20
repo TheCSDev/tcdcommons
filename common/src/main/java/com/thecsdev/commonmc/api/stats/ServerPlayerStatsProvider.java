@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * A {@link StatsProvider} that provides statistics of a {@link ServerPlayer}.
+ * A {@link IStatsProvider} that provides statistics of a {@link ServerPlayer}.
  */
 public final class ServerPlayerStatsProvider extends PlayerStatsProvider<@NotNull ServerPlayer>
 {

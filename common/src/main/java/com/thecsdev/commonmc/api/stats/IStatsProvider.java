@@ -21,7 +21,7 @@ import java.util.Objects;
  * An abstraction layer over the game's native {@link StatsCounter} mechanism,
  * for reading statistics data, primarily about players.
  */
-public abstract class StatsProvider
+public interface IStatsProvider
 {
 	// ==================================================
 	/**
@@ -38,7 +38,7 @@ public abstract class StatsProvider
 	 * @see StatsCounter
 	 * @apiNote You should not override this, as it calls {@link #getIntValue(Stat)} by default.
 	 */
-	public @Virtual <T> int getIntValue(@NotNull StatType<T> type, @NotNull T subject)
+	default @Virtual <T> int getIntValue(@NotNull StatType<T> type, @NotNull T subject)
 			throws NullPointerException
 	{
 		Objects.requireNonNull(type);
@@ -51,7 +51,7 @@ public abstract class StatsProvider
 	 * related to {@link Item}s.
 	 */
 	@SuppressWarnings("unchecked")
-	public static final List<StatType<Item>> getItemStatTypes() {
+	public static List<StatType<Item>> getItemStatTypes() {
 		return BuiltInRegistries.STAT_TYPE.stream()
 				.filter(st -> st.getRegistry() == BuiltInRegistries.ITEM)
 				.map(st -> (StatType<Item>) st)
@@ -63,7 +63,7 @@ public abstract class StatsProvider
 	 * related to {@link Block}s.
 	 */
 	@SuppressWarnings("unchecked")
-	public static final List<StatType<Block>> getBlockStatTypes() {
+	public static List<StatType<Block>> getBlockStatTypes() {
 		return BuiltInRegistries.STAT_TYPE.stream()
 				.filter(st -> st.getRegistry() == BuiltInRegistries.BLOCK)
 				.map(st -> (StatType<Block>) st)
@@ -75,7 +75,7 @@ public abstract class StatsProvider
 	 * related to {@link EntityType}s.
 	 */
 	@SuppressWarnings("unchecked")
-	public static final List<StatType<EntityType<?>>> getEntityStatTypes() {
+	public static List<StatType<EntityType<?>>> getEntityStatTypes() {
 		return BuiltInRegistries.STAT_TYPE.stream()
 				.filter(st -> st.getRegistry() == BuiltInRegistries.ENTITY_TYPE)
 				.map(st -> (StatType<EntityType<?>>) st)
@@ -86,7 +86,7 @@ public abstract class StatsProvider
 	 * Returns the display name of a given {@link StatType}.
 	 * @throws NullPointerException If the {@link StatType} is not registered.
 	 */
-	public static final Component getStatTypeName(StatType<?> statType) throws NullPointerException
+	public static Component getStatTypeName(StatType<?> statType) throws NullPointerException
 	{
 		//obtain the vanilla translation key
 		final var stId            = Objects.requireNonNull(BuiltInRegistries.STAT_TYPE.getKey(statType));

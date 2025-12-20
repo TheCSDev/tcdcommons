@@ -1,7 +1,7 @@
 package com.thecsdev.commonmc.api.stats.util;
 
 import com.thecsdev.common.util.annotations.Virtual;
-import com.thecsdev.commonmc.api.stats.StatsProvider;
+import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.mixin.hooks.AccessorStat;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 public sealed abstract class SubjectStats<S> permits CustomStat, ItemStats, BlockStats, EntityStats
 {
 	// ==================================================
-	private final @NotNull  StatsProvider    statsProvider;
+	private final @NotNull IStatsProvider statsProvider;
 	private final @NotNull  S                subject;
 	private final @NotNull  Identifier subjectID;
 	// ==================================================
@@ -37,7 +37,7 @@ public sealed abstract class SubjectStats<S> permits CustomStat, ItemStats, Bloc
 	protected SubjectStats(
 			@NotNull Registry<S> subjectRegistry,
 			@NotNull S subject,
-			@NotNull StatsProvider statsProvider) throws NullPointerException, IllegalStateException
+			@NotNull IStatsProvider statsProvider) throws NullPointerException, IllegalStateException
 	{
 		//initialize stats provider and subject as normal
 		this.statsProvider = requireNonNull(statsProvider);
@@ -58,9 +58,9 @@ public sealed abstract class SubjectStats<S> permits CustomStat, ItemStats, Bloc
 	}
 	// ==================================================
 	/**
-	 * The {@link StatsProvider} instance used by this {@link SubjectStats} instance.
+	 * The {@link IStatsProvider} instance used by this {@link SubjectStats} instance.
 	 */
-	public final @NotNull StatsProvider getStatsProvider() { return this.statsProvider; }
+	public final @NotNull IStatsProvider getStatsProvider() { return this.statsProvider; }
 
 	/**
 	 * The "thing" this {@link SubjectStats} instance is about.

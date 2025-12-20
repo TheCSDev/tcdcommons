@@ -6,7 +6,7 @@ import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
 import com.thecsdev.commonmc.api.stats.EmptyStatsProvider;
-import com.thecsdev.commonmc.api.stats.StatsProvider;
+import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.util.ItemStats;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +37,7 @@ public final class TItemStatsWidget extends TStatsWidget
 	private @NotNull  ItemStack itemStack      = Items.AIR.getDefaultInstance(); //for item rendering
 	// ==================================================
 	public TItemStatsWidget() { this(Items.AIR, EmptyStatsProvider.INSTANCE); }
-	public TItemStatsWidget(@NotNull Item item, @NotNull StatsProvider statsProvider) {
+	public TItemStatsWidget(@NotNull Item item, @NotNull IStatsProvider statsProvider) {
 		this(new ItemStats(item, statsProvider));
 	}
 	public TItemStatsWidget(@Nullable ItemStats stats)
