@@ -96,7 +96,7 @@ public abstract class TScreen extends TElement
 	 * Returns the {@link Minecraft} client instance that last opened
 	 * this {@link TScreen}, if any.
 	 */
-	public final @Nullable @Override Minecraft getClient() { return this.screen.getClient(); }
+	public final @Override @NotNull Minecraft getClient() { return this.screen.getClient(); }
 	// --------------------------------------------------
 	/**
 	 * Returns the {@link NotNullProperty} for this {@link TScreen}'s title.

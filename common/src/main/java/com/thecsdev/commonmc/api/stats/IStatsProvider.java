@@ -12,6 +12,7 @@ import net.minecraft.stats.StatsCounter;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +21,7 @@ import java.util.Objects;
  * An abstraction layer over the game's native {@link StatsCounter} mechanism,
  * for reading statistics data, primarily about players.
  */
-public abstract class StatsProvider
+public interface IStatsProvider
 {
 	// ==================================================
 	/**
@@ -28,23 +29,29 @@ public abstract class StatsProvider
 	 * @param stat The {@link Stat} whose value is to be obtained.
 	 * @see StatsCounter
 	 */
-	public abstract <T> int getValue(Stat<T> stat);
+	public abstract <T> int getIntValue(Stat<T> stat);
 
 	/**
 	 * Returns the {@link Integer} value of a given {@link StatType} and its corresponding {@link Stat}.
 	 * @param type The {@link StatType}.
 	 * @param subject The subject about whom stat value is to be obtained.
 	 * @see StatsCounter
-	 * @apiNote You should not override this, as it calls {@link #getValue(Stat)} by default.
+	 * @apiNote You should not override this, as it calls {@link #getIntValue(Stat)} by default.
 	 */
-	public @Virtual <T> int getValue(StatType<T> type, T subject) { return getValue(type.get(subject)); }
+	default @Virtual <T> int getIntValue(@NotNull StatType<T> type, @NotNull T subject)
+			throws NullPointerException
+	{
+		Objects.requireNonNull(type);
+		Objects.requireNonNull(subject);
+		return getIntValue(type.get(subject));
+	}
 	// ==================================================
 	/**
 	 * Returns an unmodifiable {@link List} of all registered {@link StatType}s
 	 * related to {@link Item}s.
 	 */
 	@SuppressWarnings("unchecked")
-	public static final List<StatType<Item>> getItemStatTypes() {
+	public static List<StatType<Item>> getItemStatTypes() {
 		return BuiltInRegistries.STAT_TYPE.stream()
 				.filter(st -> st.getRegistry() == BuiltInRegistries.ITEM)
 				.map(st -> (StatType<Item>) st)
@@ -56,7 +63,7 @@ public abstract class StatsProvider
 	 * related to {@link Block}s.
 	 */
 	@SuppressWarnings("unchecked")
-	public static final List<StatType<Block>> getBlockStatTypes() {
+	public static List<StatType<Block>> getBlockStatTypes() {
 		return BuiltInRegistries.STAT_TYPE.stream()
 				.filter(st -> st.getRegistry() == BuiltInRegistries.BLOCK)
 				.map(st -> (StatType<Block>) st)
@@ -68,7 +75,7 @@ public abstract class StatsProvider
 	 * related to {@link EntityType}s.
 	 */
 	@SuppressWarnings("unchecked")
-	public static final List<StatType<EntityType<?>>> getEntityStatTypes() {
+	public static List<StatType<EntityType<?>>> getEntityStatTypes() {
 		return BuiltInRegistries.STAT_TYPE.stream()
 				.filter(st -> st.getRegistry() == BuiltInRegistries.ENTITY_TYPE)
 				.map(st -> (StatType<EntityType<?>>) st)
@@ -79,7 +86,7 @@ public abstract class StatsProvider
 	 * Returns the display name of a given {@link StatType}.
 	 * @throws NullPointerException If the {@link StatType} is not registered.
 	 */
-	public static final Component getStatTypeName(StatType<?> statType) throws NullPointerException
+	public static Component getStatTypeName(StatType<?> statType) throws NullPointerException
 	{
 		//obtain the vanilla translation key
 		final var stId            = Objects.requireNonNull(BuiltInRegistries.STAT_TYPE.getKey(statType));

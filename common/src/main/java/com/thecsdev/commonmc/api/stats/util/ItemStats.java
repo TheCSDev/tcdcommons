@@ -1,6 +1,6 @@
 package com.thecsdev.commonmc.api.stats.util;
 
-import com.thecsdev.commonmc.api.stats.StatsProvider;
+import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stat;
@@ -30,7 +30,7 @@ public final class ItemStats extends SubjectStats<Item>
 	 */
 	public ItemStats(
 			@NotNull Item subject,
-			@NotNull StatsProvider statsProvider) throws NullPointerException, IllegalStateException {
+			@NotNull IStatsProvider statsProvider) throws NullPointerException, IllegalStateException {
 		super(BuiltInRegistries.ITEM, subject, statsProvider);
 	}
 	// ==================================================
@@ -38,8 +38,8 @@ public final class ItemStats extends SubjectStats<Item>
 	public final @Override @NotNull LinkedHashMap<Stat<Item>, Integer> getValues() {
 		final var subject = getSubject();
 		final var map     = new LinkedHashMap<Stat<Item>, Integer>();
-		for(final var st : StatsProvider.getItemStatTypes())
-			map.put(st.get(subject), getStatsProvider().getValue(st, subject));
+		for(final var st : IStatsProvider.getItemStatTypes())
+			map.put(st.get(subject), getStatsProvider().getIntValue(st, subject));
 		return map;
 	}
 	// ==================================================
@@ -55,37 +55,37 @@ public final class ItemStats extends SubjectStats<Item>
 	/**
 	 * Returns the value of {@link Stats#ITEM_BROKEN}.
 	 */
-	public final int getTimesBroken() { return getStatsProvider().getValue(Stats.ITEM_BROKEN, getSubject()); }
+	public final int getTimesBroken() { return getStatsProvider().getIntValue(Stats.ITEM_BROKEN, getSubject()); }
 
 	/**
 	 * Returns the value of {@link Stats#ITEM_CRAFTED}.
 	 */
-	public final int getTimesCrafted() { return getStatsProvider().getValue(Stats.ITEM_CRAFTED, getSubject()); }
+	public final int getTimesCrafted() { return getStatsProvider().getIntValue(Stats.ITEM_CRAFTED, getSubject()); }
 
 	/**
 	 * Returns the value of {@link Stats#ITEM_DROPPED}.
 	 */
-	public final int getTimesDropped() { return getStatsProvider().getValue(Stats.ITEM_DROPPED, getSubject()); }
+	public final int getTimesDropped() { return getStatsProvider().getIntValue(Stats.ITEM_DROPPED, getSubject()); }
 
 	/**
 	 * Returns the value of {@link Stats#ITEM_USED}.
 	 */
-	public final int getTimesUsed() { return getStatsProvider().getValue(Stats.ITEM_USED, getSubject()); }
+	public final int getTimesUsed() { return getStatsProvider().getIntValue(Stats.ITEM_USED, getSubject()); }
 
 	/**
 	 * Returns the value of {@link Stats#ITEM_PICKED_UP}.
 	 */
-	public final int getTimesPickedUp() { return getStatsProvider().getValue(Stats.ITEM_PICKED_UP, getSubject()); }
+	public final int getTimesPickedUp() { return getStatsProvider().getIntValue(Stats.ITEM_PICKED_UP, getSubject()); }
 	// ==================================================
 	/**
 	 * Obtains a list of all {@link ItemStats}.
-	 * @param statsProvider The {@link StatsProvider} instance.
+	 * @param statsProvider The {@link IStatsProvider} instance.
 	 * @param predicate An optional {@link Predicate} for filtering the stats.
 	 * @param comparator An optional {@link Comparator} for sorting the list.
 	 * @throws NullPointerException If a {@link NotNull} argument is {@code null}.
 	 */
 	public static final Collection<ItemStats> getItemStats(
-			@NotNull StatsProvider statsProvider,
+			@NotNull IStatsProvider statsProvider,
 			@Nullable Predicate<ItemStats> predicate,
 			@Nullable Comparator<ItemStats> comparator) throws NullPointerException
 	{

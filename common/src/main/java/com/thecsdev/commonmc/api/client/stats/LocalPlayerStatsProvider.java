@@ -1,7 +1,7 @@
 package com.thecsdev.commonmc.api.client.stats;
 
+import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.PlayerStatsProvider;
-import com.thecsdev.commonmc.api.stats.StatsProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.stats.Stat;
@@ -12,32 +12,30 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * A {@link StatsProvider} that provides statistics of a {@link LocalPlayer}.
+ * A {@link IStatsProvider} that provides statistics of a {@link LocalPlayer}.
  */
-public final class LocalPlayerStatsProvider extends PlayerStatsProvider<LocalPlayer>
+public final class LocalPlayerStatsProvider extends PlayerStatsProvider<@NotNull LocalPlayer>
 {
 	// ==================================================
 	private final LocalPlayer  player;
-	// --------------------------------------------------
-	private final StatsCounter statsCounter;
+	// ==================================================
+	private final StatsCounter _statsCounter;
 	// ==================================================
 	private LocalPlayerStatsProvider(@NotNull LocalPlayer player) throws NullPointerException {
-		this.player       = Objects.requireNonNull(player);
-		this.statsCounter = player.getStats();
+		this.player        = Objects.requireNonNull(player);
+		this._statsCounter = player.getStats();
 	}
 	// ==================================================
 	public final @Override LocalPlayer getPlayer() { return this.player; }
 	// --------------------------------------------------
-	public final @Override <T> int getValue(Stat<T> stat) { return this.statsCounter.getValue(stat); }
-	public final @Override <T> int getValue(StatType<T> type, T subject) { return this.statsCounter.getValue(type, subject); }
+	public final @Override <T> int getIntValue(Stat<T> stat) { return this._statsCounter.getValue(stat); }
+	public final @Override <T> int getIntValue(@NotNull StatType<T> type, @NotNull T subject) { return this._statsCounter.getValue(type, subject); }
 	// ==================================================
 	public final @Override int hashCode() { return this.player.hashCode(); }
-	public final @Override boolean equals(Object obj)
-	{
-		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		final var lpsp = (LocalPlayerStatsProvider) obj;
-		return (this.player == lpsp.player);
+	public final @Override boolean equals(Object obj) {
+		if(obj == this) return true;
+		if(obj == null || obj.getClass() != getClass()) return false;
+		return (((LocalPlayerStatsProvider)obj).player == this.player);
 	}
 	// ==================================================
 	/**

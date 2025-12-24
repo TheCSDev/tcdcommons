@@ -9,32 +9,30 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * A {@link StatsProvider} that provides statistics of a {@link ServerPlayer}.
+ * A {@link IStatsProvider} that provides statistics of a {@link ServerPlayer}.
  */
-public final class ServerPlayerStatsProvider extends PlayerStatsProvider<ServerPlayer>
+public final class ServerPlayerStatsProvider extends PlayerStatsProvider<@NotNull ServerPlayer>
 {
 	// ==================================================
 	private final ServerPlayer       player;
-	// --------------------------------------------------
-	private final ServerStatsCounter statsCounter;
+	// ==================================================
+	private final ServerStatsCounter _statsCounter;
 	// ==================================================
 	private ServerPlayerStatsProvider(@NotNull ServerPlayer player) throws NullPointerException {
-		this.player       = Objects.requireNonNull(player);
-		this.statsCounter = player.getStats();
+		this.player        = Objects.requireNonNull(player);
+		this._statsCounter = player.getStats();
 	}
 	// ==================================================
 	public final @Override ServerPlayer getPlayer() { return this.player; }
 	// --------------------------------------------------
-	public final @Override <T> int getValue(Stat<T> stat) { return this.statsCounter.getValue(stat); }
-	public final @Override <T> int getValue(StatType<T> type, T subject) { return this.statsCounter.getValue(type, subject); }
+	public final @Override <T> int getIntValue(Stat<T> stat) { return this._statsCounter.getValue(stat); }
+	public final @Override <T> int getIntValue(@NotNull StatType<T> type, @NotNull T subject) { return this._statsCounter.getValue(type, subject); }
 	// ==================================================
 	public final @Override int hashCode() { return this.player.hashCode(); }
-	public final @Override boolean equals(Object obj)
-	{
-		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		final var spsp = (ServerPlayerStatsProvider) obj;
-		return (this.player == spsp.player);
+	public final @Override boolean equals(Object obj) {
+		if(obj == this) return true;
+		if(obj == null || obj.getClass() != getClass()) return false;
+		return (((ServerPlayerStatsProvider)obj).player == this.player);
 	}
 	// ==================================================
 	/**

@@ -1,6 +1,6 @@
 package com.thecsdev.commonmc.api.stats.util;
 
-import com.thecsdev.commonmc.api.stats.StatsProvider;
+import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.mixin.hooks.AccessorStat;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -32,9 +32,9 @@ public final class CustomStat extends SubjectStats<Identifier>
 	 */
 	public CustomStat(
 			@NotNull Identifier subject,
-			@NotNull StatsProvider statsProvider) throws NullPointerException, IllegalStateException {
+			@NotNull IStatsProvider statsProvider) throws NullPointerException, IllegalStateException {
 		super(CUSTOM_STAT, subject, statsProvider);
-		this.subjectName   = StatsProvider.getCustomStatName(subject);
+		this.subjectName   = IStatsProvider.getCustomStatName(subject);
 		this.stat          = CUSTOM.get(subject);
 		final var f        = ((AccessorStat)(Object)this.stat).getFormatter();
 		this.statFormatter = (f != null) ? f : StatFormatter.DEFAULT;
@@ -51,7 +51,7 @@ public final class CustomStat extends SubjectStats<Identifier>
 	/**
 	 * Returns the raw (unformatted) numeric value of the "General" stat.
 	 */
-	public final int getValue() { return getStatsProvider().getValue(this.stat); }
+	public final int getValue() { return getStatsProvider().getIntValue(this.stat); }
 
 	/**
 	 * Returns {@link #getValue()} formatted using {@link Stat#format(int)}.
@@ -87,13 +87,13 @@ public final class CustomStat extends SubjectStats<Identifier>
 	// ==================================================
 	/**
 	 * Obtains a list of all {@link CustomStat}.
-	 * @param statsProvider The {@link StatsProvider} instance.
+	 * @param statsProvider The {@link IStatsProvider} instance.
 	 * @param predicate An optional {@link Predicate} for filtering the stats.
 	 * @param comparator An optional {@link Comparator} for sorting the list.
 	 * @throws NullPointerException If a {@link NotNull} argument is {@code null}.
 	 */
 	public static final Collection<CustomStat> getCustomStats(
-			@NotNull StatsProvider statsProvider,
+			@NotNull IStatsProvider statsProvider,
 			@Nullable Predicate<CustomStat> predicate,
 			@Nullable Comparator<CustomStat> comparator) throws NullPointerException
 	{

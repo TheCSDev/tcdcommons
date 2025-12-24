@@ -1,6 +1,6 @@
 package com.thecsdev.commonmc.api.stats.util;
 
-import com.thecsdev.commonmc.api.stats.StatsProvider;
+import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stat;
@@ -27,7 +27,7 @@ public final class BlockStats extends SubjectStats<Block>
 	 */
 	public BlockStats(
 			@NotNull Block subject,
-			@NotNull StatsProvider statsProvider) throws NullPointerException, IllegalStateException {
+			@NotNull IStatsProvider statsProvider) throws NullPointerException, IllegalStateException {
 		super(BuiltInRegistries.BLOCK, subject, statsProvider);
 	}
 	// ==================================================
@@ -35,25 +35,25 @@ public final class BlockStats extends SubjectStats<Block>
 	public final @Override @NotNull LinkedHashMap<Stat<Block>, Integer> getValues() {
 		final var subject = getSubject();
 		final var map     = new LinkedHashMap<Stat<Block>, Integer>();
-		for(final var st : StatsProvider.getBlockStatTypes())
-			map.put(st.get(subject), getStatsProvider().getValue(st, subject));
+		for(final var st : IStatsProvider.getBlockStatTypes())
+			map.put(st.get(subject), getStatsProvider().getIntValue(st, subject));
 		return map;
 	}
 	// ==================================================
 	/**
 	 * Returns the value of {@link Stats#BLOCK_MINED}.
 	 */
-	public final int getTimesMined() { return getStatsProvider().getValue(Stats.BLOCK_MINED, getSubject()); }
+	public final int getTimesMined() { return getStatsProvider().getIntValue(Stats.BLOCK_MINED, getSubject()); }
 	// ==================================================
 	/**
 	 * Obtains a list of all {@link BlockStats}.
-	 * @param statsProvider The {@link StatsProvider} instance.
+	 * @param statsProvider The {@link IStatsProvider} instance.
 	 * @param predicate An optional {@link Predicate} for filtering the stats.
 	 * @param comparator An optional {@link Comparator} for sorting the list.
 	 * @throws NullPointerException If a {@link NotNull} argument is {@code null}.
 	 */
 	public static final Collection<BlockStats> getBlockStats(
-			@NotNull StatsProvider statsProvider,
+			@NotNull IStatsProvider statsProvider,
 			@Nullable Predicate<BlockStats> predicate,
 			@Nullable Comparator<BlockStats> comparator) throws NullPointerException
 	{

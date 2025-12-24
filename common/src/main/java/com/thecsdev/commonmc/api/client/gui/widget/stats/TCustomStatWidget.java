@@ -4,7 +4,7 @@ import com.thecsdev.common.properties.IChangeListener;
 import com.thecsdev.common.properties.ObjectProperty;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
-import com.thecsdev.commonmc.api.stats.StatsProvider;
+import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.util.CustomStat;
 import com.thecsdev.commonmc.api.stats.util.StatFormatterOverride;
 import net.minecraft.resources.Identifier;
@@ -36,7 +36,7 @@ public final class TCustomStatWidget extends TTextualStatWidget
 	private final ObjectProperty<StatFormatterOverride> formatterOverride = new ObjectProperty<>();
 	// ==================================================
 	public TCustomStatWidget() { this(null); }
-	public TCustomStatWidget(@NotNull Identifier subject, @NotNull StatsProvider provider) {
+	public TCustomStatWidget(@NotNull Identifier subject, @NotNull IStatsProvider provider) {
 		this(new CustomStat(subject, provider));
 	}
 	public @SuppressWarnings("unchecked") TCustomStatWidget(@Nullable CustomStat stat) {

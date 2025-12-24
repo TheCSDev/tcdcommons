@@ -5,9 +5,9 @@ import net.minecraft.stats.Stat;
 import java.util.Random;
 
 /**
- * A {@link StatsProvider} that always returns random statistics.
+ * A {@link IStatsProvider} that always returns random statistics.
  */
-public final class RandomStatsProvider extends StatsProvider
+public final class RandomStatsProvider implements IStatsProvider
 {
 	// ==================================================
 	/**
@@ -19,6 +19,6 @@ public final class RandomStatsProvider extends StatsProvider
 	// ==================================================
 	private RandomStatsProvider() {}
 	// ==================================================
-	public final @Override <T> int getValue(Stat<T> stat)  { return this.random.nextInt(0, Integer.MAX_VALUE); }
+	public final @Override <T> int getIntValue(Stat<T> stat)  { return this.random.nextInt(0, Integer.MAX_VALUE); }
 	// ==================================================
 }

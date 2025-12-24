@@ -1,6 +1,6 @@
 package com.thecsdev.commonmc.api.stats.util;
 
-import com.thecsdev.commonmc.api.stats.StatsProvider;
+import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
@@ -26,7 +26,7 @@ public final class EntityStats extends SubjectStats<EntityType<?>>
 	 */
 	public EntityStats(
 			@NotNull EntityType<?> subject,
-			@NotNull StatsProvider statsProvider) throws NullPointerException, IllegalStateException {
+			@NotNull IStatsProvider statsProvider) throws NullPointerException, IllegalStateException {
 		super(ENTITY_TYPE, subject, statsProvider);
 	}
 	// ==================================================
@@ -34,30 +34,30 @@ public final class EntityStats extends SubjectStats<EntityType<?>>
 	public final @Override @NotNull LinkedHashMap<Stat<EntityType<?>>, Integer> getValues() {
 		final var subject = getSubject();
 		final var map     = new LinkedHashMap<Stat<EntityType<?>>, Integer>();
-		for(final var st : StatsProvider.getEntityStatTypes())
-			map.put(st.get(subject), getStatsProvider().getValue(st, subject));
+		for(final var st : IStatsProvider.getEntityStatTypes())
+			map.put(st.get(subject), getStatsProvider().getIntValue(st, subject));
 		return map;
 	}
 	// ==================================================
 	/**
 	 * Returns the value of {@link Stats#ENTITY_KILLED}.
 	 */
-	public final int getKills() { return getStatsProvider().getValue(Stats.ENTITY_KILLED, getSubject()); }
+	public final int getKills() { return getStatsProvider().getIntValue(Stats.ENTITY_KILLED, getSubject()); }
 
 	/**
 	 * Returns the value of {@link Stats#ENTITY_KILLED_BY}.
 	 */
-	public final int getDeaths() { return getStatsProvider().getValue(Stats.ENTITY_KILLED_BY, getSubject()); }
+	public final int getDeaths() { return getStatsProvider().getIntValue(Stats.ENTITY_KILLED_BY, getSubject()); }
 	// ==================================================
 	/**
 	 * Obtains a list of all {@link EntityStats}.
-	 * @param statsProvider The {@link StatsProvider} instance.
+	 * @param statsProvider The {@link IStatsProvider} instance.
 	 * @param predicate An optional {@link Predicate} for filtering the stats.
 	 * @param comparator An optional {@link Comparator} for sorting the list.
 	 * @throws NullPointerException If a {@link NotNull} argument is {@code null}.
 	 */
 	public static final Collection<EntityStats> getEntityStats(
-			@NotNull StatsProvider statsProvider,
+			@NotNull IStatsProvider statsProvider,
 			@Nullable Predicate<EntityStats> predicate,
 			@Nullable Comparator<EntityStats> comparator) throws NullPointerException
 	{

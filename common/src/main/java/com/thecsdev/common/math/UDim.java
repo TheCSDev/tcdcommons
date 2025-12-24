@@ -27,7 +27,7 @@ public final class UDim
 	 * Negative values are valid and will scale in the opposite direction.
 	 */
 	public final double scale;
-	
+
 	/**
 	 * The absolute offset (in pixels) added to the scaled value.
 	 * <p>
@@ -67,8 +67,8 @@ public final class UDim
 	 * @param referenceValue The reference size to apply scaling to.
 	 * @return The computed final value as an integer.
 	 */
-	public final int computeI(int referenceValue) { return (int) ((referenceValue * this.scale) + this.offset); }
-	
+	public final int computeI(int referenceValue) { return (int) Math.round((double) referenceValue * this.scale + this.offset); }
+
 	/**
 	 * Computes the final value using a floating-point reference value.
 	 * <p>
@@ -79,8 +79,8 @@ public final class UDim
 	 * @param referenceValue The reference size to apply scaling to.
 	 * @return The computed final value as a float.
 	 */
-	public final float computeF(float referenceValue) { return (float) ((referenceValue * this.scale) + this.offset); }
-	
+	public final float computeF(float referenceValue) { return (float) (referenceValue * this.scale + this.offset); }
+
 	/**
 	 * Computes the final value using a double reference value.
 	 * <p>
@@ -91,6 +91,6 @@ public final class UDim
 	 * @param referenceValue The reference size to apply scaling to.
 	 * @return The computed final value as a float.
 	 */
-	public final double computeD(double referenceValue) { return (referenceValue * this.scale) + this.offset; }
+	public final double computeD(double referenceValue) { return referenceValue * this.scale + this.offset; }
 	// ==================================================
 }
