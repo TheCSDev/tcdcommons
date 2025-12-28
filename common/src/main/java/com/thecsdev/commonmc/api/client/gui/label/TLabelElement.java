@@ -48,7 +48,7 @@ public final class TLabelElement extends TElement
 		this.lineSpacing  .addChangeListener((IChangeListener<Integer>)          cl_refresh);
 		this.wrapText     .addChangeListener((IChangeListener<Boolean>)          cl_refresh);
 		this.textAlignment.addChangeListener((IChangeListener<CompassDirection>) cl_refresh);
-		this.textScale    .addChangeListener((IChangeListener<Double>)           cl_refresh); //FIXME - FINISDH
+		this.textScale    .addChangeListener((IChangeListener<Double>)           cl_refresh);
 	}
 	// ==================================================
 	/**
