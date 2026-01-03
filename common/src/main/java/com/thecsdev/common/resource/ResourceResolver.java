@@ -1,13 +1,16 @@
 package com.thecsdev.common.resource;
 
 import com.thecsdev.common.resource.protocol.FileProtocolHandler;
+import com.thecsdev.common.resource.protocol.HttpProtocolHandler;
 import com.thecsdev.common.resource.protocol.ProtocolHandler;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -109,7 +112,9 @@ public final class ResourceResolver
 	 * @apiNote Called automatically. Do not call this yourself.
 	 */
 	public static final @ApiStatus.Internal void bootstrap() {
-		registerProtocolHandler("file", FileProtocolHandler.INSTANCE);
+		registerProtocolHandler("file",  FileProtocolHandler.INSTANCE);
+		registerProtocolHandler("http",  HttpProtocolHandler.INSTANCE);
+		registerProtocolHandler("https", HttpProtocolHandler.INSTANCE);
 	}
 	// ==================================================
 }

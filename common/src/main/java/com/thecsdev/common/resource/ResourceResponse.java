@@ -1,6 +1,8 @@
 package com.thecsdev.common.resource;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -44,7 +46,7 @@ public final class ResourceResponse
 	 * protocol specified in the {@link URI}.
 	 */
 	public final int getStatus() { return this.status; }
-
+	// --------------------------------------------------
 	/**
 	 * Returns an unmodifiable {@link Map} containing metadata associated with the
 	 * resource. This may include HTTP headers, system metadata, or other relevant
@@ -52,6 +54,24 @@ public final class ResourceResponse
 	 */
 	public final @NotNull Map<String, List<String>> getMetadata() { return this.metadata; }
 
+	/**
+	 * Returns the first metadata value associated with the specified metadata name.
+	 * @param metadataName The name of the metadata entry.
+	 * @param defaultValue The default value to return if the metadata entry is not found.
+	 * @throws NullPointerException If a {@link NotNull} argument is {@code null}.
+	 */
+	@Contract("_, null -> _; _, !null -> !null")
+	public final @Nullable String get(
+			@NotNull String metadataName, @Nullable String defaultValue)
+			throws NullPointerException
+	{
+		Objects.requireNonNull(metadataName);
+		final var list = this.metadata.get(metadataName);
+		if(list != null && !list.isEmpty())
+			return list.getFirst();
+		return defaultValue;
+	}
+	// --------------------------------------------------
 	/**
 	 * Returns the {@code byte[]} containing the raw byte data of the fetched resource.
 	 */
@@ -97,6 +117,39 @@ public final class ResourceResponse
 			return this;
 		}
 
+		/**
+		 * Adds a metadata entry to the resource response.
+		 * @param metadataName  The name of the metadata entry.
+		 * @param metadataValue The value of the metadata entry.
+		 * @return The current {@link Builder} instance for method chaining.
+		 * @throws NullPointerException If any argument is {@code null}.
+		 * @see #setMetadata(Map)
+		 */
+		public final @NotNull Builder add(@NotNull String metadataName, @NotNull String metadataValue) throws NullPointerException {
+			Objects.requireNonNull(metadataName);
+			Objects.requireNonNull(metadataValue);
+			this.metadata.computeIfAbsent(metadataName, __ -> new java.util.ArrayList<>()).add(metadataValue);
+			return this;
+		}
+
+		/**
+		 * Sets a metadata entry for the resource response, replacing any existing
+		 * values associated with the specified metadata name.
+		 * @param metadataName  The name of the metadata entry.
+		 * @param metadataValue The value of the metadata entry.
+		 * @return The current {@link Builder} instance for method chaining.
+		 * @throws NullPointerException If any argument is {@code null}.
+		 * @see #setMetadata(Map)
+		 */
+		public final @NotNull Builder set(@NotNull String metadataName, @NotNull String metadataValue) throws NullPointerException {
+			Objects.requireNonNull(metadataName);
+			Objects.requireNonNull(metadataValue);
+			final var list = new java.util.ArrayList<String>();
+			list.add(metadataValue);
+			this.metadata.put(metadataName, list);
+			return this;
+		}
+		// --------------------------------------------------
 		/**
 		 * Sets the raw byte data for the resource response.
 		 * @param data A byte array containing the resource data.
