@@ -23,13 +23,10 @@ public interface ProtocolHandler
 	public boolean matches(@NotNull URI uri);
 	// --------------------------------------------------
 	/**
-	 * Fetches a resource from the specified {@link URI} asynchronously.
-	 * @param uri The {@link URI} of the resource to fetch.
-	 * @return A {@link CompletableFuture} that will complete with a {@link ResourceResponse}
-	 *         containing the fetched resource data.
-	 * @apiNote The resulting {@link ResourceResponse#getUri()} <b>must match</b>
-	 *          the {@link URI} argument that's passed to this method.
+	 * Handles the given {@link ResourceRequest} and returns a {@link CompletableFuture}
+	 * that will complete with a {@link ResourceResponse}.
+	 * @param request The {@link ResourceRequest} to handle.
 	 */
-	public @NotNull CompletableFuture<ResourceResponse> handle(@NotNull URI uri);
+	public @NotNull CompletableFuture<ResourceResponse> handle(@NotNull ResourceRequest request);
 	// ==================================================
 }

@@ -4,9 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -52,16 +50,28 @@ public final class ResourceResolver
 	 *         containing the fetched resource data.
 	 * @throws NullPointerException If the argument is {@code null}.
 	 */
-	public static final @NotNull CompletableFuture<ResourceResponse> fetchAsync(@NotNull URI uri) throws NullPointerException
+	public static final @NotNull CompletableFuture<ResourceResponse> fetchAsync(@NotNull URI uri) throws NullPointerException {
+		return fetchAsync(new ResourceRequest.Builder(uri).build());
+	}
+
+	/**
+	 * Fetches a resource based on the provided {@link ResourceRequest} asynchronously.
+	 * @param request The {@link ResourceRequest} containing details about the resource to fetch.
+	 * @return A {@link CompletableFuture} that will complete with a {@link ResourceResponse}
+	 *         containing the fetched resource data.
+	 * @throws NullPointerException If the argument is {@code null}.
+	 */
+	public static final @NotNull CompletableFuture<ResourceResponse> fetchAsync(
+			@NotNull ResourceRequest request) throws NullPointerException
 	{
 		//not null requirements
-		Objects.requireNonNull(uri);
+		Objects.requireNonNull(request);
 
 		//obtain scheme name, and handle 'null' schemes
-		final @Nullable var scheme = uri.getScheme();
+		final @Nullable var scheme = request.getUri().getScheme();
 		if(scheme == null)
 			return CompletableFuture.failedFuture(
-					new UnsupportedOperationException("Missing scheme for URI: " + uri));
+					new UnsupportedOperationException("Missing scheme for URI: " + request));
 
 		//obtain protocol handler for scheme
 		final @Nullable var protocolHandler = PROTOCOL_HANDLERS.get(scheme.toLowerCase(Locale.ENGLISH));
@@ -70,23 +80,42 @@ public final class ResourceResolver
 					new UnsupportedOperationException("No protocol handler is registered for scheme: " + scheme));
 
 		//delegate handling to protocol handler
-		return protocolHandler.handle(uri)
+		return protocolHandler.handle(request)
 				.thenApply(rss ->
 				{
 					//ensure returned response has matching URI
-					if(rss.getUri() != uri) {
+					if(rss.getUri() != request.getUri()) {
 						final var message = String.format(
 								"%s for scheme '%s' returned %s with mismatched %s! Expected: \"%s\", Got: \"%s\"",
 								ProtocolHandler.class.getSimpleName(),
 								scheme,
 								ResourceResponse.class.getSimpleName(),
 								URI.class.getSimpleName(),
-								uri, rss.getUri());
+								request, rss.getUri());
 						throw new IllegalStateException(message);
 					}
 					//return the response
 					return rss;
 				});
+	}
+	// ==================================================
+	/**
+	 * Creates an immutable copy of the provided metadata {@link Map}.
+	 * @param metadata The original metadata {@link Map} to be made immutable.
+	 * @return An unmodifiable {@link Map} containing unmodifiable {@link List}s as values.
+	 * @throws NullPointerException If the argument is {@code null}.
+	 */
+	static final Map<String, List<String>> unmodifiableMetadata(
+			@NotNull Map<String, List<String>> metadata) throws NullPointerException
+	{
+		//require not null argument
+		Objects.requireNonNull(metadata);
+		//create new map and populare it
+		final var immutableMap = new HashMap<String, List<String>>(metadata.size());
+		for(final var entry : metadata.entrySet())
+			immutableMap.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
+		//return the new unmodifiable map
+		return Collections.unmodifiableMap(immutableMap);
 	}
 	// ==================================================
 }
