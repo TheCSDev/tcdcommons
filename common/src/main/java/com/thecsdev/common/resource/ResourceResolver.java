@@ -1,5 +1,8 @@
 package com.thecsdev.common.resource;
 
+import com.thecsdev.common.resource.protocol.FileProtocolHandler;
+import com.thecsdev.common.resource.protocol.ProtocolHandler;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,6 +29,7 @@ public final class ResourceResolver
 	private static final HashMap<String, ProtocolHandler> PROTOCOL_HANDLERS = new HashMap<>();
 	// ==================================================
 	private ResourceResolver() {}
+	static { bootstrap(); }
 	// ==================================================
 	/**
 	 * Registers a {@link ProtocolHandler} for a specific protocol scheme.
@@ -100,22 +104,12 @@ public final class ResourceResolver
 	}
 	// ==================================================
 	/**
-	 * Creates an immutable copy of the provided metadata {@link Map}.
-	 * @param metadata The original metadata {@link Map} to be made immutable.
-	 * @return An unmodifiable {@link Map} containing unmodifiable {@link List}s as values.
-	 * @throws NullPointerException If the argument is {@code null}.
+	 * Internal method for bootstrapping the {@link ResourceResolver} and
+	 * registers default protocol handlers.
+	 * @apiNote Called automatically. Do not call this yourself.
 	 */
-	static final Map<String, List<String>> unmodifiableMetadata(
-			@NotNull Map<String, List<String>> metadata) throws NullPointerException
-	{
-		//require not null argument
-		Objects.requireNonNull(metadata);
-		//create new map and populare it
-		final var immutableMap = new HashMap<String, List<String>>(metadata.size());
-		for(final var entry : metadata.entrySet())
-			immutableMap.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
-		//return the new unmodifiable map
-		return Collections.unmodifiableMap(immutableMap);
+	public static final @ApiStatus.Internal void bootstrap() {
+		registerProtocolHandler("file", FileProtocolHandler.INSTANCE);
 	}
 	// ==================================================
 }

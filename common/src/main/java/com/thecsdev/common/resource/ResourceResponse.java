@@ -3,13 +3,10 @@ package com.thecsdev.common.resource;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import static com.thecsdev.common.resource.ResourceResolver.unmodifiableMetadata;
 
 /**
  * Represents the response received after fetching a resource from a specified {@link URI}.
@@ -22,8 +19,8 @@ public final class ResourceResponse
 	// ================================================== ==================================================
 	private final URI                       uri;      //where the resource was fetched from
 	private final int                       status;   //https://en.wikipedia.org/wiki/Exit_status
-	private final Map<String, List<String>> metadata; //unmodifiable - stuff like http headers and system metadata
-	private final ByteBuffer                data;     //the resource data
+	private final Map<String, List<String>> metadata; //stuff like http headers and system metadata
+	private final byte[]                    data;     //the resource data
 	// ==================================================
 	private ResourceResponse(
 			@NotNull URI resourceUri, int status,
@@ -32,8 +29,8 @@ public final class ResourceResponse
 	{
 		this.uri      = Objects.requireNonNull(resourceUri);
 		this.status   = status;
-		this.metadata = unmodifiableMetadata(Objects.requireNonNull(metadata));
-		this.data     = ByteBuffer.wrap(Objects.requireNonNull(data)).asReadOnlyBuffer();
+		this.metadata = Objects.requireNonNull(metadata);
+		this.data     = Objects.requireNonNull(data);
 	}
 	// ==================================================
 	/**
@@ -56,10 +53,9 @@ public final class ResourceResponse
 	public final @NotNull Map<String, List<String>> getMetadata() { return this.metadata; }
 
 	/**
-	 * Returns a <b>read-only</b> {@link ByteBuffer} containing the raw byte data
-	 * of the fetched resource.
+	 * Returns the {@code byte[]} containing the raw byte data of the fetched resource.
 	 */
-	public final @NotNull ByteBuffer getData() { return this.data; }
+	public final byte @NotNull [] getData() { return this.data; }
 	// ================================================== ==================================================
 	//                                            Builder IMPLEMENTATION
 	// ================================================== ==================================================
@@ -95,7 +91,7 @@ public final class ResourceResponse
 		 * @return The current {@link Builder} instance for method chaining.
 		 * @throws NullPointerException If the argument is {@code null}.
 		 */
-		public Builder setMetadata(@NotNull HashMap<String, List<String>> metadata) throws NullPointerException {
+		public Builder setMetadata(@NotNull Map<String, List<String>> metadata) throws NullPointerException {
 			this.metadata.clear();
 			this.metadata.putAll(Objects.requireNonNull(metadata));
 			return this;

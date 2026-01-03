@@ -3,13 +3,10 @@ package com.thecsdev.common.resource;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import static com.thecsdev.common.resource.ResourceResolver.unmodifiableMetadata;
 
 /**
  * Represents a request to fetch a resource from a specified {@link URI}.
@@ -21,8 +18,8 @@ public final class ResourceRequest
 	//                                    ResourceRequest IMPLEMENTATION
 	// ================================================== ==================================================
 	private final URI                       uri;      //where the resource is to be fetched from
-	private final Map<String, List<String>> metadata; //unmodifiable - stuff like http headers and system metadata
-	private final ByteBuffer                data;     //the resource request data
+	private final Map<String, List<String>> metadata; //stuff like http headers and system metadata
+	private final byte[]                    data;     //the resource request data
 	// ==================================================
 	private ResourceRequest(
 			@NotNull URI resourceUri,
@@ -30,8 +27,8 @@ public final class ResourceRequest
 			byte @NotNull [] data) throws NullPointerException
 	{
 		this.uri      = Objects.requireNonNull(resourceUri);
-		this.metadata = unmodifiableMetadata(Objects.requireNonNull(metadata));
-		this.data     = ByteBuffer.wrap(Objects.requireNonNull(data)).asReadOnlyBuffer();
+		this.metadata = Objects.requireNonNull(metadata);
+		this.data     = Objects.requireNonNull(data);
 	}
 	// ==================================================
 	/**
@@ -47,10 +44,9 @@ public final class ResourceRequest
 	public final @NotNull Map<String, List<String>> getMetadata() { return this.metadata; }
 
 	/**
-	 * Returns a <b>read-only</b> {@link ByteBuffer} containing the raw byte data
-	 * of the resource request.
+	 * Returns the {@code byte[]} containing the raw byte data of the {@link ResourceRequest}.
 	 */
-	public final @NotNull ByteBuffer getData() { return this.data.asReadOnlyBuffer(); }
+	public final byte @NotNull [] getData() { return this.data; }
 	// ================================================== ==================================================
 	//                                            Builder IMPLEMENTATION
 	// ================================================== ==================================================

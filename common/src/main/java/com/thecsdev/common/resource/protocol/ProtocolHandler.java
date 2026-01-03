@@ -1,5 +1,8 @@
-package com.thecsdev.common.resource;
+package com.thecsdev.common.resource.protocol;
 
+import com.thecsdev.common.resource.ResourceRequest;
+import com.thecsdev.common.resource.ResourceResolver;
+import com.thecsdev.common.resource.ResourceResponse;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -26,7 +29,10 @@ public interface ProtocolHandler
 	 * Handles the given {@link ResourceRequest} and returns a {@link CompletableFuture}
 	 * that will complete with a {@link ResourceResponse}.
 	 * @param request The {@link ResourceRequest} to handle.
+	 * @throws NullPointerException If the argument is {@code null}.
+	 * @throws IllegalArgumentException If {@link URI#getScheme()} of the {@link ResourceRequest#getUri()} is unsupported.
 	 */
-	public @NotNull CompletableFuture<ResourceResponse> handle(@NotNull ResourceRequest request);
+	public @NotNull CompletableFuture<ResourceResponse> handle(@NotNull ResourceRequest request)
+			throws NullPointerException, IllegalArgumentException;
 	// ==================================================
 }
