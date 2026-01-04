@@ -57,7 +57,7 @@ public class HttpProtocolHandler implements ProtocolHandler
 			{
 				//build the client request and send it
 				final var clientRequest = HttpRequest.newBuilder(request.getUri())
-					.method(request.get(HEADER_HTTP_METHOD, "GET"),
+					.method(request.getFirst(HEADER_HTTP_METHOD, "GET"),
 							HttpRequest.BodyPublishers.ofByteArray(request.getData()));
 
 				for(final var headerEntry : request.getMetadata().entrySet())

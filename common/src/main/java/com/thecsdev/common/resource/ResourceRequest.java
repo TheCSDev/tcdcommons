@@ -1,6 +1,6 @@
 package com.thecsdev.common.resource;
 
-import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,59 +14,19 @@ import java.util.Objects;
  * Represents a request to fetch a resource from a specified {@link URI}.
  * @see ResourceResolver#fetchAsync(URI)
  */
-public final class ResourceRequest
+public final class ResourceRequest extends ResourceMessage
 {
 	// ================================================== ==================================================
 	//                                    ResourceRequest IMPLEMENTATION
 	// ================================================== ==================================================
-	private final URI                       uri;      //where the resource is to be fetched from
-	private final Map<String, List<String>> metadata; //stuff like http headers and system metadata
-	private final byte[]                    data;     //the resource request data
-	// ==================================================
 	private ResourceRequest(
 			@NotNull URI resourceUri,
 			@NotNull Map<String, List<String>> metadata,
-			byte @NotNull [] data) throws NullPointerException
-	{
-		this.uri      = Objects.requireNonNull(resourceUri);
-		this.metadata = Objects.requireNonNull(metadata);
-		this.data     = Objects.requireNonNull(data);
-	}
-	// ==================================================
-	/**
-	 * Returns the {@link URI} where the resource is to be fetched from.
-	 */
-	public final @NotNull URI getUri() { return this.uri; }
-	// --------------------------------------------------
-	/**
-	 * Returns an unmodifiable {@link Map} containing metadata associated with the
-	 * resource request. This may include HTTP headers, system metadata, or other relevant
-	 * information. Meanings vary based on {@link URI#getScheme()}.
-	 */
-	public final @NotNull Map<String, List<String>> getMetadata() { return this.metadata; }
-
-	/**
-	 * Returns the first metadata value associated with the specified metadata name.
-	 * @param metadataName The name of the metadata entry.
-	 * @param defaultValue The default value to return if the metadata entry is not found.
-	 * @throws NullPointerException If a {@link NotNull} argument is {@code null}.
-	 */
-	@Contract("_, null -> _; _, !null -> !null")
-	public final @Nullable String get(
-			@NotNull String metadataName, @Nullable String defaultValue)
+			byte @NotNull [] data)
 			throws NullPointerException
 	{
-		Objects.requireNonNull(metadataName);
-		final var list = this.metadata.get(metadataName);
-		if(list != null && !list.isEmpty())
-			return list.getFirst();
-		return defaultValue;
+		super(resourceUri, metadata, data);
 	}
-	// --------------------------------------------------
-	/**
-	 * Returns the {@code byte[]} containing the raw byte data of the {@link ResourceRequest}.
-	 */
-	public final byte @NotNull [] getData() { return this.data; }
 	// ================================================== ==================================================
 	//                                            Builder IMPLEMENTATION
 	// ================================================== ==================================================
@@ -79,6 +39,8 @@ public final class ResourceRequest
 		private final URI                       uri;
 		private final Map<String, List<String>> metadata = new HashMap<>();
 		private       byte[]                    data     = new byte[0];
+		// --------------------------------------------------
+		private @Nullable ResourceRequest build; //for if already built
 		// ==================================================
 		public Builder(@NotNull URI uri) throws NullPointerException {
 			this.uri = Objects.requireNonNull(uri);
@@ -89,10 +51,18 @@ public final class ResourceRequest
 		 * @param metadata A {@link Map} containing metadata key-value pairs.
 		 * @return The current {@link Builder} instance for method chaining.
 		 * @throws NullPointerException If the argument is {@code null}.
+		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceRequest}.
 		 */
-		public final @NotNull Builder setMetadata(@NotNull Map<String, List<String>> metadata) throws NullPointerException {
+		public final @NotNull Builder setMetadata(@NotNull Map<String, List<String>> metadata)
+				throws NullPointerException, IllegalStateException
+		{
+			//not null and not build assertions
+			Objects.requireNonNull(metadata);
+			assertNotBuilt();
+
+			//clear and put all new metadata properties
 			this.metadata.clear();
-			this.metadata.putAll(Objects.requireNonNull(metadata));
+			this.metadata.putAll(metadata);
 			return this;
 		}
 
@@ -102,11 +72,18 @@ public final class ResourceRequest
 		 * @param metadataValue The value of the metadata entry.
 		 * @return The current {@link Builder} instance for method chaining.
 		 * @throws NullPointerException If any argument is {@code null}.
+		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceRequest}.
 		 * @see #setMetadata(Map)
 		 */
-		public final @NotNull Builder add(@NotNull String metadataName, @NotNull String metadataValue) throws NullPointerException {
+		public final @NotNull Builder add(@NotNull String metadataName, @NotNull String metadataValue)
+				throws NullPointerException, IllegalStateException
+		{
+			//not null and not build assertions
 			Objects.requireNonNull(metadataName);
 			Objects.requireNonNull(metadataValue);
+			assertNotBuilt();
+
+			//add the metadata entry value
 			this.metadata.computeIfAbsent(metadataName, __ -> new java.util.ArrayList<>()).add(metadataValue);
 			return this;
 		}
@@ -118,11 +95,18 @@ public final class ResourceRequest
 		 * @param metadataValue The value of the metadata entry.
 		 * @return The current {@link Builder} instance for method chaining.
 		 * @throws NullPointerException If any argument is {@code null}.
+		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceRequest}.
 		 * @see #setMetadata(Map)
 		 */
-		public final @NotNull Builder set(@NotNull String metadataName, @NotNull String metadataValue) throws NullPointerException {
+		public final @NotNull Builder set(@NotNull String metadataName, @NotNull String metadataValue)
+				throws NullPointerException, IllegalStateException
+		{
+			//not null and not build assertions
 			Objects.requireNonNull(metadataName);
 			Objects.requireNonNull(metadataValue);
+			assertNotBuilt();
+
+			//set the metadata entry value
 			final var list = new java.util.ArrayList<String>();
 			list.add(metadataValue);
 			this.metadata.put(metadataName, list);
@@ -134,21 +118,35 @@ public final class ResourceRequest
 		 * @param data A byte array containing the resource request data.
 		 * @return The current {@link Builder} instance for method chaining.
 		 * @throws NullPointerException If the argument is {@code null}.
+		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceRequest}.
 		 * @apiNote The underlying {@code byte[]}'s contents are <b>not to be modified!</b>
 		 *          The {@code byte[]} must remain unchanged for the rest of its lifespan.
 		 */
-		public final @NotNull Builder setData(byte @NotNull [] data) throws NullPointerException {
-			this.data = Objects.requireNonNull(data);
+		public final @NotNull Builder setData(byte @NotNull [] data)
+				throws NullPointerException, IllegalStateException
+		{
+			//not null and not build assertions
+			Objects.requireNonNull(data);
+			assertNotBuilt();
+			//set the data byte array
+			this.data = data;
 			return this;
 		}
 		// ==================================================
+		private final @ApiStatus.Internal void assertNotBuilt() {
+			if(this.build != null)
+				throw new IllegalStateException("Already built.");
+		}
+		// --------------------------------------------------
 		/**
 		 * Builds and returns a new {@link ResourceRequest} instance based on the
 		 * current state of the builder.
 		 * @return A new {@link ResourceRequest} instance.
 		 */
 		public final @NotNull ResourceRequest build() {
-			return new ResourceRequest(this.uri, this.metadata, this.data);
+			if(this.build == null)
+				this.build = new ResourceRequest(this.uri, this.metadata, this.data);
+			return this.build;
 		}
 		// ==================================================
 	}
