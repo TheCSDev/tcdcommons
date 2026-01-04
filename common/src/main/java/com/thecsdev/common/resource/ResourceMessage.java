@@ -86,10 +86,16 @@ public abstract sealed class ResourceMessage permits ResourceRequest, ResourceRe
 			@NotNull String metadataName, @Nullable String defaultValue)
 			throws NullPointerException
 	{
+		//assert not null argument, and then normalize metadata name
 		Objects.requireNonNull(metadataName);
+		metadataName = metadataName.toLowerCase(Locale.ENGLISH);
+
+		//obtain and return first metadata value
 		final var list = getMetadata().get(metadataName);
 		if(list != null && !list.isEmpty())
 			return list.getFirst();
+
+		//return default value if nothing found
 		return defaultValue;
 	}
 	// --------------------------------------------------

@@ -5,10 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents a request to fetch a resource from a specified {@link URI}.
@@ -47,26 +44,6 @@ public final class ResourceRequest extends ResourceMessage
 		}
 		// ==================================================
 		/**
-		 * Sets the metadata for this {@link ResourceRequest}.
-		 * @param metadata A {@link Map} containing metadata key-value pairs.
-		 * @return The current {@link Builder} instance for method chaining.
-		 * @throws NullPointerException If the argument is {@code null}.
-		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceRequest}.
-		 */
-		public final @NotNull Builder setMetadata(@NotNull Map<String, List<String>> metadata)
-				throws NullPointerException, IllegalStateException
-		{
-			//not null and not build assertions
-			Objects.requireNonNull(metadata);
-			assertNotBuilt();
-
-			//clear and put all new metadata properties
-			this.metadata.clear();
-			this.metadata.putAll(metadata);
-			return this;
-		}
-
-		/**
 		 * Adds a metadata entry to this {@link ResourceRequest}.
 		 * @param metadataName  The name of the metadata entry.
 		 * @param metadataValue The value of the metadata entry.
@@ -84,6 +61,7 @@ public final class ResourceRequest extends ResourceMessage
 			assertNotBuilt();
 
 			//add the metadata entry value
+			metadataName = metadataName.toLowerCase(Locale.ENGLISH);
 			this.metadata.computeIfAbsent(metadataName, __ -> new java.util.ArrayList<>()).add(metadataValue);
 			return this;
 		}
@@ -107,6 +85,7 @@ public final class ResourceRequest extends ResourceMessage
 			assertNotBuilt();
 
 			//set the metadata entry value
+			metadataName = metadataName.toLowerCase(Locale.ENGLISH);
 			final var list = new java.util.ArrayList<String>();
 			list.add(metadataValue);
 			this.metadata.put(metadataName, list);

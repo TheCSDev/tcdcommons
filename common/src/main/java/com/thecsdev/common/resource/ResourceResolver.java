@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A utility class for resolving and fetching resources from various {@link URI}s.
@@ -29,7 +30,17 @@ public final class ResourceResolver
 	 * A mapping of protocol schemes to their corresponding {@link ProtocolHandler}s.
 	 * @see URI#getScheme()
 	 */
+	@ApiStatus.Internal
 	private static final HashMap<String, ProtocolHandler> PROTOCOL_HANDLERS = new HashMap<>();
+	// --------------------------------------------------
+	/**
+	 * A mapping of currently outgoing {@link ResourceRequest}s to their corresponding
+	 * {@link CompletableFuture}s that will complete with {@link ResourceResponse}s.
+	 * <p>
+	 * This is used to track {@link ResourceRequest}s that are in progress to avoid duplicate fetches.
+	 */
+	@ApiStatus.Internal
+	private static final ConcurrentHashMap<ResourceRequest, CompletableFuture<ResourceResponse>> OUTGOING_REQUESTS = new ConcurrentHashMap<>();
 	// ==================================================
 	private ResourceResolver() {}
 	static { bootstrap(); }
@@ -74,36 +85,45 @@ public final class ResourceResolver
 		//not null requirements
 		Objects.requireNonNull(request);
 
-		//obtain scheme name, and handle 'null' schemes
-		final @Nullable var scheme = request.getUri().getScheme();
-		if(scheme == null)
-			return CompletableFuture.failedFuture(
-					new UnsupportedOperationException("Missing scheme for URI: " + request));
+		//clean-up for if any dangling requests remain - shouldn't happen
+		OUTGOING_REQUESTS.entrySet().removeIf(entry -> entry.getValue().isDone());
 
-		//obtain protocol handler for scheme
-		final @Nullable var protocolHandler = PROTOCOL_HANDLERS.get(scheme.toLowerCase(Locale.ENGLISH));
-		if(protocolHandler == null)
-			return CompletableFuture.failedFuture(
-					new UnsupportedOperationException("No protocol handler is registered for scheme: " + scheme));
+		//if the request isn't already being performed, execute it
+		return OUTGOING_REQUESTS.computeIfAbsent(request, req ->
+		{
+			//obtain scheme name, and handle 'null' schemes
+			final @Nullable var scheme = request.getUri().getScheme();
+			if(scheme == null)
+				return CompletableFuture.failedFuture(
+						new UnsupportedOperationException("Missing scheme for URI: " + request));
 
-		//delegate handling to protocol handler
-		return protocolHandler.handle(request)
-				.thenApply(rss ->
-				{
-					//ensure returned response has matching URI
-					if(rss.getUri() != request.getUri()) {
-						final var message = String.format(
-								"%s for scheme '%s' returned %s with mismatched %s! Expected: \"%s\", Got: \"%s\"",
-								ProtocolHandler.class.getSimpleName(),
-								scheme,
-								ResourceResponse.class.getSimpleName(),
-								URI.class.getSimpleName(),
-								request, rss.getUri());
-						throw new IllegalStateException(message);
-					}
-					//return the response
-					return rss;
-				});
+			//obtain protocol handler for scheme
+			final @Nullable var protocolHandler = PROTOCOL_HANDLERS.get(scheme.toLowerCase(Locale.ENGLISH));
+			if(protocolHandler == null)
+				return CompletableFuture.failedFuture(
+						new UnsupportedOperationException("No protocol handler is registered for scheme: " + scheme));
+
+			//delegate handling to protocol handler
+			return protocolHandler.handle(request)
+					.whenComplete((res, err) -> OUTGOING_REQUESTS.remove(req))
+					.thenApply(rss ->
+					{
+						//ensure returned response has matching URI
+						if(rss.getUri() != request.getUri()) {
+							final var message = String.format(
+									"%s for scheme '%s' returned %s with mismatched %s! Expected: \"%s\", Got: \"%s\"",
+									ProtocolHandler.class.getSimpleName(),
+									scheme,
+									ResourceResponse.class.getSimpleName(),
+									URI.class.getSimpleName(),
+									request, rss.getUri());
+							throw new IllegalStateException(message);
+						}
+
+						//return the response
+						return rss;
+					});
+		});
 	}
 	// ==================================================
 	/**

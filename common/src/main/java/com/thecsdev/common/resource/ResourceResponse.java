@@ -4,10 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents the response received after fetching a resource from a specified {@link URI}.
@@ -80,27 +77,7 @@ public final class ResourceResponse extends ResourceMessage
 			assertNotBuilt();
 			this.status = status; return this;
 		}
-
-		/**
-		 * Sets the metadata for the resource response.
-		 * @param metadata A map containing metadata key-value pairs.
-		 * @return The current {@link Builder} instance for method chaining.
-		 * @throws NullPointerException If the argument is {@code null}.
-		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceResponse}.
-		 */
-		public Builder setMetadata(@NotNull Map<String, List<String>> metadata)
-				throws NullPointerException, IllegalStateException
-		{
-			//not null and not build assertions
-			Objects.requireNonNull(metadata);
-			assertNotBuilt();
-
-			//clear and put all new metadata properties
-			this.metadata.clear();
-			this.metadata.putAll(metadata);
-			return this;
-		}
-
+		// --------------------------------------------------
 		/**
 		 * Adds a metadata entry to the resource response.
 		 * @param metadataName  The name of the metadata entry.
@@ -119,6 +96,7 @@ public final class ResourceResponse extends ResourceMessage
 			assertNotBuilt();
 
 			//add the metadata entry value
+			metadataName = metadataName.toLowerCase(Locale.ENGLISH);
 			this.metadata.computeIfAbsent(metadataName, __ -> new java.util.ArrayList<>()).add(metadataValue);
 			return this;
 		}
@@ -142,6 +120,7 @@ public final class ResourceResponse extends ResourceMessage
 			assertNotBuilt();
 
 			//set the metadata entry value
+			metadataName = metadataName.toLowerCase(Locale.ENGLISH);
 			final var list = new java.util.ArrayList<String>();
 			list.add(metadataValue);
 			this.metadata.put(metadataName, list);
