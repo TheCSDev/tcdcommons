@@ -2,6 +2,7 @@ package com.thecsdev.common.resource.protocol;
 
 import com.thecsdev.common.resource.ResourceRequest;
 import com.thecsdev.common.resource.ResourceResponse;
+import com.thecsdev.common.util.TUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,15 +10,25 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
+import static java.time.ZonedDateTime.now;
+
+//TODO - Saving/loading logic is necessary. Will implement later
+//TODO - Also implement in-memory cache size limits
+//TODO - Cached responses are meant to be independent of ResourceRequest objects
+//TODO - Regular interval for clean-up may be done a better way? We'll see
 
 /**
  * Manages caching of {@link ResourceResponse}s for HTTP {@link ResourceRequest}s.
- */
+*/
 final @ApiStatus.Internal class HttpResourceCache
 {
 	// ================================================== ==================================================
@@ -32,6 +43,10 @@ final @ApiStatus.Internal class HttpResourceCache
 	private final Map<ResourceRequest, Entry> loadedCache = new ConcurrentHashMap<>();
 	// ==================================================
 	private HttpResourceCache() {}
+	static {
+		//schedule periodic memory cache cleanup task
+		TUtils.getScheduledExecutor().scheduleAtFixedRate(INSTANCE::cleanUp, 3, 10, TimeUnit.MINUTES);
+	}
 	// ==================================================
 	/**
 	 * Asynchronously retrieves a cached {@link ResourceResponse} for the given
@@ -40,6 +55,7 @@ final @ApiStatus.Internal class HttpResourceCache
 	 * @param request The {@link ResourceRequest} for which to retrieve or load the response.
 	 * @return A {@link CompletableFuture} that will complete with the cached or loaded
 	 *         {@link ResourceResponse}, or {@code null} if not found.
+	 * @throws NullPointerException If the argument is {@code null}.
 	 */
 	public final CompletableFuture<@Nullable ResourceResponse> getAsync(
 			@NotNull ResourceRequest request) throws NullPointerException
@@ -47,29 +63,39 @@ final @ApiStatus.Internal class HttpResourceCache
 		//argument requirements
 		Objects.requireNonNull(request);
 
+		//clean up expired entries
+		cleanUp();
+
 		//obtain cached value and return it if present
 		final @Nullable var entry = this.loadedCache.get(request);
 		return CompletableFuture.completedFuture(entry != null ? entry.response : null);
-
-		//TODO - Saving/loading logic is necessary. Will implement later.
-		//       Also need to implement in-ram management and cleanup.
 	}
 	// --------------------------------------------------
 	/**
 	 * Puts the given {@link ResourceResponse} into the cache associated with the
 	 * @param request The {@link ResourceRequest} key.
 	 * @param response The {@link ResourceResponse} to cache.
+	 * @throws NullPointerException If an argument is {@code null}.
 	 */
 	public final void put(@NotNull ResourceRequest request, @NotNull ResourceResponse response)
 			throws NullPointerException
 	{
-		//FIXME - INVALIDATION MECHANISM IS MISSING - IMPLEMENT
-		/*Objects.requireNonNull(request);
+		//not null argument requirements
+		Objects.requireNonNull(request);
 		Objects.requireNonNull(response);
 
+		//create entry instance and store it if it can be cached
 		final var entry = new Entry(response);
 		if(entry.canBeCached())
-			this.loadedCache.put(request, entry);*/
+			this.loadedCache.put(request, entry);
+	}
+	// ==================================================
+	/**
+	 * Cleans up the in-memory cache by removing entries that are no longer valid
+	 * for caching based on their caching metadata.
+	 */
+	public final void cleanUp() {
+		this.loadedCache.entrySet().removeIf(entry -> !entry.getValue().canBeCached());
 	}
 	// ================================================== ==================================================
 	//                                              Entry IMPLEMENTATION
@@ -81,10 +107,13 @@ final @ApiStatus.Internal class HttpResourceCache
 	private static final class Entry
 	{
 		// ==================================================
+		private static final ZoneId GMT = Objects.requireNonNull(ZoneId.of("GMT"), "Unknown ZoneId: GMT");
+		// ==================================================
 		private final ResourceResponse response;
 		// --------------------------------------------------
 		private final ZonedDateTime date;
-		private final boolean noCache, noStore, mustRevalidate, mustUnderstand;
+		private final boolean       noCache, noStore, mustRevalidate, mustUnderstand;
+		private final ZonedDateTime expires;
 		// ==================================================
 		private Entry(@NotNull ResourceResponse response) throws NullPointerException
 		{
@@ -92,10 +121,12 @@ final @ApiStatus.Internal class HttpResourceCache
 			this.response = Objects.requireNonNull(response);
 
 			//parse the response date and expiration time
-			ZonedDateTime date;
-			try { date = ZonedDateTime.parse(Objects.requireNonNull(response.getFirst("date"))); }
-			catch(Exception e) { date = Instant.EPOCH.atZone(ZoneId.of("GMT")); }
-			this.date = date;
+			ZonedDateTime date, expires;
+			try {
+				date = ZonedDateTime.parse(
+						Objects.requireNonNull(response.getFirst("date")),
+						DateTimeFormatter.RFC_1123_DATE_TIME);
+			} catch(Exception e) { date = Instant.EPOCH.atZone(GMT); }
 
 			//parse cache-control header
 			final var cacheControl = response.getFirst("cache-control", "").toLowerCase(Locale.ENGLISH);
@@ -103,6 +134,28 @@ final @ApiStatus.Internal class HttpResourceCache
 			this.noStore           = cacheControl.contains("no-store");
 			this.mustRevalidate    = cacheControl.contains("must-revalidate");
 			this.mustUnderstand    = cacheControl.contains("must-understand");
+
+			//parse expiration date
+			if(cacheControl.contains("max-age")) {
+				final var maxAgeMatch = Pattern.compile("max-age=(\\d+)").matcher(cacheControl);
+				if(maxAgeMatch.find()) {
+					try { expires = date.plusSeconds(Long.parseLong(maxAgeMatch.group(1))); }
+					catch(Exception e) { expires = date; }
+				}
+				else expires = date;
+			}
+			else if(response.has("expires")) {
+				try {
+					expires = ZonedDateTime.parse(
+							Objects.requireNonNull(response.getFirst("expires")),
+							DateTimeFormatter.RFC_1123_DATE_TIME);
+				} catch(Exception e) { expires = date; }
+			}
+			else expires = date;
+
+			//assign date and expires
+			this.date    = date;
+			this.expires = expires;
 		}
 		// ==================================================
 		public final @Override int hashCode() { return this.response.hashCode(); }
@@ -126,7 +179,8 @@ final @ApiStatus.Internal class HttpResourceCache
 		 * Whether this cache entry can be cached, based on its cache-control directives.
 		 */
 		public final boolean canBeCached() {
-			return !(this.noCache || this.noStore || this.mustRevalidate || this.mustUnderstand);
+			return !(this.noCache || this.noStore || this.mustRevalidate
+					|| this.mustUnderstand) && now(GMT).isBefore(this.expires);
 		}
 		// ==================================================
 	}

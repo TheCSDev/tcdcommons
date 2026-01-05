@@ -67,6 +67,17 @@ public abstract sealed class ResourceMessage permits ResourceRequest, ResourceRe
 	public final @NotNull Map<String, List<String>> getMetadata() { return this.metadata; }
 
 	/**
+	 * Checks if the specified metadata entry exists.
+	 * @param metadataName The name of the metadata entry.
+	 * @throws NullPointerException If the argument is {@code null}.
+	 */
+	public final boolean has(@NotNull String metadataName) throws NullPointerException {
+		Objects.requireNonNull(metadataName);
+		metadataName = metadataName.toLowerCase(Locale.ENGLISH);
+		return this.metadata.containsKey(metadataName);
+	}
+
+	/**
 	 * Returns the first metadata value associated with the specified metadata name.
 	 * @param metadataName The name of the metadata entry.
 	 * @throws NullPointerException If a {@link NotNull} argument is {@code null}.

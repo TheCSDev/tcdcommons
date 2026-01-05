@@ -1,6 +1,7 @@
 package com.thecsdev.common.util;
 
 import com.thecsdev.common.util.interfaces.CheckedRunnable;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.StackWalker.Option;
 import java.util.concurrent.ExecutorService;
@@ -14,7 +15,11 @@ public final class TUtils
 {
 	// ==================================================
 	private static final StackWalker              SW_RCR  = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
-	private static final ScheduledExecutorService STSE    = Executors.newSingleThreadScheduledExecutor();
+	private static final ScheduledExecutorService STSE    = Executors.newSingleThreadScheduledExecutor(task -> {
+		final var thread = new Thread(task);
+		thread.setDaemon(true);
+		return thread;
+	});
 	// ==================================================
 	private TUtils() {}
 	// ==================================================
@@ -30,6 +35,7 @@ public final class TUtils
 	 * Returns a single-threaded scheduled {@link ExecutorService}
 	 * commonly used by these APIs.
 	 */
+	@ApiStatus.Experimental
 	public static final ScheduledExecutorService getScheduledExecutor() { return STSE; }
 	// ==================================================
 	/**

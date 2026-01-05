@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see ResourceResponse
  * @see ProtocolHandler
  */
+@ApiStatus.Experimental
 public final class ResourceResolver
 {
 	// ==================================================
@@ -105,24 +106,26 @@ public final class ResourceResolver
 
 			//delegate handling to protocol handler
 			return protocolHandler.handle(request)
-					.whenComplete((res, err) -> OUTGOING_REQUESTS.remove(req))
-					.thenApply(rss ->
+					.thenApply(res ->
 					{
 						//ensure returned response has matching URI
-						if(rss.getUri() != request.getUri()) {
+						if(!Objects.equals(res.getUri(), req.getUri())) {
 							final var message = String.format(
 									"%s for scheme '%s' returned %s with mismatched %s! Expected: \"%s\", Got: \"%s\"",
 									ProtocolHandler.class.getSimpleName(),
 									scheme,
 									ResourceResponse.class.getSimpleName(),
 									URI.class.getSimpleName(),
-									request, rss.getUri());
+									request.getUri(), res.getUri());
 							throw new IllegalStateException(message);
 						}
-
 						//return the response
-						return rss;
+						return res;
 					});
+		})
+		.whenComplete((res, throwable) -> {
+			//request done - remove it from outgoing requests
+			OUTGOING_REQUESTS.remove(request);
 		});
 	}
 	// ==================================================
