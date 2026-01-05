@@ -2,7 +2,6 @@ package com.thecsdev.common.resource.protocol;
 
 import com.thecsdev.common.resource.ResourceRequest;
 import com.thecsdev.common.resource.ResourceResponse;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,9 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.ZoneId;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
@@ -30,28 +27,23 @@ import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
  */
 public class HttpProtocolHandler implements ProtocolHandler
 {
-	// ==================================================
+	// ====================================================================================================
 	/**
 	 * The main singleton instance of {@link HttpProtocolHandler}.
 	 */
 	public static final HttpProtocolHandler INSTANCE = new HttpProtocolHandler();
 	// --------------------------------------------------
 	/**
-	 * The main shared {@link HttpClient} instance used for sending HTTP requests.
-	 */
-	@ApiStatus.Internal
-	private static final HttpClient CLIENT = HttpClient.newBuilder()
-			.connectTimeout(Duration.ofSeconds(10))
-			.followRedirects(HttpClient.Redirect.NORMAL)
-			.build();
-
-	private static final Map<ResourceRequest, ResourceResponse> RAM_CACHE = new HashMap<>();
-	// --------------------------------------------------
-	/**
 	 * The HTTP header key used to specify the HTTP method (e.g., GET, POST, PUT, DELETE)
 	 * for the request. If not provided, the default method is "GET".
 	 */
 	public static final String HEADER_HTTP_METHOD = "x-http-method";
+	// ==================================================
+	private final HttpResourceCache cache      = HttpResourceCache.INSTANCE;
+	private final HttpClient        httpClient = HttpClient.newBuilder()
+			.connectTimeout(Duration.ofSeconds(10))
+			.followRedirects(HttpClient.Redirect.NORMAL)
+			.build();
 	// ==================================================
 	private HttpProtocolHandler() {}
 	// ==================================================
@@ -63,13 +55,14 @@ public class HttpProtocolHandler implements ProtocolHandler
 	public final @Override @NotNull CompletableFuture<ResourceResponse> handle(@NotNull ResourceRequest request)
 			throws NullPointerException, IllegalArgumentException
 	{
+		//---------- argument validity checks
 		//require not null for the argument
 		Objects.requireNonNull(request);
 		//ensure this handler can process the request URI
 		if(!matches(request.getUri()))
 			throw new IllegalArgumentException("Cannot handle URI with scheme: " + request.getUri().getScheme());
 
-		//---------- build the client request
+		//---------- build the client request (this also validates argument)
 		//obtain the http method to use
 		final var httpMet = request.getFirst(HEADER_HTTP_METHOD, "GET").toUpperCase(Locale.ENGLISH);
 		if((httpMet.equals("GET") || httpMet.equals("HEAD")) && request.getData().length > 0)
@@ -87,27 +80,41 @@ public class HttpProtocolHandler implements ProtocolHandler
 				httpReq.header(headerEntry.getKey(), headerValue);
 		//      ^ intentionally allow illegal argument exception. end user needs to know when they mess up
 
-		//---------- send the http request and return
-		return CLIENT.sendAsync(httpReq.build(), HttpResponse.BodyHandlers.ofByteArray()).thenApply(httpRes ->
+		//---------- consult the cache
+		return this.cache
+				.getAsync(request)
+				.thenCompose((@Nullable ResourceResponse cachedRssRes) ->
 		{
-			//---------- construct resource response
-			//start building the resource response
-			final var rssRes = new ResourceResponse.Builder(request.getUri())
-					.setStatus(httpRes.statusCode())
-					.setData(httpRes.body());
+			//cache hit - return the cached value
+			if(cachedRssRes != null)
+				return CompletableFuture.completedFuture(cachedRssRes);
 
-			//add header values to the resource respone
-			for(final var headerEntry : httpRes.headers().map().entrySet())
-				for(final var headerValue : headerEntry.getValue())
-					rssRes.add(headerEntry.getKey(), headerValue);
+			//cache miss - send the http request and return its response
+			return this.httpClient
+					.sendAsync(httpReq.build(), HttpResponse.BodyHandlers.ofByteArray())
+					.thenApply(httpRes ->
+			{
+				//---------- construct resource response
+				//start building the resource response
+				final var rssRes = new ResourceResponse.Builder(request.getUri())
+						.setStatus(httpRes.statusCode())
+						.setData(httpRes.body());
 
-			//set the "Date" header in value the resource response
-			//(HTTP spec. always requires it, and it must be GMT - written in 'RFC 1123')
-			if(httpRes.headers().firstValue("date").isEmpty())
-				rssRes.set("date", now(ZoneId.of("GMT")).format(RFC_1123_DATE_TIME));
+				//add header values to the resource respone
+				for(final var headerEntry : httpRes.headers().map().entrySet())
+					for(final var headerValue : headerEntry.getValue())
+						rssRes.add(headerEntry.getKey(), headerValue);
 
-			//---------- build and return once done
-			return rssRes.build();
+				//set the "Date" header value in the resource response
+				//(HTTP spec. always requires it, and it must be GMT - written in 'RFC 1123')
+				if(httpRes.headers().firstValue("date").isEmpty())
+					rssRes.set("date", now(ZoneId.of("GMT")).format(RFC_1123_DATE_TIME));
+
+				//---------- build and return once done
+				final var result = rssRes.build();
+				this.cache.put(request, result);
+				return result;
+			});
 		});
 	}
 	// ==================================================

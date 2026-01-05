@@ -85,7 +85,6 @@ public final class ResourceResponse extends ResourceMessage
 		 * @return The current {@link Builder} instance for method chaining.
 		 * @throws NullPointerException If any argument is {@code null}.
 		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceResponse}.
-		 * @see #setMetadata(Map)
 		 */
 		public final @NotNull Builder add(@NotNull String metadataName, @NotNull String metadataValue)
 				throws NullPointerException, IllegalStateException
@@ -109,7 +108,6 @@ public final class ResourceResponse extends ResourceMessage
 		 * @return The current {@link Builder} instance for method chaining.
 		 * @throws NullPointerException If any argument is {@code null}.
 		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceResponse}.
-		 * @see #setMetadata(Map)
 		 */
 		public final @NotNull Builder set(@NotNull String metadataName, @NotNull String metadataValue)
 				throws NullPointerException, IllegalStateException
