@@ -3,7 +3,9 @@ package com.thecsdev.common.util;
 import com.thecsdev.common.util.interfaces.CheckedRunnable;
 
 import java.lang.StackWalker.Option;
-import java.lang.ref.Cleaner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * TheCSDev's common utilities.
@@ -11,24 +13,24 @@ import java.lang.ref.Cleaner;
 public final class TUtils
 {
 	// ==================================================
-	private static final Cleaner     CLEANER         = Cleaner.create();
-	private static final StackWalker STACKWALKER_RCR = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
+	private static final StackWalker              SW_RCR  = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
+	private static final ScheduledExecutorService STSE    = Executors.newSingleThreadScheduledExecutor();
 	// ==================================================
 	private TUtils() {}
 	// ==================================================
-	/**
-	 * Returns the {@link Cleaner} instance commonly used by TheCSDev's
-	 * projects that use these APIs.
-	 */
-	public static final Cleaner getCleaner() { return CLEANER; }
-
 	/**
 	 * Returns the {@link StackWalker} instance with the
 	 * {@link StackWalker.Option#RETAIN_CLASS_REFERENCE} option.
 	 * @apiNote Very expensive for performance. Avoid using this.
 	 */
 	@Deprecated
-	public static final StackWalker getStackWalkerRCR() { return STACKWALKER_RCR; }
+	public static final StackWalker getStackWalkerRCR() { return SW_RCR; }
+
+	/**
+	 * Returns a single-threaded scheduled {@link ExecutorService}
+	 * commonly used by these APIs.
+	 */
+	public static final ScheduledExecutorService getScheduledExecutor() { return STSE; }
 	// ==================================================
 	/**
 	 * Runs a {@link CheckedRunnable}, throwing a {@link RuntimeException}

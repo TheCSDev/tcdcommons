@@ -7,27 +7,21 @@ import io.netty.util.internal.UnstableApi;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.net.URI;
-import java.util.concurrent.ExecutionException;
 
 @UnstableApi
 @ApiStatus.Internal
 @Deprecated(forRemoval = true)
 public final class Test
 {
-	public static void main(String[] args) throws ExecutionException, InterruptedException
+	public static void main(String[] args) throws InterruptedException
 	{
 		doRequest();
-		doRequest();
-		doRequest();
-		doRequest();
-		doRequest();
-
-		Thread.sleep(10000);
+		Thread.sleep(20000);
 	}
 
-	private static final void doRequest() throws ExecutionException, InterruptedException
+	private static final void doRequest()
 	{
-		ResourceResolver.fetchAsync(new ResourceRequest.Builder(URI.create("http://localhost:8080/"))
+		ResourceResolver.fetchAsync(new ResourceRequest.Builder(URI.create("https://example.com/"))
 				.add(HttpProtocolHandler.HEADER_HTTP_METHOD, "GET")
 				.add("Accept", "text/html")
 				.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:146.0) Gecko/20100101 Firefox/146.0")
@@ -46,6 +40,12 @@ public final class Test
 					System.out.println(new String(res.getData()));
 					System.out.println("==================================================");
 					return res;
+				})
+				.exceptionally(throwable -> {
+					System.out.println("==================================================");
+					throwable.printStackTrace();
+					System.out.println("==================================================");
+					return null;
 				});
 	}
 }
