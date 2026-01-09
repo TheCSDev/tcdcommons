@@ -172,7 +172,7 @@ public final @ApiStatus.Internal class HttpResourceCache
 		}
 	}
 	// ================================================== ==================================================
-	//                                              Entry IMPLEMENTATION
+	//                                              Value IMPLEMENTATION
 	// ================================================== ==================================================
 	/**
 	 * Represents a single cache entry storing a {@link ResourceResponse} along with
