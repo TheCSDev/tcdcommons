@@ -12,11 +12,11 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static java.time.ZonedDateTime.now;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link ProtocolHandler} implementation for handling "http" and "https" protocol
@@ -39,7 +39,7 @@ public class HttpProtocolHandler implements ProtocolHandler
 	 */
 	public static final String HEADER_HTTP_METHOD = "x-http-method";
 	// ==================================================
-	private final HttpResourceCache cache      = HttpResourceCache.INSTANCE;
+	private final HttpResourceCache cache      = HttpResourceCache.DEFAULT;
 	private final HttpClient        httpClient = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
 			.followRedirects(HttpClient.Redirect.NORMAL)
@@ -52,37 +52,37 @@ public class HttpProtocolHandler implements ProtocolHandler
 		return (scheme != null && (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https")));
 	}
 	// --------------------------------------------------
-	public final @Override @NotNull CompletableFuture<ResourceResponse> handle(@NotNull ResourceRequest request)
+	public final @Override @NotNull CompletableFuture<ResourceResponse> handle(@NotNull ResourceRequest rssReq)
 			throws NullPointerException, IllegalArgumentException
 	{
 		//---------- argument validity checks
 		//require not null for the argument
-		Objects.requireNonNull(request);
+		requireNonNull(rssReq);
 		//ensure this handler can process the request URI
-		if(!matches(request.getUri()))
-			throw new IllegalArgumentException("Cannot handle URI with scheme: " + request.getUri().getScheme());
+		if(!matches(rssReq.getUri()))
+			throw new IllegalArgumentException("Cannot handle URI with scheme: " + rssReq.getUri().getScheme());
 
 		//---------- build the client request (this also validates argument)
 		//obtain the http method to use
-		final var httpMet = request.getFirst(HEADER_HTTP_METHOD, "GET").toUpperCase(Locale.ENGLISH);
-		if((httpMet.equals("GET") || httpMet.equals("HEAD")) && request.getData().length > 0)
-			throw new IllegalArgumentException("'HTTP " + httpMet + "' requests cannot have a body/data.");
+		final var httpMethod = rssReq.getFirstOrThrow(HEADER_HTTP_METHOD).toUpperCase(Locale.ENGLISH);
+		if((httpMethod.equals("GET") || httpMethod.equals("HEAD")) && rssReq.getData().length > 0)
+			throw new IllegalArgumentException("'HTTP " + httpMethod + "' requests cannot have a body/data.");
 
 		//start building the http request
-		final var httpReq = HttpRequest.newBuilder(request.getUri())
-			.method(httpMet, httpMet.equals("GET") ?
+		final var httpReq = HttpRequest.newBuilder(rssReq.getUri())
+			.method(httpMethod, httpMethod.equals("GET") ?
 					HttpRequest.BodyPublishers.noBody() :
-					HttpRequest.BodyPublishers.ofByteArray(request.getData()));
+					HttpRequest.BodyPublishers.ofByteArray(rssReq.getData()));
 
 		//add header values to the http request
-		for(final var headerEntry : request.getMetadata().entrySet())
+		for(final var headerEntry : rssReq.getMetadata().entrySet())
 			for(final var headerValue : headerEntry.getValue())
 				httpReq.header(headerEntry.getKey(), headerValue);
 		//      ^ intentionally allow illegal argument exception. end user needs to know when they mess up
 
 		//---------- consult the cache
 		return this.cache
-				.getAsync(request)
+				.fetchAsync(rssReq)
 				.thenCompose((@Nullable ResourceResponse cachedRssRes) ->
 		{
 			//cache hit - return the cached value
@@ -96,7 +96,7 @@ public class HttpProtocolHandler implements ProtocolHandler
 			{
 				//---------- construct resource response
 				//start building the resource response
-				final var rssRes = new ResourceResponse.Builder(request.getUri())
+				final var rssRes = new ResourceResponse.Builder(rssReq.getUri())
 						.setStatus(httpRes.statusCode())
 						.setData(httpRes.body());
 
@@ -110,9 +110,12 @@ public class HttpProtocolHandler implements ProtocolHandler
 				if(httpRes.headers().firstValue("date").isEmpty())
 					rssRes.set("date", now(ZoneId.of("GMT")).format(RFC_1123_DATE_TIME));
 
+				//set the HTTP request method header value
+				rssRes.set(HEADER_HTTP_METHOD, httpMethod);
+
 				//---------- build and return once done
 				final var result = rssRes.build();
-				this.cache.put(request, result);
+				this.cache.storeAsync(rssReq, result);
 				return result;
 			});
 		});

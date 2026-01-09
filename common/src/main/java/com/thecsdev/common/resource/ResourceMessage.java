@@ -87,6 +87,22 @@ public abstract sealed class ResourceMessage permits ResourceRequest, ResourceRe
 	}
 
 	/**
+	 * Returns the first metadata value associated with the specified metadata name,
+	 * or throws {@link NoSuchElementException} if not found.
+	 * @param metadataName The name of the metadata entry.
+	 * @throws NullPointerException If a {@link NotNull} argument is {@code null}.
+	 * @throws NoSuchElementException If no metadata entry is found for the specified name.
+	 */
+	public final @NotNull String getFirstOrThrow(@NotNull String metadataName)
+			throws NullPointerException, NoSuchElementException
+	{
+		final @Nullable var value = getFirst(metadataName);
+		if(value == null)
+			throw new NoSuchElementException("No metadata entry found for name: " + metadataName);
+		return value;
+	}
+
+	/**
 	 * Returns the first metadata value associated with the specified metadata name.
 	 * @param metadataName The name of the metadata entry.
 	 * @param defaultValue The default value to return if the metadata entry is not found.
