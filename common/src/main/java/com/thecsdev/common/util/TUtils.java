@@ -1,7 +1,6 @@
 package com.thecsdev.common.util;
 
 import com.thecsdev.common.util.interfaces.CheckedRunnable;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.StackWalker.Option;
 import java.util.concurrent.ExecutorService;
@@ -14,9 +13,10 @@ import java.util.concurrent.ScheduledExecutorService;
 public final class TUtils
 {
 	// ==================================================
-	private static final StackWalker              SW_RCR  = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
-	private static final ScheduledExecutorService STSE    = Executors.newSingleThreadScheduledExecutor(task -> {
+	private static final StackWalker              SW_RCR = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
+	private static final ScheduledExecutorService STSE   = Executors.newSingleThreadScheduledExecutor(task -> {
 		final var thread = new Thread(task);
+		thread.setName("com.thecsdev.common:scheduled_executor");
 		thread.setDaemon(true);
 		return thread;
 	});
@@ -33,9 +33,10 @@ public final class TUtils
 
 	/**
 	 * Returns a single-threaded scheduled {@link ExecutorService}
-	 * commonly used by these APIs.
+	 * commonly used by these APIs.<br>
+	 * The scheduled executor {@link Thread} is a daemon thread.
+	 * @see Thread#isDaemon()
 	 */
-	@ApiStatus.Experimental
 	public static final ScheduledExecutorService getScheduledExecutor() { return STSE; }
 	// ==================================================
 	/**
