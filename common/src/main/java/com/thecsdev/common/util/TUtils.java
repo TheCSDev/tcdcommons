@@ -20,6 +20,7 @@ public final class TUtils
 		thread.setDaemon(true);
 		return thread;
 	});
+	private static final ExecutorService          VTPTE  = Executors.newVirtualThreadPerTaskExecutor();
 	// ==================================================
 	private TUtils() {}
 	// ==================================================
@@ -32,12 +33,19 @@ public final class TUtils
 	public static final StackWalker getStackWalkerRCR() { return SW_RCR; }
 
 	/**
-	 * Returns a single-threaded scheduled {@link ExecutorService}
-	 * commonly used by these APIs.<br>
-	 * The scheduled executor {@link Thread} is a daemon thread.
+	 * Primary {@link Executors#newSingleThreadScheduledExecutor()} instance commonly used
+	 * by this mod.
+	 * <p>
+	 * The scheduled executor's {@link Thread} is a daemon thread.
 	 * @see Thread#isDaemon()
 	 */
-	public static final ScheduledExecutorService getScheduledExecutor() { return STSE; }
+	public static final ScheduledExecutorService getSingleThreadScheduledExecutor() { return STSE; }
+
+	/**
+	 * Primary {@link Executors#newVirtualThreadPerTaskExecutor()} instance commonly used
+	 * by this mod.
+	 */
+	public static final ExecutorService getVirtualThreadPerTaskExecutor() { return VTPTE; }
 	// ==================================================
 	/**
 	 * Runs a {@link CheckedRunnable}, throwing a {@link RuntimeException}

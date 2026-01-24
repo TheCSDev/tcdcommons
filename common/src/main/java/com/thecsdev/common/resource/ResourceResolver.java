@@ -1,5 +1,6 @@
 package com.thecsdev.common.resource;
 
+import com.thecsdev.common.resource.protocol.ClasspathProtocolHandler;
 import com.thecsdev.common.resource.protocol.FileProtocolHandler;
 import com.thecsdev.common.resource.protocol.HttpProtocolHandler;
 import com.thecsdev.common.resource.protocol.ProtocolHandler;
@@ -23,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see ResourceResponse
  * @see ProtocolHandler
  */
-@ApiStatus.Experimental
 public final class ResourceResolver
 {
 	// ==================================================
@@ -134,10 +134,12 @@ public final class ResourceResolver
 	 * registers default protocol handlers.
 	 * @apiNote Called automatically. Do not call this yourself.
 	 */
-	public static final @ApiStatus.Internal void bootstrap() {
-		registerProtocolHandler("file",  FileProtocolHandler.INSTANCE);
-		registerProtocolHandler("http",  HttpProtocolHandler.INSTANCE);
-		registerProtocolHandler("https", HttpProtocolHandler.INSTANCE);
+	public static final @ApiStatus.Internal void bootstrap()
+	{
+		registerProtocolHandler("file",      FileProtocolHandler.INSTANCE);
+		registerProtocolHandler("http",      HttpProtocolHandler.INSTANCE);
+		registerProtocolHandler("https",     HttpProtocolHandler.INSTANCE);
+		registerProtocolHandler("classpath", ClasspathProtocolHandler.INSTANCE);
 	}
 	// ==================================================
 }

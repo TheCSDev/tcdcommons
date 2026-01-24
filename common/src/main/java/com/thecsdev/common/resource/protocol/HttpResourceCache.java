@@ -61,7 +61,7 @@ public final @ApiStatus.Internal class HttpResourceCache
 		DEFAULT   = new HttpResourceCache(); //must be declared after the Set<>
 
 		//schedule periodic memory cache cleanup task for all instances
-		TUtils.getScheduledExecutor().scheduleAtFixedRate(() ->
+		TUtils.getSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
 		{
 			//firstly, remove all weak references whose values are gone
 			INSTANCES.removeIf(entry -> entry.refersTo(null));

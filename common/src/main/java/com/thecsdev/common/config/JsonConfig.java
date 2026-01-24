@@ -79,13 +79,13 @@ public abstract class JsonConfig
 	 * Called after {@link #saveToJson(JsonObject)} finishes its execution.
 	 * @param to The {@link JsonObject} the data was saved to.
 	 */
-	protected @Virtual void onSave(JsonObject to) {}
+	protected @Virtual void onSave(@NotNull JsonObject to) {}
 
 	/**
 	 * Called after {@link #loadFromJson(JsonObject)} finishes its execution.
 	 * @param from The {@link JsonObject} the data was loaded from.
 	 */
-	protected @Virtual void onLoad(JsonObject from) {}
+	protected @Virtual void onLoad(@NotNull JsonObject from) {}
 	// ==================================================
 	/**
 	 * Saves this {@link JsonConfig} instance to a new {@link JsonObject}
@@ -99,12 +99,15 @@ public abstract class JsonConfig
 
 	/**
 	 * Saves this {@link JsonConfig} to an existing {@link JsonObject} instance.
-	 * @param json The {@link JsonObject} to save to.
+	 * @param to The {@link JsonObject} to save to.
 	 * @throws NullPointerException If the argument is {@code null}.
 	 */
-	public final void saveToJson(JsonObject json) throws NullPointerException
+	public final void saveToJson(@NotNull JsonObject to) throws NullPointerException
 	{
-		Objects.requireNonNull(json);
+		//not null requirement
+		Objects.requireNonNull(to);
+
+		//iterate over all serializable properties for this class
 		getSerializableProperties(getClass()).forEach(property -> TUtils.uncheckedCall(() ->
 		{
 			property.setAccessible(true);
@@ -114,21 +117,24 @@ public abstract class JsonConfig
 
 			//save the value to the json object
 			final String pName = getPropertyNames(property)[0];
-			json.add(pName, (pValue instanceof JsonConfig jc) ? jc.saveToJson() : GSON.toJsonTree(pValue));
+			to.add(pName, (pValue instanceof JsonConfig jc) ? jc.saveToJson() : GSON.toJsonTree(pValue));
 		}));
+
+		//invoke on-save callback
+		onSave(to);
 	}
 
 	/**
 	 * Loads this {@link JsonConfig} from a {@link JsonObject}, overriding
 	 * any properties of this {@link JsonConfig} that were stored in the {@link JsonObject}.
 	 * Mismatched types and {@code null} values do not override existing values.
-	 * @param json The {@link JsonObject} to load from.
+	 * @param from The {@link JsonObject} to load from.
 	 * @throws NullPointerException If the argument is {@code null}.
 	 */
-	public final void loadFromJson(JsonObject json)
+	public final void loadFromJson(@NotNull JsonObject from) throws NullPointerException
 	{
 		//validate input json is not null
-		Objects.requireNonNull(json);
+		Objects.requireNonNull(from);
 
 		//iterate over all deserializable properties for this class
 		getDeserializableProperties(getClass()).forEach(property -> TUtils.uncheckedCall(() ->
@@ -141,8 +147,8 @@ public abstract class JsonConfig
 			@Nullable JsonElement pjElement = null;
 			for(final var pName : pNames)
 			{
-				if(!json.has(pName)) continue;
-				pjElement = json.get(pName);
+				if(!from.has(pName)) continue;
+				pjElement = from.get(pName);
 				break; //found json element for property
 			}
 
@@ -183,6 +189,9 @@ public abstract class JsonConfig
 			catch(JsonSyntaxException ignored) { return; /*skip mismatched type */ }
 			property.set(this, pValue); //must NOT be set to null
 		}));
+
+		//invoke on-load callback
+		onLoad(from);
 	}
 	// --------------------------------------------------
 	/**
@@ -238,8 +247,9 @@ public abstract class JsonConfig
 	 * @return a {@link Stream} of eligible {@link Field}s.
 	 * @throws NullPointerException If the argument is {@code null}.
 	 */
-	public static final Stream<Field> getProperties(Class<? extends JsonConfig> clazz)
-			throws NullPointerException {
+	public static final Stream<Field> getProperties(@NotNull Class<? extends JsonConfig> clazz)
+			throws NullPointerException
+	{
 		return Arrays.stream(ReflectionUtils.getAllDeclaredFields(clazz))
 			.filter(f -> !Modifier.isStatic(f.getModifiers()))
 			.filter(f -> !Modifier.isTransient(f.getModifiers()))
@@ -255,8 +265,9 @@ public abstract class JsonConfig
 	 * @param clazz the {@link JsonConfig} class to inspect.
 	 * @throws NullPointerException If the argument is {@code null}.
 	 */
-	public static final Stream<Field> getSerializableProperties(Class<? extends  JsonConfig> clazz)
-			throws NullPointerException {
+	public static final Stream<Field> getSerializableProperties(
+			@NotNull Class<? extends  JsonConfig> clazz) throws NullPointerException
+	{
 		return getProperties(clazz).filter(f -> f.getAnnotation(Expose.class).serialize());
 	}
 
@@ -265,8 +276,9 @@ public abstract class JsonConfig
 	 * @param clazz The {@link JsonConfig} class to inspect.
 	 * @throws NullPointerException If the argument is {@code null}.
 	 */
-	public static final Stream<Field> getDeserializableProperties(Class<? extends  JsonConfig> clazz)
-			throws NullPointerException {
+	public static final Stream<Field> getDeserializableProperties(
+			@NotNull Class<? extends  JsonConfig> clazz) throws NullPointerException
+	{
 		return getProperties(clazz).filter(f -> f.getAnnotation(Expose.class).deserialize());
 	}
 	// --------------------------------------------------
@@ -283,7 +295,8 @@ public abstract class JsonConfig
 	 * @return An array of names to use for serialization/deserialization (never null, non-empty).
 	 * @throws NullPointerException If the argument is {@code null}.
 	 */
-	public static String[] getPropertyNames(Field property) throws NullPointerException
+	public static String[] getPropertyNames(@NotNull Field property)
+			throws NullPointerException
 	{
 		Objects.requireNonNull(property);
 		return PROPERTY_NAME_CACHE.computeIfAbsent(property, f ->

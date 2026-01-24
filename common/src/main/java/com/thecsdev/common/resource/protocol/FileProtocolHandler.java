@@ -2,6 +2,8 @@ package com.thecsdev.common.resource.protocol;
 
 import com.thecsdev.common.resource.ResourceRequest;
 import com.thecsdev.common.resource.ResourceResponse;
+import com.thecsdev.common.util.TUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,6 +16,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+
+import static com.thecsdev.common.resource.protocol.HttpProtocolHandler.*;
 
 /**
  * A {@link ProtocolHandler} implementation for handling "file" protocol {@link URI}s.
@@ -29,26 +33,6 @@ public final class FileProtocolHandler implements ProtocolHandler
 	 * The main singleton instance of {@link FileProtocolHandler}.
 	 */
 	public static final FileProtocolHandler INSTANCE = new FileProtocolHandler();
-	// --------------------------------------------------
-	/**
-	 * Resource found and read successfully from the filesystem.
-	 */
-	public static final int STATUS_OK = 200;
-
-	/**
-	 * Access denied; the system refused to open the file due to insufficient permissions.
-	 */
-	public static final int STATUS_FORBIDDEN = 403;
-
-	/**
-	 * The specified path does not exist or the file is missing.
-	 */
-	public static final int STATUS_NOT_FOUND = 404;
-
-	/**
-	 * A general I/O failure or error occurred while accessing the file.
-	 */
-	public static final int STATUS_ERROR = 500;
 	// ==================================================
 	private FileProtocolHandler() {}
 	// ==================================================
@@ -73,18 +57,18 @@ public final class FileProtocolHandler implements ProtocolHandler
 			}
 			catch(FileNotFoundException fnf) {
 				return new ResourceResponse.Builder(request.getUri(), STATUS_NOT_FOUND)
-						.setData(getStackTrace(fnf))
+						.setData(stackTraceToBytes(fnf))
 						.build();
 			} catch(SecurityException se) {
 				return new ResourceResponse.Builder(request.getUri(), STATUS_FORBIDDEN)
-						.setData(getStackTrace(se))
+						.setData(stackTraceToBytes(se))
 						.build();
 			} catch(Exception e) {
 				return new ResourceResponse.Builder(request.getUri(), STATUS_ERROR)
-						.setData(getStackTrace(e))
+						.setData(stackTraceToBytes(e))
 						.build();
 			}
-		});
+		}, TUtils.getVirtualThreadPerTaskExecutor());
 	}
 	// ==================================================
 	/**
@@ -113,7 +97,8 @@ public final class FileProtocolHandler implements ProtocolHandler
 	 * @param throwable The {@link Throwable} whose stack trace is to be converted.
 	 * @return A byte array representing the stack trace of the throwable.
 	 */
-	private static final byte[] getStackTrace(@NotNull Throwable throwable) {
+	@ApiStatus.Internal
+	static final byte[] stackTraceToBytes(@NotNull Throwable throwable) {
 		final var sw = new StringWriter();
 		throwable.printStackTrace(new PrintWriter(sw, true));
 		return sw.toString().getBytes();

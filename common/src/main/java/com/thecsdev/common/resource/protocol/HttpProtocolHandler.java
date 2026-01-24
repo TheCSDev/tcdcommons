@@ -38,6 +38,26 @@ public class HttpProtocolHandler implements ProtocolHandler
 	 * for the request. If not provided, the default method is "GET".
 	 */
 	public static final String HEADER_HTTP_METHOD = "x-http-method";
+	// --------------------------------------------------
+	/**
+	 * Resource found and read successfully from the filesystem.
+	 */
+	public static final int STATUS_OK = 200;
+
+	/**
+	 * Access denied; the system refused to open the file due to insufficient permissions.
+	 */
+	public static final int STATUS_FORBIDDEN = 403;
+
+	/**
+	 * The specified path does not exist or the file is missing.
+	 */
+	public static final int STATUS_NOT_FOUND = 404;
+
+	/**
+	 * A general I/O failure or error occurred while accessing the file.
+	 */
+	public static final int STATUS_ERROR = 500;
 	// ==================================================
 	private final HttpResourceCache cache      = HttpResourceCache.DEFAULT;
 	private final HttpClient        httpClient = HttpClient.newBuilder()
