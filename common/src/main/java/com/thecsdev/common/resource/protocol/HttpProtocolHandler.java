@@ -130,6 +130,10 @@ public class HttpProtocolHandler implements ProtocolHandler
 				if(httpRes.headers().firstValue("date").isEmpty())
 					rssRes.set("date", now(ZoneId.of("GMT")).format(RFC_1123_DATE_TIME));
 
+				//a cache-control must be present. set a short one if absent
+				if(httpRes.headers().firstValue("cache-control").isEmpty())
+					rssRes.set("cache-control", "max-age=300");
+
 				//set the HTTP request method header value
 				rssRes.set(HEADER_HTTP_METHOD, httpMethod);
 
