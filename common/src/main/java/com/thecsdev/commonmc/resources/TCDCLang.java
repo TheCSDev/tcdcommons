@@ -22,14 +22,19 @@ public final class TCDCLang
 	// --------------------------------------------------
 	public static final            MutableComponent gui_screen_textDialog_defaultTitle() { return translatable("tcdcommons.gui.screen.text_dialog.default_title"); }
 	public static final @Reflected MutableComponent gui_screen_textDialog_errorTitle() { return translatable("tcdcommons.gui.screen.text_dialog.error_title"); }
-	public static final            MutableComponent gui_dropdown_defaultLabel() { return translatable("tcdcommons.gui.dropdown.default_label"); }
-	public static final            MutableComponent gui_fileChooser_mode_explore() { return translatable("tcdcommons.gui.filechooser.mode.explore"); }
-	public static final            MutableComponent gui_fileChooser_mode_chooseFile() { return translatable("tcdcommons.gui.filechooser.mode.choose_file"); }
-	public static final            MutableComponent gui_fileChooser_mode_createFile() { return translatable("tcdcommons.gui.filechooser.mode.create_file"); }
-	public static final            MutableComponent gui_fileChooser_quickAccess() { return translatable("tcdcommons.gui.filechooser.quick_access"); }
-	public static final            MutableComponent gui_fileChooser_quickAccess_mountPoints() { return translatable("tcdcommons.gui.filechooser.quick_access.mount_points"); }
-	public static final            MutableComponent gui_fileChooser_ctxmenu_openIn() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open_in"); }
-	public static final            MutableComponent gui_fileChooser_ctxmenu_openIn_assocApp() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open_in.assoc_app"); }
-	public static final            MutableComponent gui_fileChooser_action_inputFilename_placeholder() { return translatable("tcdcommons.gui.filechooser.action.input_filename.placeholder"); }
+	// --------------------------------------------------
+	public static final MutableComponent gui_dropdown_defaultLabel() { return translatable("tcdcommons.gui.dropdown.default_label"); }
+	// --------------------------------------------------
+	public static final MutableComponent gui_fileChooser_mode_explore() { return translatable("tcdcommons.gui.filechooser.mode.explore"); }
+	public static final MutableComponent gui_fileChooser_mode_chooseFile() { return translatable("tcdcommons.gui.filechooser.mode.choose_file"); }
+	public static final MutableComponent gui_fileChooser_mode_createFile() { return translatable("tcdcommons.gui.filechooser.mode.create_file"); }
+	public static final MutableComponent gui_fileChooser_quickAccess() { return translatable("tcdcommons.gui.filechooser.quick_access"); }
+	public static final MutableComponent gui_fileChooser_quickAccess_mountPoints() { return translatable("tcdcommons.gui.filechooser.quick_access.mount_points"); }
+	public static final MutableComponent gui_fileChooser_ctxmenu_openIn() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open_in"); }
+	public static final MutableComponent gui_fileChooser_ctxmenu_openIn_assocApp() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open_in.assoc_app"); }
+	public static final MutableComponent gui_fileChooser_action_inputFilename_placeholder() { return translatable("tcdcommons.gui.filechooser.action.input_filename.placeholder"); }
+	// --------------------------------------------------
+	public static final @Reflected MutableComponent misc_loading() { return translatable("tcdcommons.misc.loading"); }
+	public static final @Reflected MutableComponent misc_somethingWentWrong() { return translatable("tcdcommons.misc.something_went_wrong"); }
 	// ==================================================
 }

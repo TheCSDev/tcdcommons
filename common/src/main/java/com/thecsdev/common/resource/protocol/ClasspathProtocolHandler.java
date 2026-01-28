@@ -38,8 +38,7 @@ public final class ClasspathProtocolHandler implements ProtocolHandler
 			String    uriPath = uri.getPath();
 
 			//remove leading slashes to make path valid resource path for ClassLoader
-			while(uriPath.startsWith("/"))
-				uriPath = uriPath.substring(1);
+			if(uriPath.startsWith("/")) uriPath = uriPath.substring(1);
 
 			//attempt to read resource from classpath
 			try(var inputStream = getClass().getClassLoader().getResourceAsStream(uriPath))
