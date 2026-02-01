@@ -26,5 +26,8 @@
 	"tcdcommons.gui.filechooser.quick_access.mount_points": "Mount points",
 	"tcdcommons.gui.filechooser.ctxmenu.open_in": "Open in",
 	"tcdcommons.gui.filechooser.ctxmenu.open_in.assoc_app": "Associated application",
-	"tcdcommons.gui.filechooser.action.input_filename.placeholder": "File name"
+	"tcdcommons.gui.filechooser.action.input_filename.placeholder": "File name",
+
+	"tcdcommons.misc.loading": "Loading...",
+	"tcdcommons.misc.something_went_wrong": "Something went wrong"
 }
