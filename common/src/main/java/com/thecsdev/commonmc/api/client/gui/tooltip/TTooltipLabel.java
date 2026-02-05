@@ -13,9 +13,8 @@ import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.getScreenBound
 /**
  * A {@link TTooltip} with a simple textual label.
  */
-@ApiStatus.Internal
-sealed class TTooltipLabel extends TTooltip
-		permits TTooltipCustomStat, TTooltipEntityStats, TTooltipItemStats
+sealed @ApiStatus.Internal class TTooltipLabel extends TTooltip
+		permits TTooltipCustomStat, TTooltipSubjectStats
 {
 	// ==================================================
 	/**

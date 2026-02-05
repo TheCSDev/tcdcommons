@@ -11,7 +11,7 @@ import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.*;
 /**
  * The base {@link Class} for stats widgets.
  */
-abstract sealed class TStatsWidget extends TButtonWidget permits TEntityStatsWidget, TItemStatsWidget, TTextualStatWidget
+abstract sealed class TStatsWidget extends TButtonWidget permits TBlockStatsWidget, TEntityStatsWidget, TItemStatsWidget, TTextualStatWidget
 {
 	// ==================================================
 	private final IntegerProperty backgroundColor   = new IntegerProperty(COLOR_BACKGROUND);

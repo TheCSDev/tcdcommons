@@ -44,9 +44,10 @@ public final class ItemStats extends SubjectStats<Item>
 	}
 	// ==================================================
 	/**
-	 * Returns the {@link BlockStats} of the {@link #getSubject()}'s corresponding {@link Block}.
+	 * Returns the {@link BlockStats} of the {@link #getSubject()}'s
+	 * corresponding {@link Block}.
 	 */
-	public final @NotNull BlockStats getItemBlockStats() {
+	public final @NotNull BlockStats getBlockStats() {
 		if(this.blockStats == null)
 			this.blockStats = new BlockStats(Block.byItem(getSubject()), getStatsProvider());
 		return this.blockStats;

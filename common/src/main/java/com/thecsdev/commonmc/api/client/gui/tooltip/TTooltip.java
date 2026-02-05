@@ -4,11 +4,8 @@ import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.stats.util.CustomStat;
-import com.thecsdev.commonmc.api.stats.util.EntityStats;
-import com.thecsdev.commonmc.api.stats.util.ItemStats;
+import com.thecsdev.commonmc.api.stats.util.SubjectStats;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -46,21 +43,12 @@ public @Virtual class TTooltip extends TElement
 	}
 
 	/**
-	 * A tooltip that shows the player statistics for a given {@link Item}.
-	 * @param stats The {@link Item} whose statistics are to be shown.
+	 * A tooltip that shows the player statistics for a given {@link SubjectStats}.
+	 * @param stats The {@link SubjectStats} whose statistics are to be shown.
 	 * @throws NullPointerException If the argument is {@code null}.
 	 */
-	public static final TTooltip of(@NotNull ItemStats stats) throws NullPointerException {
-		return new TTooltipItemStats(stats);
-	}
-
-	/**
-	 * A tooltip that shows the player statistics for a given {@link EntityType}.
-	 * @param stats The {@link EntityType} whose statistics are to be shown.
-	 * @throws NullPointerException If the argument is {@code null}.
-	 */
-	public static final TTooltip of(@NotNull EntityStats stats) throws NullPointerException {
-		return new TTooltipEntityStats(stats);
+	public static final TTooltip of(@NotNull SubjectStats<?> stats) throws NullPointerException {
+		return new TTooltipSubjectStats(stats);
 	}
 	// ==================================================
 }

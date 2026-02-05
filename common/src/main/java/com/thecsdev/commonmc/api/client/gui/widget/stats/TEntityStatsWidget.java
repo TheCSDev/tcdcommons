@@ -31,14 +31,15 @@ public final class TEntityStatsWidget extends TStatsWidget
 		Objects.requireNonNull(stats, "Stats value is missing while constructing tooltip.");
 		return TTooltip.of(stats);
 	};
-	// --------------------------------------------------
+	// ==================================================
 	private final ObjectProperty<EntityStats> stats = new ObjectProperty<>();
 	// --------------------------------------------------
 	private final TEntityElement el_entity = new TEntityElement(EntityType.MARKER);
 	// ==================================================
 	public TEntityStatsWidget() { this(null); }
 	public TEntityStatsWidget(@NotNull EntityType<?> subject, @NotNull IStatsProvider provider) { this(new EntityStats(subject, provider)); }
-	public TEntityStatsWidget(@Nullable EntityStats stats) {
+	public TEntityStatsWidget(@Nullable EntityStats stats)
+	{
 		//initialize properties
 		this.stats.addChangeListener((p, o, n) -> refresh());
 		this.stats.getHandle().set(stats);
@@ -57,7 +58,8 @@ public final class TEntityStatsWidget extends TStatsWidget
 	 * Called automatically whenever {@link #statsProperty()} value changes.
 	 * @apiNote {@link Override}s must call {@code super}!
 	 */
-	private final @ApiStatus.Internal void refresh() {
+	private final @ApiStatus.Internal void refresh()
+	{
 		//set tooltip for this element
 		tooltipProperty().set(this.stats.get() != null ? TOOLTIP : null, TEntityStatsWidget.class);
 		final @Nullable var stats = this.stats.get();
