@@ -1,11 +1,7 @@
 package com.thecsdev.commonmc.api.client.gui.tooltip;
 
-import com.thecsdev.commonmc.api.stats.util.ItemStats;
+import com.thecsdev.commonmc.api.stats.util.SubjectStats;
 import net.minecraft.ChatFormatting;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,17 +11,16 @@ import static com.thecsdev.commonmc.api.stats.IStatsProvider.getStatTypeName;
 import static net.minecraft.network.chat.Component.literal;
 
 /**
- * {@link TTooltip} that shows statistics about a given {@link Item}.
+ * {@link TTooltip} that shows statistics related to a given {@link SubjectStats}.
  */
-@ApiStatus.Internal
-final class TTooltipItemStats extends TTooltipLabel
+final @ApiStatus.Internal class TTooltipSubjectStats extends TTooltipLabel
 {
 	// ==================================================
-	private final @NotNull ItemStats stats;
+	private final @NotNull SubjectStats<?> stats;
 	// ==================================================
-	TTooltipItemStats(@NotNull ItemStats stats) throws NullPointerException
+	public TTooltipSubjectStats(@NotNull SubjectStats<?> stats) throws NullPointerException
 	{
-		//not null assertions
+		//initialize fields
 		this.stats = Objects.requireNonNull(stats);
 
 		//construct the label tooltip text
@@ -36,7 +31,7 @@ final class TTooltipItemStats extends TTooltipLabel
 			tt.append(literal(stats.getSubjectID().toString()).withStyle(ChatFormatting.GRAY));
 			tt.append("\n\n");
 
-			//add item stats
+			//add block stats
 			final var entries = stats.getValuesF().entrySet().iterator();
 			while(entries.hasNext()) {
 				final var entry  = entries.next();
@@ -48,29 +43,14 @@ final class TTooltipItemStats extends TTooltipLabel
 				if(entries.hasNext()) tt.append("\n");
 			}
 
-			//add block stats if appropriate
-			if(stats.getSubject() == Items.AIR || Block.byItem(stats.getSubject()) != Blocks.AIR) {
-				final var bEntries = stats.getItemBlockStats().getValuesF().entrySet().iterator();
-				if(bEntries.hasNext()) tt.append("\n");
-				while(bEntries.hasNext()) {
-					final var entry  = bEntries.next();
-					final var stName = getStatTypeName(entry.getKey().getType());
-					tt.append(literal("- ").withStyle(ChatFormatting.YELLOW));
-					tt.append(stName);
-					tt.append(literal(" - ").withStyle(ChatFormatting.YELLOW));
-					tt.append(literal(entry.getValue()).withStyle(ChatFormatting.GOLD));
-					if(bEntries.hasNext()) tt.append("\n");
-				}
-			}
-
-			//set tooltip text
-			textProperty().set(tt, TTooltipItemStats.class);
+			//set the tooltip text
+			textProperty().set(tt, TTooltipSubjectStats.class);
 		}
 	}
 	// ==================================================
 	/**
-	 * Returns the {@link ItemStats} this tooltip is about.
+	 * Returns the {@link SubjectStats} related to this {@link TTooltipLabel}.
 	 */
-	public final @NotNull ItemStats getStats() { return stats; }
+	public final @NotNull SubjectStats<?> getStats() { return this.stats; }
 	// ==================================================
 }

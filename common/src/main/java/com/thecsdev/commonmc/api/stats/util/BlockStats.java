@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,8 @@ import static net.minecraft.core.registries.BuiltInRegistries.BLOCK;
  */
 public final class BlockStats extends SubjectStats<Block>
 {
+	// ==================================================
+	private ItemStats itemStats;
 	// ==================================================
 	/**
 	 * @throws NullPointerException  If an argument is {@code null}.
@@ -38,6 +41,16 @@ public final class BlockStats extends SubjectStats<Block>
 		for(final var st : IStatsProvider.getBlockStatTypes())
 			map.put(st.get(subject), getStatsProvider().getIntValue(st, subject));
 		return map;
+	}
+	// ==================================================
+	/**
+	 * Returns the {@link ItemStats} of the {@link #getSubject()}'s
+	 * corresponding {@link Item}.
+	 */
+	public final @NotNull ItemStats getItemStats() {
+		if(this.itemStats == null)
+			this.itemStats = new ItemStats(getSubject().asItem(), getStatsProvider());
+		return this.itemStats;
 	}
 	// ==================================================
 	/**

@@ -17,6 +17,7 @@ import com.thecsdev.commonmc.api.client.gui.screen.TTextDialogScreen;
 import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TScrollBarWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TSliderWidget;
+import com.thecsdev.commonmc.api.client.gui.widget.stats.TBlockStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TEntityStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TItemStatsWidget;
 import com.thecsdev.commonmc.api.stats.RandomStatsProvider;
@@ -205,6 +206,7 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus
 
 		initEnityStats(panel);
 		initItemStats(panel);
+		initBlockStats(panel);
 	}
 	// ==================================================
 	private final void initItemStats(@NotNull TPanelElement panel)
@@ -229,6 +231,30 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus
 		}
 		final var cb = panel_items.getContentBounds();
 		panel_items.setBounds(cb.x - padding, cb.y - padding, cb.width + (padding * 2), cb.height + (padding * 2));
+	}
+	// --------------------------------------------------
+	private final void initBlockStats(@NotNull TPanelElement panel)
+	{
+		final var cbb = panel.getContentBounds();
+		final var panel_blocks = new TFillColorElement(COLOR_BACKGROUND, COLOR_OUTLINE);
+		panel_blocks.setBounds(cbb.x, cbb.endY + 10, panel.getBounds().width - 20, 0);
+		panel.add(panel_blocks);
+
+		final var stats = RandomStatsProvider.INSTANCE;
+		final int padding = 5;
+		int nextX = padding, nextY = padding;
+		for(final var block : BuiltInRegistries.BLOCK)
+		{
+			final var el_stat = new TBlockStatsWidget(block, stats);
+			el_stat.setBounds(nextX, nextY, 20, 20);
+			panel_blocks.addRel(el_stat);
+			nextX += 20 + padding;
+			if(nextX > panel_blocks.getBounds().width - (20 + padding)) {
+				nextX = padding; nextY += (20 + padding);
+			}
+		}
+		final var cb = panel_blocks.getContentBounds();
+		panel_blocks.setBounds(cb.x - padding, cb.y - padding, cb.width + (padding * 2), cb.height + (padding * 2));
 	}
 	// --------------------------------------------------
 	private final void initEnityStats(@NotNull TPanelElement panel)

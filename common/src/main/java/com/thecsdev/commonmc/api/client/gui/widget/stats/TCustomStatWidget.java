@@ -31,7 +31,7 @@ public final class TCustomStatWidget extends TTextualStatWidget
 		Objects.requireNonNull(stat, "Stat value is missing while constructing tooltip.");
 		return TTooltip.of(stat);
 	};
-	// --------------------------------------------------
+	// ==================================================
 	private final ObjectProperty<CustomStat>            stat              = new ObjectProperty<>();
 	private final ObjectProperty<StatFormatterOverride> formatterOverride = new ObjectProperty<>();
 	// ==================================================

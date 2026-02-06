@@ -2,6 +2,7 @@ package com.thecsdev.commonmc.api.client.gui.tooltip;
 
 import com.thecsdev.commonmc.api.stats.util.CustomStat;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -14,7 +15,7 @@ import static net.minecraft.network.chat.Component.literal;
  * {@link TTooltip} that shows statistics about a given "custom stat",
  * also known as "general stat", aka {@link Identifier}.
  */
-final class TTooltipCustomStat extends TTooltipLabel
+final @ApiStatus.Internal class TTooltipCustomStat extends TTooltipLabel
 {
 	// ==================================================
 	private final @NotNull CustomStat stat;

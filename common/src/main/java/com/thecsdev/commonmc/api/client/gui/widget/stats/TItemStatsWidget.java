@@ -30,7 +30,7 @@ public final class TItemStatsWidget extends TStatsWidget
 		Objects.requireNonNull(stats, "Stats value is missing while constructing tooltip.");
 		return TTooltip.of(stats);
 	};
-	// --------------------------------------------------
+	// ==================================================
 	private final ObjectProperty<ItemStats> stats = new ObjectProperty<>();
 	// --------------------------------------------------
 	private @Nullable Bounds2i  itemDrawBounds = null; //for caching maths, for optimization
