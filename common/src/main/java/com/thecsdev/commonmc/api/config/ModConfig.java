@@ -22,7 +22,7 @@ public @Virtual class ModConfig extends JsonConfig
 	public ModConfig(@NotNull String fileName) throws NullPointerException
 	{
 		//prepare the file-name argument
-		fileName = fileName.toLowerCase(Locale.ENGLISH);
+		fileName = fileName.toLowerCase(Locale.ROOT);
 		if(!fileName.endsWith(".json")) fileName += ".json";
 
 		//set config file

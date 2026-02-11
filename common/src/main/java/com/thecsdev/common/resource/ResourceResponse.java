@@ -1,10 +1,13 @@
 package com.thecsdev.common.resource;
 
+import com.google.gson.JsonArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents the response received after fetching a resource from a specified {@link URI}.
@@ -15,7 +18,7 @@ public final class ResourceResponse extends ResourceMessage
 	// ================================================== ==================================================
 	//                                   ResourceResponse IMPLEMENTATION
 	// ================================================== ==================================================
-	private final int status;   //https://en.wikipedia.org/wiki/Exit_status
+	private final int status; //https://en.wikipedia.org/wiki/Exit_status
 	// --------------------------------------------------
 	private final int hashCode;
 	// ==================================================
@@ -49,21 +52,16 @@ public final class ResourceResponse extends ResourceMessage
 	/**
 	 * A builder class for constructing instances of {@link ResourceResponse}.
 	 */
-	public static final class Builder
+	public static final class Builder extends ResourceMessage.AbstractBuilder
 	{
 		// ==================================================
-		private final URI                       uri;
-		private       int                       status   = 0;
-		private final Map<String, List<String>> metadata = new HashMap<>();
-		private       byte[]                    data     = new byte[0];
+		private int status = 0;
 		// --------------------------------------------------
 		private @Nullable ResourceResponse build; //for if already built
 		// ==================================================
-		public Builder(@NotNull URI uri) throws NullPointerException {
-			this.uri = Objects.requireNonNull(uri);
-		}
+		public Builder(@NotNull URI uri) throws NullPointerException { super(uri); }
 		public Builder(@NotNull URI uri, int status) throws NullPointerException {
-			this.uri    = Objects.requireNonNull(uri);
+			super(uri);
 			this.status = status;
 		}
 		// ==================================================
@@ -73,74 +71,48 @@ public final class ResourceResponse extends ResourceMessage
 		 * @return The current {@link Builder} instance for method chaining.
 		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceResponse}.
 		 */
-		public Builder setStatus(int status) throws IllegalStateException {
+		public final Builder setStatus(int status) throws IllegalStateException {
 			assertNotBuilt();
 			this.status = status; return this;
 		}
 		// --------------------------------------------------
-		/**
-		 * Adds a metadata entry to the resource response.
-		 * @param metadataName  The name of the metadata entry.
-		 * @param metadataValue The value of the metadata entry.
-		 * @return The current {@link Builder} instance for method chaining.
-		 * @throws NullPointerException If any argument is {@code null}.
-		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceResponse}.
-		 */
-		public final @NotNull Builder add(@NotNull String metadataName, @NotNull String metadataValue)
+		public final @NotNull @Override Builder add(
+				@NotNull String metadataName, @NotNull String metadataValue)
 				throws NullPointerException, IllegalStateException
 		{
-			//not null and not build assertions
-			Objects.requireNonNull(metadataName);
-			Objects.requireNonNull(metadataValue);
 			assertNotBuilt();
-
-			//add the metadata entry value
-			metadataName = metadataName.toLowerCase(Locale.ENGLISH);
-			this.metadata.computeIfAbsent(metadataName, __ -> new java.util.ArrayList<>()).add(metadataValue);
-			return this;
-		}
-
-		/**
-		 * Sets a metadata entry for the resource response, replacing any existing
-		 * values associated with the specified metadata name.
-		 * @param metadataName  The name of the metadata entry.
-		 * @param metadataValue The value of the metadata entry.
-		 * @return The current {@link Builder} instance for method chaining.
-		 * @throws NullPointerException If any argument is {@code null}.
-		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceResponse}.
-		 */
-		public final @NotNull Builder set(@NotNull String metadataName, @NotNull String metadataValue)
-				throws NullPointerException, IllegalStateException
-		{
-			//not null and not build assertions
-			Objects.requireNonNull(metadataName);
-			Objects.requireNonNull(metadataValue);
-			assertNotBuilt();
-
-			//set the metadata entry value
-			metadataName = metadataName.toLowerCase(Locale.ENGLISH);
-			final var list = new java.util.ArrayList<String>();
-			list.add(metadataValue);
-			this.metadata.put(metadataName, list);
+			super.add(metadataName, metadataValue);
 			return this;
 		}
 		// --------------------------------------------------
-		/**
-		 * Sets the raw byte data for the resource response.
-		 * @param data A byte array containing the resource data.
-		 * @return The current {@link Builder} instance for method chaining.
-		 * @throws NullPointerException If the argument is {@code null}.
-		 * @throws IllegalStateException If this {@link Builder} already built a {@link ResourceResponse}.
-		 * @apiNote The underlying {@code byte[]}'s contents are <b>not to be modified!</b>
-		 *          The {@code byte[]} must remain unchanged for the rest of its lifespan.
-		 */
-		public Builder setData(byte @NotNull [] data) throws NullPointerException, IllegalStateException
-		{
-			//not null and not build assertions
-			Objects.requireNonNull(data);
+		public final @Override Builder addAll(
+				@NotNull String metadataName, @NotNull Collection<String> metadataValues)
+				throws NullPointerException, IllegalStateException {
 			assertNotBuilt();
-			//set the data byte array
-			this.data = data;
+			super.addAll(metadataName, metadataValues);
+			return this;
+		}
+		public final @Override Builder addAll(
+				@NotNull String metadataName, @NotNull JsonArray metadataValues)
+				throws NullPointerException, IllegalStateException {
+			assertNotBuilt();
+			super.addAll(metadataName, metadataValues);
+			return this;
+		}
+		// --------------------------------------------------
+		public final @NotNull @Override Builder set(
+				@NotNull String metadataName, @NotNull String metadataValue)
+				throws NullPointerException, IllegalStateException
+		{
+			assertNotBuilt();
+			super.set(metadataName, metadataValue);
+			return this;
+		}
+		// --------------------------------------------------
+		public final Builder setData(byte @NotNull [] data)
+				throws NullPointerException, IllegalStateException {
+			assertNotBuilt();
+			super.setData(data);
 			return this;
 		}
 		// ==================================================
@@ -156,7 +128,7 @@ public final class ResourceResponse extends ResourceMessage
 		 */
 		public ResourceResponse build() {
 			if(this.build == null)
-				this.build = new ResourceResponse(this.uri, this.status, this.metadata, this.data);
+				this.build = new ResourceResponse(super.uri, this.status, super.metadata, super.data);
 			return this.build;
 		}
 		// ==================================================

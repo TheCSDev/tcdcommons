@@ -59,7 +59,7 @@ public final class ResourceResolver
 		Objects.requireNonNull(handler);
 
 		//register protocol handler
-		PROTOCOL_HANDLERS.put(scheme.toLowerCase(Locale.ENGLISH), handler);
+		PROTOCOL_HANDLERS.put(scheme.toLowerCase(Locale.ROOT), handler);
 	}
 	// --------------------------------------------------
 	/**
@@ -99,7 +99,7 @@ public final class ResourceResolver
 						new UnsupportedOperationException("Missing scheme for URI: " + request));
 
 			//obtain protocol handler for scheme
-			final @Nullable var protocolHandler = PROTOCOL_HANDLERS.get(scheme.toLowerCase(Locale.ENGLISH));
+			final @Nullable var protocolHandler = PROTOCOL_HANDLERS.get(scheme.toLowerCase(Locale.ROOT));
 			if(protocolHandler == null)
 				return CompletableFuture.failedFuture(
 						new UnsupportedOperationException("No protocol handler is registered for scheme: " + scheme));

@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import com.thecsdev.common.util.ReflectionUtils;
 import com.thecsdev.common.util.TUtils;
 import com.thecsdev.common.util.annotations.Virtual;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,11 +42,13 @@ public abstract class JsonConfig
 {
 	// ==================================================
 	/**
-	 * The main {@link Gson} instance used by {@link JsonConfig}.
+	 * The main {@link Gson} instance used by {@link JsonConfig}, for
+	 * serialization and deserialization of config properties.
 	 */
-	protected static final Gson GSON = new GsonBuilder()
+	@ApiStatus.Internal
+	public static final Gson GSON = new GsonBuilder()
 			.excludeFieldsWithoutExposeAnnotation()
-			.setPrettyPrinting()
+			.setFormattingStyle(FormattingStyle.PRETTY.withIndent("\t"))
 			.create();
 	// --------------------------------------------------
 	/**
@@ -184,7 +187,7 @@ public abstract class JsonConfig
 			}
 
 			//all other property types get default deserialization behavior
-			@Nullable Object pValue = null;
+			@Nullable Object pValue;
 			try { pValue = GSON.fromJson(pjElement, pType); }
 			catch(JsonSyntaxException ignored) { return; /*skip mismatched type */ }
 			property.set(this, pValue); //must NOT be set to null
@@ -197,7 +200,7 @@ public abstract class JsonConfig
 	/**
 	 * Saves this {@link JsonConfig} to the {@link #getConfigFile()}.<br>
 	 * Overrides any existing {@link #getConfigFile()}s.
-	 * @throws IOException If {@link #getConfigFile()} is {@code null}.
+	 * @throws NullPointerException If {@link #getConfigFile()} is {@code null}.
 	 * @throws IOException If an {@link IOException} takes place.
 	 */
 	public final void saveToFile() throws NullPointerException, IOException
@@ -213,7 +216,7 @@ public abstract class JsonConfig
 	/**
 	 * Loads this {@link JsonConfig} from the {@link #getConfigFile()}.<br>
 	 * If the {@link File} does not exist, nothing happens.
-	 * @throws IOException If {@link #getConfigFile()} is {@code null}.
+	 * @throws NullPointerException If {@link #getConfigFile()} is {@code null}.
 	 * @throws IOException If an {@link IOException} takes place.
 	 */
 	public final void loadFromFile() throws NullPointerException, IOException
