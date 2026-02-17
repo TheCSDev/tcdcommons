@@ -1,4 +1,4 @@
-package com.thecsdev.commonmc.resources;
+package com.thecsdev.commonmc.resource;
 
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.data.AtlasIds;

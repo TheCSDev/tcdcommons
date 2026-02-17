@@ -15,8 +15,8 @@ import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TDropdownWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TScrollBarWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.text.TSimpleTextFieldWidget;
-import com.thecsdev.commonmc.resources.TCDCLang;
-import com.thecsdev.commonmc.resources.TCDCSprites;
+import com.thecsdev.commonmc.resource.TLanguage;
+import com.thecsdev.commonmc.resource.TSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -35,9 +35,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.thecsdev.commonmc.resources.TCDCLang.*;
-import static com.thecsdev.commonmc.resources.TCDCSprites.gui_icon_fsFolder;
-import static com.thecsdev.commonmc.resources.TComponent.gui;
+import static com.thecsdev.commonmc.resource.TLanguage.*;
+import static com.thecsdev.commonmc.resource.TSprites.gui_icon_fsFolder;
+import static com.thecsdev.commonmc.resource.TComponent.gui;
 import static net.minecraft.network.chat.Component.literal;
 
 /**
@@ -178,7 +178,7 @@ public final class TFileChooserScreen extends TScreenPlus implements ILastScreen
 			client.schedule(() -> {
 				final var screen  = new TTextDialogScreen(
 						client.screen, //use 'client.screen' inside scheduled task and 'this.lastScreen' outside
-						gui("icon/unseen_notification").append(" ").append(TCDCLang.gui_screen_textDialog_errorTitle()),
+						gui("icon/unseen_notification").append(" ").append(TLanguage.gui_screen_textDialog_errorTitle()),
 						literal(message));
 				screen.getMessageLabel().wrapTextProperty().set(false, TFileChooserScreen.class);
 				client.setScreen(screen.getAsScreen());
@@ -633,7 +633,7 @@ public final class TFileChooserScreen extends TScreenPlus implements ILastScreen
 		protected final @Override void initCallback()
 		{
 			//quick access category
-			initCategory(gui("icon/accessibility").append(" ").append(TCDCLang.gui_fileChooser_quickAccess()));
+			initCategory(gui("icon/accessibility").append(" ").append(TLanguage.gui_fileChooser_quickAccess()));
 			final var dir_home = new File(System.getProperty("user.home"));
 			final var dir_desk = new File(dir_home, "Desktop");
 			final var dir_down = new File(dir_home, "Downloads");
@@ -646,7 +646,7 @@ public final class TFileChooserScreen extends TScreenPlus implements ILastScreen
 			if(dir_udir.exists()) initFileEntry(dir_udir);
 
 			//devices category, for drive letters / mount points
-			initCategory(gui("statistics/item_crafted").append(" ").append(TCDCLang.gui_fileChooser_quickAccess_mountPoints()));
+			initCategory(gui("statistics/item_crafted").append(" ").append(TLanguage.gui_fileChooser_quickAccess_mountPoints()));
 			final var roots = File.listRoots();
 			if(roots != null)
 				for(final var root : roots)
@@ -711,7 +711,7 @@ public final class TFileChooserScreen extends TScreenPlus implements ILastScreen
 			final @Nullable var parent = dir.getParentFile();
 			if(parent != null && parent.exists()) {
 				final var el_up = new FileEntryElement(
-						parent, gui(TCDCSprites.gui_icon_fsFolderGray()).append(" ../"));
+						parent, gui(TSprites.gui_icon_fsFolderGray()).append(" ../"));
 				el_up.setBounds(computeNextYBounds(15, 0));
 				add(el_up);
 			}
@@ -799,7 +799,7 @@ public final class TFileChooserScreen extends TScreenPlus implements ILastScreen
 
 			//configure child elements
 			this.in_filename.placeholderProperty().set(
-					TCDCLang.gui_fileChooser_action_inputFilename_placeholder(),
+					TLanguage.gui_fileChooser_action_inputFilename_placeholder(),
 					ActionPanel.class);
 			this.in_filename.getTextLabel().textScaleProperty().set(0.8, ActionPanel.class);
 			this.in_filename.getPlaceholderLabel().textScaleProperty().set(0.8, ActionPanel.class);
@@ -990,7 +990,7 @@ public final class TFileChooserScreen extends TScreenPlus implements ILastScreen
 		 */
 		public static final @NotNull MutableComponent computeFileIcon(@NotNull File file) {
 			//TODO - Implement more icons for different file types
-			return gui(file.isDirectory() ? TCDCSprites.gui_icon_fsFolder() : TCDCSprites.gui_icon_fsFile());
+			return gui(file.isDirectory() ? TSprites.gui_icon_fsFolder() : TSprites.gui_icon_fsFile());
 		}
 		// ==================================================
 		/**
@@ -999,10 +999,10 @@ public final class TFileChooserScreen extends TScreenPlus implements ILastScreen
 		private static final Function<FileEntryElement, TContextMenu> CONTEXT_MENU = (fee) ->
 			new TContextMenu.Builder(Objects.requireNonNull(fee.getClient()))
 				.addContextMenu(
-					gui(TCDCSprites.gui_icon_fsFolder()).append(" ").append(TCDCLang.gui_fileChooser_ctxmenu_openIn()),
+					gui(TSprites.gui_icon_fsFolder()).append(" ").append(TLanguage.gui_fileChooser_ctxmenu_openIn()),
 					new TContextMenu.Builder(fee.getClient())
 						.addButton(
-							gui(TCDCSprites.gui_icon_fsFile()).append(" ").append(TCDCLang.gui_fileChooser_ctxmenu_openIn_assocApp()),
+							gui(TSprites.gui_icon_fsFile()).append(" ").append(TLanguage.gui_fileChooser_ctxmenu_openIn_assocApp()),
 							btn -> Util.getPlatform().openUri(fee.getFile().toURI()))
 						.build())
 				.build();

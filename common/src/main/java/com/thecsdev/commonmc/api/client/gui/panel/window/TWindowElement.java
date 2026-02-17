@@ -15,7 +15,7 @@ import com.thecsdev.commonmc.api.client.gui.util.CursorType;
 import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
-import com.thecsdev.commonmc.resources.TComponent;
+import com.thecsdev.commonmc.resource.TComponent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

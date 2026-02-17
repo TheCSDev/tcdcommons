@@ -1,4 +1,4 @@
-package com.thecsdev.commonmc.resources;
+package com.thecsdev.commonmc.resource;
 
 import com.thecsdev.common.util.annotations.Reflected;
 import net.minecraft.network.chat.MutableComponent;
@@ -8,10 +8,10 @@ import static net.minecraft.network.chat.Component.translatable;
 /**
  * Language texts for {@link com.thecsdev.commonmc.TCDCommons}.
  */
-public final class TCDCLang
+public final class TLanguage
 {
 	// ==================================================
-	private TCDCLang() {}
+	private TLanguage() {}
 	// ==================================================
 	public static final @Reflected MutableComponent config_propertyValue() { return translatable("tcdcommons.config.property_value"); }
 	public static final @Reflected MutableComponent config_common() { return translatable("tcdcommons.config.common"); }

@@ -9,7 +9,7 @@ import com.thecsdev.commonmc.api.client.gui.screen.TScreen;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreenWrapper;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorDrawContext;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorGuiRenderer;
-import com.thecsdev.commonmc.resources.TCDCSprites;
+import com.thecsdev.commonmc.resource.TSprites;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.render.GuiRenderer;
@@ -194,7 +194,7 @@ public abstract class TGuiGraphics
 				//check if the current layer is still valid (not collapsing on itself)
 				if(width - (offset * 2) > 0 && height - (offset * 2) > 0)
 					drawGuiSprite(
-							TCDCSprites.gui_popup_shadow(),
+							TSprites.gui_popup_shadow(),
 							x + offset + offsetX, y + offset + offsetY,
 							width - (offset * 2), height - (offset * 2),
 							color);
@@ -210,7 +210,7 @@ public abstract class TGuiGraphics
 				final int currentSpread = offset + (Math.max(spreadRadius, 0));
 				//draw the shadow sprite
 				drawGuiSprite(
-						TCDCSprites.gui_popup_shadow(),
+						TSprites.gui_popup_shadow(),
 						x - currentSpread + offsetX, y - currentSpread + offsetY,
 						width + (currentSpread * 2), height + (currentSpread * 2),
 						color);

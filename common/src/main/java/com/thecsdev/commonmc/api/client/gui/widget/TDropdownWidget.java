@@ -10,8 +10,8 @@ import com.thecsdev.commonmc.api.client.gui.ctxmenu.TContextMenu;
 import com.thecsdev.commonmc.api.client.gui.misc.TTextureElement;
 import com.thecsdev.commonmc.api.client.gui.panel.TPanelElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
-import com.thecsdev.commonmc.resources.TCDCLang;
-import com.thecsdev.commonmc.resources.TCDCSprites;
+import com.thecsdev.commonmc.resource.TLanguage;
+import com.thecsdev.commonmc.resource.TSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -34,8 +34,8 @@ public @Virtual class TDropdownWidget<E extends TDropdownWidget.Entry> extends T
 	//                                    TDropdownWidget IMPLEMENTATION
 	// ================================================== ==================================================
 	private static final Identifier[] ICONS = new Identifier[] {
-		TCDCSprites.gui_widget_dropdownCollapsed(), //CLOSED
-		TCDCSprites.gui_widget_dropdownExpanded()   //OPENED
+		TSprites.gui_widget_dropdownCollapsed(), //CLOSED
+		TSprites.gui_widget_dropdownExpanded()   //OPENED
 	};
 	// ==================================================
 	private final ObjectProperty<E> selectedEntry = new ObjectProperty<>();
@@ -50,7 +50,7 @@ public @Virtual class TDropdownWidget<E extends TDropdownWidget.Entry> extends T
 		this.selectedEntry.getHandle().set(selectedEntry); //no invoking change listeners here
 		this.selectedEntry.addChangeListener((p, o, n) -> {
 			//if no entry is selected, use the default label
-			if(n == null) getLabel().setText(TCDCLang.gui_dropdown_defaultLabel());
+			if(n == null) getLabel().setText(TLanguage.gui_dropdown_defaultLabel());
 			//else use the entry's label
 			else getLabel().setText(n.getDisplayName());
 		});
@@ -59,7 +59,7 @@ public @Virtual class TDropdownWidget<E extends TDropdownWidget.Entry> extends T
 		getLabel().textAlignmentProperty().set(CompassDirection.WEST, TDropdownWidget.class);
 		getLabel().setText(selectedEntry != null ?
 				selectedEntry.getDisplayName() :
-				TCDCLang.gui_dropdown_defaultLabel());
+				TLanguage.gui_dropdown_defaultLabel());
 		this.icon.modeProperty().set(TTextureElement.Mode.GUI_SPRITE, TDropdownWidget.class);
 		this.icon.textureProperty().set(ICONS[0], TDropdownWidget.class);
 	}

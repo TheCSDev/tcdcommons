@@ -21,7 +21,7 @@ import com.thecsdev.commonmc.api.client.gui.widget.stats.TBlockStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TEntityStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TItemStatsWidget;
 import com.thecsdev.commonmc.api.stats.RandomStatsProvider;
-import com.thecsdev.commonmc.resources.TComponent;
+import com.thecsdev.commonmc.resource.TComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ import java.util.Objects;
 
 import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.COLOR_BACKGROUND;
 import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.COLOR_OUTLINE;
-import static com.thecsdev.commonmc.resources.TComponent.block;
+import static com.thecsdev.commonmc.resource.TComponent.block;
 import static net.minecraft.network.chat.Component.literal;
 
 /**

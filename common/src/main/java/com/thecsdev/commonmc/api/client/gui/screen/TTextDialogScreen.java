@@ -13,8 +13,8 @@ import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
 import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TScrollBarWidget;
-import com.thecsdev.commonmc.resources.TCDCLang;
-import com.thecsdev.commonmc.resources.TCDCSprites;
+import com.thecsdev.commonmc.resource.TLanguage;
+import com.thecsdev.commonmc.resource.TSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-import static com.thecsdev.commonmc.resources.TComponent.gui;
+import static com.thecsdev.commonmc.resource.TComponent.gui;
 import static net.minecraft.network.chat.Component.translatable;
 
 /**
@@ -39,7 +39,7 @@ public final class TTextDialogScreen extends TScreenPlus implements ILastScreenP
 	private final           TLabelElement lbl_message = new TLabelElement();
 	// ==================================================
 	public TTextDialogScreen(@Nullable Screen lastScreen, @NotNull Component text) {
-		this(lastScreen, gui("icon/info").append(" ").append(TCDCLang.gui_screen_textDialog_defaultTitle()), text);
+		this(lastScreen, gui("icon/info").append(" ").append(TLanguage.gui_screen_textDialog_defaultTitle()), text);
 	}
 	public TTextDialogScreen(@Nullable Screen lastScreen, @NotNull Component title, @NotNull Component text) {
 		this.lastScreen = lastScreen;
@@ -137,7 +137,7 @@ public final class TTextDialogScreen extends TScreenPlus implements ILastScreenP
 			final var bb_done  = btn_done.getBounds();
 			final var btn_copy = new TButtonWidget.Paintable(0x22FFFFFF, 0x55FFFFFF);
 			btn_copy.setBounds(bb_done.x - 20, bb_done.y, 15, 15);
-			btn_copy.getLabel().setText(gui(TCDCSprites.gui_icon_clipboard()));
+			btn_copy.getLabel().setText(gui(TSprites.gui_icon_clipboard()));
 			btn_copy.eClicked.register(btn -> Objects.requireNonNull(btn.getClient(), "Missing 'client' instance")
 					.keyboardHandler.setClipboard(el_label.getText().getString()));
 			btn_copy.tooltipProperty().set(__ -> TTooltip.of(translatable("chat.copy")), WindowElement.class);
@@ -148,7 +148,7 @@ public final class TTextDialogScreen extends TScreenPlus implements ILastScreenP
 				final var client = Objects.requireNonNull(__.getClient(), "Missing 'client' instance");
 				return new TContextMenu.Builder(client)
 						.addButton(
-								gui(TCDCSprites.gui_icon_clipboard()).append(" ").append(translatable("chat.copy")),
+								gui(TSprites.gui_icon_clipboard()).append(" ").append(translatable("chat.copy")),
 								___ -> client.keyboardHandler.setClipboard(el_label.getText().getString()))
 						.build();
 			}, WindowElement.class);
