@@ -1,6 +1,8 @@
 package com.thecsdev.commonmc.api.client.gui.util;
 
 import com.thecsdev.commonmc.api.client.gui.TElement;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,6 +16,7 @@ import java.util.Objects;
  * of the child {@link TElement} at that segment, as well as the expected
  * index of that child within its parent segment.
  */
+@Environment(EnvType.CLIENT)
 public final class SceneGraphPath
 {
 	// ==================================================

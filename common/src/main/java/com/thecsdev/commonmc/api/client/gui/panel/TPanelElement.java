@@ -8,12 +8,15 @@ import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 /**
  * A panel element primarily featuring functionality like scrolling.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TPanelElement extends TElement
 {
 	// ================================================== ==================================================

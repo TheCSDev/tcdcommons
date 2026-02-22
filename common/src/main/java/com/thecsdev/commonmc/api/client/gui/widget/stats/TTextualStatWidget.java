@@ -4,6 +4,8 @@ import com.thecsdev.common.math.Bounds2i;
 import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.common.util.enumerations.CompassDirection;
 import com.thecsdev.commonmc.api.client.gui.label.TLabelElement;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * Simple textual stat widget featuring two {@link TLabelElement}s showing
  * only the name and value of a given stat. Can be anything, you set the label texts.
  */
+@Environment(EnvType.CLIENT)
 public sealed class TTextualStatWidget extends TStatsWidget permits TCustomStatWidget
 {
 	// ==================================================

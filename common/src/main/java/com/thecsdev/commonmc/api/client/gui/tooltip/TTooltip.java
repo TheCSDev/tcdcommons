@@ -5,6 +5,8 @@ import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.stats.util.CustomStat;
 import com.thecsdev.commonmc.api.stats.util.SubjectStats;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +16,7 @@ import java.util.Objects;
  * A {@link TElement} whose sole purpose is meant to serve as being
  * as tooltip element for other {@link TElement}s.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TTooltip extends TElement
 {
 	// ==================================================

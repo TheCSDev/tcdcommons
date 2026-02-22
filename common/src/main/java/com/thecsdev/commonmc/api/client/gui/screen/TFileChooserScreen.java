@@ -17,6 +17,8 @@ import com.thecsdev.commonmc.api.client.gui.widget.TScrollBarWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.text.TSimpleTextFieldWidget;
 import com.thecsdev.commonmc.resource.TLanguage;
 import com.thecsdev.commonmc.resource.TSprites;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -46,6 +48,7 @@ import static net.minecraft.network.chat.Component.literal;
  * require file opening and saving functionalities, allowing users to easily navigate
  * through their directories and choose the desired files.
  */
+@Environment(EnvType.CLIENT)
 public final class TFileChooserScreen extends TScreenPlus implements ILastScreenProvider
 {
 	// ================================================== ==================================================

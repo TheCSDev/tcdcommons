@@ -10,6 +10,8 @@ import com.thecsdev.commonmc.api.client.gui.screen.TScreenWrapper;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorDrawContext;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorGuiRenderer;
 import com.thecsdev.commonmc.resource.TSprites;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.render.GuiRenderer;
@@ -40,6 +42,7 @@ import static net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
  *
  * @apiNote Screen coordinates use in-game units and not native LWJGL/GLFW raw pixels.
  */
+@Environment(EnvType.CLIENT)
 public abstract class TGuiGraphics
 {
 	// ==================================================

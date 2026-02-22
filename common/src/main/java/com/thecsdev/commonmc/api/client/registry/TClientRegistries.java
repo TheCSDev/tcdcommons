@@ -1,6 +1,8 @@
 package com.thecsdev.commonmc.api.client.registry;
 
 import com.thecsdev.commonmc.TCDCommons;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
@@ -15,6 +17,7 @@ import java.util.Map;
  * Note that this does not use the game's native {@link Registry} system, instead
  * relying on {@link Map}s for simplicity.
  */
+@Environment(EnvType.CLIENT)
 public final class TClientRegistries
 {
 	// ==================================================

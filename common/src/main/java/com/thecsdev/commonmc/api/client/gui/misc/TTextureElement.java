@@ -6,6 +6,8 @@ import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +18,7 @@ import static net.minecraft.client.renderer.texture.TextureManager.INTENTIONAL_M
 /**
  * A {@link TElement} whose sole purpose is to render a sprite/texture.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TTextureElement extends TElement
 {
 	// ================================================== ==================================================

@@ -8,6 +8,8 @@ import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
 import com.thecsdev.commonmc.api.stats.EmptyStatsProvider;
 import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.util.ItemStats;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -20,6 +22,7 @@ import java.util.function.Function;
 /**
  * A GUI widget that shows the statistics for a given {@link Item}.
  */
+@Environment(EnvType.CLIENT)
 public final class TItemStatsWidget extends TStatsWidget
 {
 	// ==================================================

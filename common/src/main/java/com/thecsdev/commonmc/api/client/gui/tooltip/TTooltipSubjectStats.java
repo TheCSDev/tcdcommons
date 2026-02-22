@@ -1,6 +1,8 @@
 package com.thecsdev.commonmc.api.client.gui.tooltip;
 
 import com.thecsdev.commonmc.api.stats.util.SubjectStats;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +15,7 @@ import static net.minecraft.network.chat.Component.literal;
 /**
  * {@link TTooltip} that shows statistics related to a given {@link SubjectStats}.
  */
+@Environment(EnvType.CLIENT)
 final @ApiStatus.Internal class TTooltipSubjectStats extends TTooltipLabel
 {
 	// ==================================================

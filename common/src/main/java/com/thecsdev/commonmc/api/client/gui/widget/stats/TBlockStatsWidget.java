@@ -7,6 +7,8 @@ import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
 import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.util.BlockStats;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -23,6 +25,7 @@ import java.util.function.Function;
 /**
  * A GUI widget that shows the statistics for a given {@link Block}.
  */
+@Environment(EnvType.CLIENT)
 public final class TBlockStatsWidget extends TStatsWidget
 {
 	// ==================================================

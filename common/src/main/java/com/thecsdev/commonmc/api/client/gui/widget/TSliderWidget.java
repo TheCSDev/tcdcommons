@@ -8,6 +8,8 @@ import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +24,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * representation of the value range is helpful.
  */
 //TODO - Why are sliders so clunky? We need better sliders.
+@Environment(EnvType.CLIENT)
 public @Virtual class TSliderWidget extends TButtonWidget
 {
 	// ================================================== ==================================================

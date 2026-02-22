@@ -15,6 +15,8 @@ import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TScrollBarWidget;
 import com.thecsdev.commonmc.resource.TLanguage;
 import com.thecsdev.commonmc.resource.TSprites;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +31,7 @@ import static net.minecraft.network.chat.Component.translatable;
  * {@link TScreen} implementation that shows a textual dialog to the user and
  * presents the user with some dialog options (clickable buttons).
  */
+@Environment(EnvType.CLIENT)
 public final class TTextDialogScreen extends TScreenPlus implements ILastScreenProvider
 {
 	// ================================================== ==================================================

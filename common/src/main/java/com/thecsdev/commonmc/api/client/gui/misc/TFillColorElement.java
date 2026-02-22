@@ -4,12 +4,15 @@ import com.thecsdev.common.properties.IntegerProperty;
 import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * A blank {@link TElement} whose sole purpose is to render
  * a solid-colored rectangle.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TFillColorElement extends TElement
 {
 	// ================================================== ==================================================

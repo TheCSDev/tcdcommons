@@ -22,6 +22,8 @@ import com.thecsdev.commonmc.api.client.gui.widget.stats.TEntityStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TItemStatsWidget;
 import com.thecsdev.commonmc.api.stats.RandomStatsProvider;
 import com.thecsdev.commonmc.resource.TComponent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +41,7 @@ import static net.minecraft.network.chat.Component.literal;
  * is avoiding performance hiccups later on from Java's lazy loading mechanism.
  * @apiNote This conveniently also serves as an internal debug screen.
  */
+@Environment(EnvType.CLIENT)
 public final @ApiStatus.Internal class TTestScreen extends TScreenPlus
 {
 	// ==================================================

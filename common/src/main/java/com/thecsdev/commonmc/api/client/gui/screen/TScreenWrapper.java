@@ -8,6 +8,8 @@ import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorTElement;
 import io.netty.util.internal.UnstableApi;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -47,6 +49,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * default {@link TScreenWrapper} implementation, may cause disruptions.
  */
 @UnstableApi
+@Environment(EnvType.CLIENT)
 public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 {
 	// ==================================================

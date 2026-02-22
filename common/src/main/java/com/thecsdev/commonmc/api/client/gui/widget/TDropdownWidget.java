@@ -12,6 +12,8 @@ import com.thecsdev.commonmc.api.client.gui.panel.TPanelElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.resource.TLanguage;
 import com.thecsdev.commonmc.resource.TSprites;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +30,7 @@ import static java.lang.Math.min;
  * A {@link TButtonWidget} that shows a dropdown menu featuring clickable items
  * when clicked.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TDropdownWidget<E extends TDropdownWidget.Entry> extends TButtonWidget
 {
 	// ================================================== ==================================================

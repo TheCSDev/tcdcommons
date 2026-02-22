@@ -10,6 +10,8 @@ import com.thecsdev.commonmc.api.client.gui.util.CursorType;
 import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.api.client.gui.widget.TClickableWidget;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -26,6 +28,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_BACKSPACE;
  * does not feature the concept of cursors and multiline support.
  * @apiNote Uses unoptimal practices that cost extra memory and performance.
  */
+@Environment(EnvType.CLIENT)
 public final class TSimpleTextFieldWidget extends TClickableWidget
 {
 	// ==================================================
