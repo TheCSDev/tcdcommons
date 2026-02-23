@@ -1,6 +1,7 @@
 package com.thecsdev.commonmc.client;
 
 import com.thecsdev.commonmc.TCDCommons;
+import com.thecsdev.commonmc.api.client.registry.TClientRegistries;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorLocalPlayer;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import net.minecraft.client.multiplayer.SessionSearchTrees;
@@ -17,6 +18,9 @@ public class TCDCommonsClient extends TCDCommons
 	// ==================================================
 	public TCDCommonsClient()
 	{
+		//register features
+		TClientRegistries.bootstrap();
+
 		//regroup items into creative mode tabs when joining worlds
 		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(localPlayer ->
 		{
@@ -46,13 +50,6 @@ public class TCDCommonsClient extends TCDCommons
 			}
 			// ----------
 		});
-
-		//NOTE - Below is a test trigger for testing GUI code:
-		/*BlockEvent.BREAK.register((level, pos, state, player, xp) -> {
-			final var client = Minecraft.getInstance();
-			client.execute(() -> client.setScreen(new TTestScreen().getAsScreen()));
-			return EventResult.pass();
-		});*/
 	}
 	// ==================================================
 }

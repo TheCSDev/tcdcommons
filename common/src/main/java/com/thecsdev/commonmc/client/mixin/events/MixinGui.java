@@ -37,7 +37,7 @@ public abstract class MixinGui
 	private void onPostRender(GuiGraphics pencil, DeltaTracker tickCounter, CallbackInfo ci)
 	{
 		//render in-game-hud screens
-		if(!TClientRegistries.HUD_SCREEN.isEmpty())
+		if(TClientRegistries.HUD_SCREEN.size() > 0)
 		{
 			//prepare variables for rendering
 			final var currentScreen = minecraft.screen;
@@ -49,10 +49,9 @@ public abstract class MixinGui
 		    final int mouseY        = (int) mouse.getScaledYPos(clientWindow);
 
 			//iterate hud screens and render them
-			for(final var entry : TClientRegistries.HUD_SCREEN.entrySet())
+			for(final var hudScreen : TClientRegistries.HUD_SCREEN)
 				try {
 					//do not render the current screen
-					final var hudScreen = entry.getValue();
 					if(hudScreen == currentScreen) continue;
 					//(re/)initialize screens whenever necessary
 					if(((AccessorScreen)hudScreen).getMinecraft() != this.minecraft ||
@@ -64,7 +63,8 @@ public abstract class MixinGui
 					//note: ticking screens is not done here, to avoid weird visual bugs
 				} catch(Exception exc) {
 					//hold modded screens accountable for any exceptions they throw
-					final var report = CrashReport.forThrowable(exc, "Rendering HUD Screen ID " + entry.getKey());
+					final var hudScreenId = TClientRegistries.HUD_SCREEN.getKey(hudScreen);
+					final var report = CrashReport.forThrowable(exc, "Rendering HUD Screen ID " + hudScreenId);
 					throw new ReportedException(report);
 				}
 		}
