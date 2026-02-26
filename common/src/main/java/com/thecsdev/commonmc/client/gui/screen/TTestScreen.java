@@ -20,6 +20,7 @@ import com.thecsdev.commonmc.api.client.gui.widget.TSliderWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TBlockStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TEntityStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TItemStatsWidget;
+import com.thecsdev.commonmc.api.client.gui.widget.text.TSimpleTextFieldWidget;
 import com.thecsdev.commonmc.api.stats.RandomStatsProvider;
 import com.thecsdev.commonmc.resource.TComponent;
 import net.fabricmc.api.EnvType;
@@ -169,6 +170,12 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus
 		el6.valueProperty().addChangeListener((p, o, n) ->
 				el4.textScaleProperty().set(n.x * 10, TTestScreen.class));
 		panel.addRel(el6);
+
+		final var el61 = new TSimpleTextFieldWidget();
+		el61.setBounds(el6.getBounds().height(20).add(210, 0, 0, 0));
+		el61.placeholderProperty().set(literal("This is a placeholder"), TTestScreen.class);
+		el61.textProperty().set("Hello world", TTestScreen.class);
+		panel.add(el61);
 
 		final var el7 = new TButtonWidget();
 		el7.setBounds(10, 340, 200, 20);
