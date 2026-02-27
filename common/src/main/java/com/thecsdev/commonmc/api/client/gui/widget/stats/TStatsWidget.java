@@ -4,6 +4,8 @@ import com.thecsdev.common.properties.IntegerProperty;
 import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
 
 import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.*;
@@ -11,6 +13,7 @@ import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.*;
 /**
  * The base {@link Class} for stats widgets.
  */
+@Environment(EnvType.CLIENT)
 abstract sealed class TStatsWidget extends TButtonWidget permits TBlockStatsWidget, TEntityStatsWidget, TItemStatsWidget, TTextualStatWidget
 {
 	// ==================================================

@@ -2,6 +2,8 @@ package com.thecsdev.commonmc.api.client.gui.util;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import com.thecsdev.commonmc.api.client.gui.TElement;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * graphical user interface (GUI).
  * @see TElement#getCursor()
  */
+@Environment(EnvType.CLIENT)
 public enum CursorType
 {
 	// ==================================================

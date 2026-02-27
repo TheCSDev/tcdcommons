@@ -1,4 +1,4 @@
-package com.thecsdev.commonmc.resources;
+package com.thecsdev.commonmc.resource;
 
 import com.thecsdev.commonmc.TCDCommons;
 import com.thecsdev.commonmc.api.client.gui.misc.TTextureElement;
@@ -11,10 +11,10 @@ import static net.minecraft.resources.Identifier.fromNamespaceAndPath;
  * {@link TCDCommons}'s {@link Identifier}s for textures.
  * @see TTextureElement.Mode#TEXTURE
  */
-public final class TCDCTex
+public final class TTextures
 {
 	// ==================================================
-	private TCDCTex() {}
+	private TTextures() {}
 	// ==================================================
 	public static final Identifier gui_ctxmenu() { return fromNamespaceAndPath(MOD_ID, "textures/gui/sprites/popup/ctxmenu.png"); }
 	// ==================================================

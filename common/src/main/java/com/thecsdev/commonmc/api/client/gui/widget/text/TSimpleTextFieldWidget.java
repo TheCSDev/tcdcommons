@@ -10,9 +10,12 @@ import com.thecsdev.commonmc.api.client.gui.util.CursorType;
 import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.api.client.gui.widget.TClickableWidget;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -26,6 +29,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_BACKSPACE;
  * does not feature the concept of cursors and multiline support.
  * @apiNote Uses unoptimal practices that cost extra memory and performance.
  */
+@Environment(EnvType.CLIENT)
 public final class TSimpleTextFieldWidget extends TClickableWidget
 {
 	// ==================================================
@@ -49,25 +53,43 @@ public final class TSimpleTextFieldWidget extends TClickableWidget
 		this.lbl_placeholder.textColorProperty().set(0x55FFFFFF, TSimpleTextFieldWidget.class);
 
 		//change listeners
-		final Runnable refresh_alignment = () -> {
-			final int textW = this.font.get().width(this.text.get());
-			this.lbl_text.textAlignmentProperty().set(
-				(this.lbl_text.getBounds().width > textW) ? CompassDirection.WEST : CompassDirection.EAST,
-				TSimpleTextFieldWidget.class
-			);
-		};
-		boundsProperty().addChangeListener((p, o, n) -> refresh_alignment.run());
+		boundsProperty().addChangeListener((p, o, n) -> refreshAlignment());
 		this.font.addChangeListener((p, o, n) -> {
 			this.lbl_placeholder.fontProperty().set(n, TSimpleTextFieldWidget.class);
 			this.lbl_text.fontProperty().set(n, TSimpleTextFieldWidget.class);
-			refresh_alignment.run();
+			refreshAlignment();
 		});
-		this.placeholder.addChangeListener((p, o, n) -> this.lbl_placeholder.setText(n));
+		this.placeholder.addChangeListener((p, o, n) -> {
+			this.lbl_placeholder.setText(n);
+			refreshAlignment();
+		});
 		this.text.addChangeListener((p, o, n) -> {
 			this.lbl_text.setText(Component.literal(n));
 			this.lbl_placeholder.visibleProperty().set(n.isEmpty(), TSimpleTextFieldWidget.class);
-			refresh_alignment.run();
+			refreshAlignment();
 		});
+	}
+	// ==================================================
+	/**
+	 * Refreshes the alignment of the text and placeholder labels, based on their
+	 * text width and available space.
+	 */
+	private final @ApiStatus.Internal void refreshAlignment()
+	{
+		//do nothing while not initialized - avoids wasteful calls
+		if(getParent() == null) return;
+		//text label alignment
+		final int textW = (int) ((double) this.font.get().width(this.text.get()) * this.lbl_text.textScaleProperty().getD());
+		this.lbl_text.textAlignmentProperty().set(
+				(this.lbl_text.getBounds().width > textW) ? CompassDirection.WEST : CompassDirection.EAST,
+				TSimpleTextFieldWidget.class
+		);
+		//placeholder label alignment
+		final var ptextW = (int) ((double) this.font.get().width(this.placeholder.get()) * this.lbl_placeholder.textScaleProperty().getD());
+		this.lbl_placeholder.textAlignmentProperty().set(
+				(this.lbl_placeholder.getBounds().width > ptextW) ? CompassDirection.WEST : CompassDirection.EAST,
+				TSimpleTextFieldWidget.class
+		);
 	}
 	// ==================================================
 	/**
@@ -104,13 +126,15 @@ public final class TSimpleTextFieldWidget extends TClickableWidget
 		return isFocusable() ? CursorType.IBEAM : CursorType.NOT_ALLOWED;
 	}
 	// ==================================================
-	protected final @Override void initCallback() {
+	protected final @Override void initCallback()
+	{
 		final var bb  = getBounds();
 		final var lbb = new Bounds2i(bb.x + 4, bb.y + 2, bb.width - 8, bb.height - 4);
 		this.lbl_placeholder.setBounds(lbb);
 		add(this.lbl_placeholder);
 		this.lbl_text.setBounds(lbb);
 		add(this.lbl_text);
+		refreshAlignment();
 	}
 	// --------------------------------------------------
 	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil) {

@@ -4,6 +4,8 @@ import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * {@link TElement} that renders a given {@link ItemStack} on the screen,
  * like how the game does it in the inventory screen.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TItemElement extends TElement
 {
 	// ==================================================

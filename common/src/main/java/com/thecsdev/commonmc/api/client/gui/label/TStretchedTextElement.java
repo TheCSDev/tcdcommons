@@ -5,6 +5,8 @@ import com.thecsdev.common.properties.IntegerProperty;
 import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * An element that renders a given text {@link Component} such that it is
  * stretched to fit this element's {@link #getBounds()}.
  */
+@Environment(EnvType.CLIENT)
 public final class TStretchedTextElement extends TElement
 {
 	// ==================================================

@@ -1,6 +1,8 @@
 package com.thecsdev.commonmc.api.client.gui.render;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
@@ -16,6 +18,7 @@ import static net.minecraft.resources.Identifier.withDefaultNamespace;
  * allows for an easier rewrite and portability.
  */
 @ApiStatus.Internal
+@Environment(EnvType.CLIENT)
 final class TGuiGraphicsDefault extends TGuiGraphics
 {
 	// ==================================================

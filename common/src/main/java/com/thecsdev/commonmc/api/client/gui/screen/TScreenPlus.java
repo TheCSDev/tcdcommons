@@ -4,6 +4,8 @@ import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.common.util.enumerations.CompassDirection;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +23,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * navigation. May cost extra performance.
  */
 //TODO - Poor implementation. Needs something less clunky.
+@Environment(EnvType.CLIENT)
 public abstract class TScreenPlus extends TScreen
 {
 	// ==================================================

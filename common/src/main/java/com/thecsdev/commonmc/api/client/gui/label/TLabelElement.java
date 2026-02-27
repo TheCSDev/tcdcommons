@@ -6,6 +6,8 @@ import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.common.util.enumerations.CompassDirection;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -18,6 +20,7 @@ import java.util.List;
 /**
  * A {@link TElement} that draws text on the screen.
  */
+@Environment(EnvType.CLIENT)
 public final class TLabelElement extends TElement
 {
 	// ==================================================

@@ -1,8 +1,15 @@
 package com.thecsdev.common.util;
 
 import com.thecsdev.common.util.interfaces.CheckedRunnable;
+import com.thecsdev.common.util.interfaces.CheckedSupplier;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.StackWalker.Option;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -54,13 +61,52 @@ public final class TUtils
 	 * @throws NullPointerException If the argument is null.
 	 * @throws RuntimeException If the {@link CheckedRunnable} throws.
 	 */
-	public static final void uncheckedCall(CheckedRunnable action)
+	public static final void uncheckedCall(@NotNull CheckedRunnable action)
 			throws NullPointerException, RuntimeException
 	{
 		try {
 			action.run();
 		} catch(Exception e) {
 			throw new RuntimeException("Exception raised during unchecked call.", e);
+		}
+	}
+
+	/**
+	 * Gets a value from a {@link CheckedSupplier}, throwing a {@link RuntimeException}
+	 * if said {@link CheckedSupplier} throws an {@link Exception}.
+	 * @param supplier The supplier to get the value from.
+	 * @return The value supplied by the supplier.
+	 * @throws NullPointerException If the argument is null.
+	 * @throws RuntimeException If the {@link CheckedSupplier} throws.
+	 */
+	public static final <T> T uncheckedSupply(@NotNull CheckedSupplier<T> supplier)
+			throws NullPointerException, RuntimeException
+	{
+		try {
+			return supplier.get();
+		} catch(Exception e) {
+			throw new RuntimeException("Exception raised during unchecked supply.", e);
+		}
+	}
+	// ==================================================
+	/**
+	 * Hashes the given input string using SHA-256 and encodes the hash as a
+	 * base36 {@link String}.
+	 * @param input The input string to hash.
+	 * @throws NullPointerException If the argument is {@code null}.
+	 * @throws RuntimeException If the SHA-256 algorithm is not available.
+	 */
+	public static final @NotNull String str2sha256base36(@NotNull String input)
+			throws NullPointerException, RuntimeException
+	{
+		Objects.requireNonNull(input);
+		try {
+			final var digest = MessageDigest.getInstance("SHA-256");
+			final var hash   = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+			final var result = new BigInteger(1, hash).toString(36);
+			return "0".repeat(50 - result.length()) + result; //account for leading zeros in the number
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("Failed to hash a String using SHA-256");
 		}
 	}
 	// ==================================================

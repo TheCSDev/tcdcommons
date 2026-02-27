@@ -1,4 +1,4 @@
-package com.thecsdev.commonmc.resources;
+package com.thecsdev.commonmc.resource;
 
 import com.thecsdev.common.util.annotations.Reflected;
 import com.thecsdev.commonmc.TCDCommons;
@@ -17,10 +17,10 @@ import static net.minecraft.resources.Identifier.fromNamespaceAndPath;
  * @see TextureAtlasSprite
  * @see TTextureElement.Mode#GUI_SPRITE
  */
-public class TCDCSprites
+public class TSprites
 {
 	// ==================================================
-	private TCDCSprites() {}
+	private TSprites() {}
 	// ==================================================
 	public static final Identifier gui_widget_dropdownCollapsed() { return fromNamespaceAndPath(MOD_ID, "widget/dropdown_collapsed"); }
 	public static final Identifier gui_widget_dropdownExpanded() { return fromNamespaceAndPath(MOD_ID, "widget/dropdown_expanded"); }

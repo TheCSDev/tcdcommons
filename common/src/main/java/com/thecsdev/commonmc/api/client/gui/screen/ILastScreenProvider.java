@@ -1,5 +1,7 @@
 package com.thecsdev.commonmc.api.client.gui.screen;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Contract;
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
  * @see Minecraft#setScreen(Screen)
  * @see TScreen#close()
  */
+@Environment(EnvType.CLIENT)
 public interface ILastScreenProvider
 {
 	// ==================================================

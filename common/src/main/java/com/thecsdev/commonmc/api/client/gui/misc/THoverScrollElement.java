@@ -7,6 +7,8 @@ import com.thecsdev.common.util.enumerations.CompassDirection;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.panel.TPanelElement;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
  * {@link TElement} that when hovered, sends simulated mouse-scroll input
  * to its target {@link TElement}.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class THoverScrollElement<E extends TElement> extends TElement
 {
 	// ================================================== ==================================================

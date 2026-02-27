@@ -10,6 +10,8 @@ import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext.InputDiscoveryPhase;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -21,6 +23,7 @@ import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.playGuiButtonC
 /**
  * A {@link TElement} that can be clicked via mouse or keyboard inputs.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TClickableWidget extends TElement
 {
 	// ==================================================

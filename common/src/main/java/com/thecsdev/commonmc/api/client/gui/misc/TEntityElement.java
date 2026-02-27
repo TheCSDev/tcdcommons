@@ -11,6 +11,8 @@ import com.thecsdev.commonmc.TCDCommonsConfig;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.world.sandbox.SandboxLevel;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -25,6 +27,7 @@ import java.util.Objects;
 /**
  * {@link TElement} that renders an entity on the screen.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TEntityElement extends TElement
 {
 	// ================================================== ==================================================

@@ -10,6 +10,8 @@ import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.panel.TPanelElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +27,7 @@ import static com.thecsdev.commonmc.api.client.gui.util.TInputContext.InputType.
  * {@link TSliderWidget} acting as a scroll-bar for a given {@link TPanelElement}.
  */
 //TODO - Resolve cyclic dependency with the scrollAmount<->value properties
+@Environment(EnvType.CLIENT)
 public @Virtual class TScrollBarWidget extends TSliderWidget
 {
 	// ================================================== ==================================================

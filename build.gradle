@@ -24,7 +24,7 @@ allprojects
 subprojects
 {
 	//skip the ':buildSrc' project
-	if(it.path.toLowerCase(Locale.ENGLISH) == ":buildsrc")
+	if(it.path.toLowerCase(Locale.ROOT) == ":buildsrc")
 		return;
 
 	//apply these plugins to each subproject

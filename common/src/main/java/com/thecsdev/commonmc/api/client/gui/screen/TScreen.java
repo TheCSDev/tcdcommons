@@ -8,6 +8,8 @@ import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorTElement;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -24,6 +26,7 @@ import static com.thecsdev.commonmc.api.client.gui.screen.ILastScreenProvider.ge
  * An abstraction layer that represents a game's {@link Screen}.
  * @see TScreenWrapper
  */
+@Environment(EnvType.CLIENT)
 public abstract class TScreen extends TElement
 {
 	// ==================================================

@@ -2,6 +2,8 @@ package com.thecsdev.commonmc.api.client.hooks;
 
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorButton;
 import dev.architectury.event.events.client.ClientGuiEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -18,6 +20,7 @@ import static java.util.Optional.ofNullable;
 /**
  * Utility methods for hooking into GUI-related activities.
  */
+@Environment(EnvType.CLIENT)
 public final class GuiHooks
 {
 	// ==================================================
@@ -71,7 +74,8 @@ public final class GuiHooks
 			final @NotNull Class<? extends Screen> screen,
 			final @NotNull Component btnText,
 			final @NotNull BiConsumer<Button, Runnable> btnOnClickSupplier)
-			throws NullPointerException, IllegalArgumentException {
+			throws NullPointerException, IllegalArgumentException
+	{
 		//not null requirements
 		Objects.requireNonNull(screen);
 		Objects.requireNonNull(btnText);

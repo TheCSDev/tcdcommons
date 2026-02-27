@@ -129,9 +129,9 @@ public sealed abstract class SubjectStats<S> permits CustomStat, ItemStats, Bloc
 		//not null requirement
 		Objects.requireNonNull(query);
 		//normalize strings to make it easier to compare
-		query         = query.replaceAll("[^A-Za-z]", "").toLowerCase(Locale.ENGLISH);
-		final var sid = this.subjectID.toString().replaceAll("[^A-Za-z]", "").toLowerCase(Locale.ENGLISH);
-		final var sdn = getSubjectDisplayName().getString().replaceAll("[^A-Za-z]", "").toLowerCase(Locale.ENGLISH);
+		query         = query.replaceAll("[^A-Za-z]", "").toLowerCase(Locale.ROOT);
+		final var sid = this.subjectID.toString().replaceAll("[^A-Za-z]", "").toLowerCase(Locale.ROOT);
+		final var sdn = getSubjectDisplayName().getString().replaceAll("[^A-Za-z]", "").toLowerCase(Locale.ROOT);
 		//compare and return
 		return sid.contains(query) || sdn.contains(query);
 	}

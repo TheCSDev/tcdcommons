@@ -2,6 +2,8 @@ package com.thecsdev.common.resource.protocol;
 
 import com.thecsdev.common.resource.ResourceRequest;
 import com.thecsdev.common.resource.ResourceResponse;
+import com.thecsdev.common.resource.http.HttpProfile;
+import com.thecsdev.common.resource.http.HttpProfileCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +61,7 @@ public class HttpProtocolHandler implements ProtocolHandler
 	 */
 	public static final int STATUS_ERROR = 500;
 	// ==================================================
-	private final HttpResourceCache cache      = HttpResourceCache.DEFAULT;
+	private final HttpProfileCache  cache      = HttpProfile.DEFAULT.getCache();
 	private final HttpClient        httpClient = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
 			.followRedirects(HttpClient.Redirect.NORMAL)
@@ -84,7 +86,7 @@ public class HttpProtocolHandler implements ProtocolHandler
 
 		//---------- build the client request (this also validates argument)
 		//obtain the http method to use
-		final var httpMethod = rssReq.getFirstOrThrow(HEADER_HTTP_METHOD).toUpperCase(Locale.ENGLISH);
+		final var httpMethod = rssReq.getFirstOrThrow(HEADER_HTTP_METHOD).toUpperCase(Locale.ROOT);
 		if((httpMethod.equals("GET") || httpMethod.equals("HEAD")) && rssReq.getData().length > 0)
 			throw new IllegalArgumentException("'HTTP " + httpMethod + "' requests cannot have a body/data.");
 
@@ -112,7 +114,7 @@ public class HttpProtocolHandler implements ProtocolHandler
 			//cache miss - send the http request and return its response
 			return this.httpClient
 					.sendAsync(httpReq.build(), HttpResponse.BodyHandlers.ofByteArray())
-					.thenApply(httpRes ->
+					.thenCompose(httpRes ->
 			{
 				//---------- construct resource response
 				//start building the resource response
@@ -120,7 +122,7 @@ public class HttpProtocolHandler implements ProtocolHandler
 						.setStatus(httpRes.statusCode())
 						.setData(httpRes.body());
 
-				//add header values to the resource respone
+				//add header values to the resource response
 				for(final var headerEntry : httpRes.headers().map().entrySet())
 					for(final var headerValue : headerEntry.getValue())
 						rssRes.add(headerEntry.getKey(), headerValue);
@@ -139,8 +141,8 @@ public class HttpProtocolHandler implements ProtocolHandler
 
 				//---------- build and return once done
 				final var result = rssRes.build();
-				this.cache.storeAsync(rssReq, result);
-				return result;
+				return this.cache.storeAsync(rssReq, result)
+						.handle((unused, throwable) -> result);
 			});
 		});
 	}

@@ -15,7 +15,9 @@ import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TClickableWidget;
-import com.thecsdev.commonmc.resources.TCDCSprites;
+import com.thecsdev.commonmc.resource.TSprites;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -44,6 +46,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
  * This element's parent <b>must</b> be either a {@link TScreen} or another {@link TContextMenu}.
  * Attempting to add this element to any other type of parent <b>will {@code throw}</b>!
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TContextMenu extends TElement
 {
 	// ================================================== ==================================================
@@ -371,7 +374,7 @@ public @Virtual class TContextMenu extends TElement
 					renderShadow(pencil);
 					final var bb = getBounds();
 					pencil.drawGuiSprite(
-							isFocused() ? TCDCSprites.gui_popup_ctxmenuHighlighted() : TCDCSprites.gui_popup_ctxmenu(),
+							isFocused() ? TSprites.gui_popup_ctxmenuHighlighted() : TSprites.gui_popup_ctxmenu(),
 							bb.x, bb.y, bb.width, bb.height, 0xFFFFFFFF);
 				}
 			};

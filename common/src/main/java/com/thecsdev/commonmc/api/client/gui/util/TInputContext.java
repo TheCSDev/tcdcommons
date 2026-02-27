@@ -1,5 +1,7 @@
 package com.thecsdev.commonmc.api.client.gui.util;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -7,6 +9,7 @@ import java.util.Objects;
 /**
  * Holds information about a user's input.
  */
+@Environment(EnvType.CLIENT)
 public final class TInputContext
 {
 	// ==================================================

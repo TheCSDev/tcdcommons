@@ -1,6 +1,8 @@
 package com.thecsdev.commonmc.api.client.gui.tooltip;
 
 import com.thecsdev.commonmc.api.stats.util.CustomStat;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +17,7 @@ import static net.minecraft.network.chat.Component.literal;
  * {@link TTooltip} that shows statistics about a given "custom stat",
  * also known as "general stat", aka {@link Identifier}.
  */
+@Environment(EnvType.CLIENT)
 final @ApiStatus.Internal class TTooltipCustomStat extends TTooltipLabel
 {
 	// ==================================================

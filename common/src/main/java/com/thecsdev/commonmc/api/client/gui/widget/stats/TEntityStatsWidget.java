@@ -8,6 +8,8 @@ import com.thecsdev.commonmc.api.client.gui.misc.TEntityElement;
 import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
 import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.util.EntityStats;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -21,6 +23,7 @@ import java.util.function.Function;
 /**
  * Stats widget that shows statistics about a given {@link EntityType}.
  */
+@Environment(EnvType.CLIENT)
 public final class TEntityStatsWidget extends TStatsWidget
 {
 	// ==================================================

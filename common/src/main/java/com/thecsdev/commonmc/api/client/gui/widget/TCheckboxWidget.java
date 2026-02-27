@@ -3,12 +3,15 @@ package com.thecsdev.commonmc.api.client.gui.widget;
 import com.thecsdev.common.properties.BooleanProperty;
 import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * A {@link TClickableWidget} implementation that looks and behaves
  * like a regular checkbox you'd see in-game.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TCheckboxWidget extends TClickableWidget
 {
 	// ==================================================

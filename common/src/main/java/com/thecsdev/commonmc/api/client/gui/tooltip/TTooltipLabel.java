@@ -4,6 +4,8 @@ import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.common.properties.ObjectProperty;
 import com.thecsdev.common.util.enumerations.CompassDirection;
 import com.thecsdev.commonmc.api.client.gui.label.TLabelElement;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -13,6 +15,7 @@ import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.getScreenBound
 /**
  * A {@link TTooltip} with a simple textual label.
  */
+@Environment(EnvType.CLIENT)
 sealed @ApiStatus.Internal class TTooltipLabel extends TTooltip
 		permits TTooltipCustomStat, TTooltipSubjectStats
 {

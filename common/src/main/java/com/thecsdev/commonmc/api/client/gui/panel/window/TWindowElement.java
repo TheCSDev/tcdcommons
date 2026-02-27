@@ -15,7 +15,9 @@ import com.thecsdev.commonmc.api.client.gui.util.CursorType;
 import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
-import com.thecsdev.commonmc.resources.TComponent;
+import com.thecsdev.commonmc.resource.TComponent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
  * {@link TElement} implementation that has the visual appearance to that of a "window",
  * featuring a title-bar that has a title label and control buttons like [X].
  */
+@Environment(EnvType.CLIENT)
 public abstract class TWindowElement extends TElement
 {
 	// ================================================== ==================================================

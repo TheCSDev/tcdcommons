@@ -24,6 +24,8 @@ import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -40,6 +42,7 @@ import static com.thecsdev.commonmc.api.client.gui.TElement.TElementPropertyAcce
 /**
  * Represents a GUI element in {@link TCDCommons}'s GUI system.
  */
+@Environment(EnvType.CLIENT)
 @Reflected(AccessorTElement.class)
 public @Virtual class TElement extends Node<TElement> implements INodeBounded<TElement, Bounds2i>, INodeRenderable<TElement, TGuiGraphics>
 {

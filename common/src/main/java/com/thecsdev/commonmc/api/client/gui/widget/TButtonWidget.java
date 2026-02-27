@@ -6,6 +6,8 @@ import com.thecsdev.common.util.enumerations.CompassDirection;
 import com.thecsdev.commonmc.api.client.gui.label.TLabelElement;
 import com.thecsdev.commonmc.api.client.gui.panel.TPanelElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
 
 import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.*;
@@ -14,6 +16,7 @@ import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.*;
  * A {@link TClickableWidget} implementation that looks and behaves
  * like a regular button you'd see in-game's GUI.
  */
+@Environment(EnvType.CLIENT)
 public @Virtual class TButtonWidget extends TClickableWidget
 {
 	// ================================================== ==================================================

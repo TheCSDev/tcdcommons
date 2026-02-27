@@ -8,6 +8,8 @@ import com.thecsdev.commonmc.api.client.gui.panel.TPanelElement;
 import com.thecsdev.commonmc.api.client.gui.widget.TClickableWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.text.TSimpleTextFieldWidget;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorGameRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.render.GuiRenderer;
@@ -29,6 +31,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT;
 /**
  * {@link TCDCommons} API's GUI-related utility methods.
  */
+@Environment(EnvType.CLIENT)
 public final class TGuiUtils
 {
 	// ==================================================

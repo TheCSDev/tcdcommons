@@ -7,6 +7,8 @@ import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
 import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.util.CustomStat;
 import com.thecsdev.commonmc.api.stats.util.StatFormatterOverride;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +23,7 @@ import static net.minecraft.network.chat.Component.literal;
  * Textual stat widget that shows the name and value of a "custom stat",
  * also known as "general stat" in the game's statistics GUI.
  */
+@Environment(EnvType.CLIENT)
 public final class TCustomStatWidget extends TTextualStatWidget
 {
 	// ==================================================

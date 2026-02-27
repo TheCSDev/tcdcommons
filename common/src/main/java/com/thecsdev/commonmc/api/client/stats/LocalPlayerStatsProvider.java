@@ -2,6 +2,8 @@ package com.thecsdev.commonmc.api.client.stats;
 
 import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.PlayerStatsProvider;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.stats.Stat;
@@ -14,6 +16,7 @@ import java.util.Objects;
 /**
  * A {@link IStatsProvider} that provides statistics of a {@link LocalPlayer}.
  */
+@Environment(EnvType.CLIENT)
 public final class LocalPlayerStatsProvider extends PlayerStatsProvider<@NotNull LocalPlayer>
 {
 	// ==================================================
