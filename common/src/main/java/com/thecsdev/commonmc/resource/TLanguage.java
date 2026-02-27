@@ -36,5 +36,6 @@ public final class TLanguage
 	// --------------------------------------------------
 	public static final @Reflected MutableComponent misc_loading() { return translatable("tcdcommons.misc.loading"); }
 	public static final @Reflected MutableComponent misc_somethingWentWrong() { return translatable("tcdcommons.misc.something_went_wrong"); }
+	public static final @Reflected MutableComponent misc_comingSoon() { return translatable("tcdcommons.misc.coming_soon"); }
 	// ==================================================
 }

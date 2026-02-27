@@ -29,5 +29,6 @@
 	"tcdcommons.gui.filechooser.action.input_filename.placeholder": "File name",
 
 	"tcdcommons.misc.loading": "Loading...",
-	"tcdcommons.misc.something_went_wrong": "Something went wrong"
+	"tcdcommons.misc.something_went_wrong": "Something went wrong",
+	"tcdcommons.misc.coming_soon": "Coming soon"
 }
