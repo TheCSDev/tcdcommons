@@ -170,14 +170,11 @@ public final class TFileChooserScreen extends TScreenPlus implements ILastScreen
 
 		//lastly, the "on result" handler with the output data
 		try {
-			//FIXME ? Minecrafr#setScreen(Screen) calls from here fail because we're already inside a #setScreen call
 			this.onResult.accept(this.output_result, this.output_file.get());
 		} catch(Exception exc) {
 			//prepare to construct an error popup textual dialog to later show the user
 			final var client  = Objects.requireNonNull(getClient(), "Missing 'client' instance");
-			final var message = ExceptionUtils.getStackTrace(exc)
-					.replace("\r\n", "\n").replace("\t", "    ");
-			//scheduling the opening of the text dialog screen because #setScreen no workie here
+			final var message = ExceptionUtils.getStackTrace(exc).replace("\r\n", "\n").replace("\t", "    ");
 			client.schedule(() -> {
 				final var screen  = new TTextDialogScreen(
 						client.screen, //use 'client.screen' inside scheduled task and 'this.lastScreen' outside

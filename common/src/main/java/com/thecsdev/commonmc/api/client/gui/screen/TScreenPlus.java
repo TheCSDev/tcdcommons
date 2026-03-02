@@ -107,7 +107,7 @@ public abstract class TScreenPlus extends TScreen
 			final @Nullable CompassDirection direction,
 			final @NotNull Predicate<TElement> predicate)
 	{
-		//esure the necessary arguments aren't null
+		//ensure the necessary arguments aren't null
 		if(target == null || direction == null || target.getParent() == null)
 			return null;
 		Objects.requireNonNull(predicate);

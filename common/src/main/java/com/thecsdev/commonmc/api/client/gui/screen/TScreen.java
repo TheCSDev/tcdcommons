@@ -130,7 +130,7 @@ public abstract class TScreen extends TElement
 	public final boolean isOpen() {
 		final           var screen = getAsScreen();
 		final @Nullable var client = screen.getClient();
-		return (client != null && client.screen == screen);
+		return client.screen == screen;
 	}
 
 	/**
@@ -159,7 +159,7 @@ public abstract class TScreen extends TElement
 	public final boolean sendInput(@NotNull TInputContext context) { return this.screen.sendInput(context); }
 	// ==================================================
 	protected abstract @Override void initCallback(); //forced to be overridden
-
+	// --------------------------------------------------
 	/**
 	 * Callback method that is invoked whenever this {@link TScreen} is opened
 	 * via {@link Minecraft#setScreen(Screen)}.<br>
@@ -175,19 +175,16 @@ public abstract class TScreen extends TElement
 	 * @see Screen#removed()
 	 */
 	protected @Virtual void closeCallback() {}
-
+	// --------------------------------------------------
 	/**
 	 * Callback method that is invoked whenever this {@link TScreen} is closing.
 	 * By default, this sets {@link Minecraft#screen} to {@code null}, but you
 	 * may override this to set another {@link Screen} instance if necessary.
-	 * @throws IllegalStateException Whenever {@link #getClient()} returns {@code null}.
 	 * @apiNote This method <b>must</b> use {@link Minecraft#setScreen(Screen)}.
 	 */
-	public @Virtual void close() throws IllegalStateException {
-		//obtain client instance and ensure its presence
-		final @Nullable var client = getClient();
-		if(client == null) throw new IllegalStateException("Missing 'client' instance");
+	public @Virtual void close() {
 		//set screen to last screen if available, else to null
+		final @Nullable var client = getClient();
 		if(isOpen()) client.setScreen(getLastScreen(this));
 	}
 	// ==================================================
