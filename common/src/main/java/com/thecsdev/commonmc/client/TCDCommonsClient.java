@@ -50,6 +50,13 @@ public class TCDCommonsClient extends TCDCommons
 			}
 			// ----------
 		});
+
+		//FIXME - TEST TRIGGER , REMOVE:
+		/*BlockEvent.BREAK.register((level, blockPos, blockState, serverPlayer, intValue) -> {
+			final var client = Minecraft.getInstance();
+			client.schedule(() -> client.setScreen(new TTestScreen().getAsScreen()));
+			return EventResult.pass();
+		});*/
 	}
 	// ==================================================
 }
