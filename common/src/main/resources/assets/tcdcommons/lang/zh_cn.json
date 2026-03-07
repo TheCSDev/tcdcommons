@@ -14,7 +14,7 @@
 	"tcdcommons.stat_type.morestats.damaged_by": "受到伤害",
 	"tcdcommons.stat_type.morestats.totem_popped_by": "触发图腾",
 
-	"tcdcommons.gui.screen.text_dialog.default_title": "Dialog",
+	"tcdcommons.gui.screen.text_dialog.default_title": "对话框",
 	"tcdcommons.gui.screen.text_dialog.error_title": "出现错误",
 
 	"tcdcommons.gui.dropdown.default_label": "选择一个选项……",
