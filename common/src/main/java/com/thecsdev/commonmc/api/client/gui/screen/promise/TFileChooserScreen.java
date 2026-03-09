@@ -1,23 +1,24 @@
 package com.thecsdev.commonmc.api.client.gui.screen.promise;
 
+import com.thecsdev.common.math.UDim2;
+import com.thecsdev.commonmc.api.client.gui.TElement;
+import com.thecsdev.commonmc.api.client.gui.panel.explorer.TFileExplorerPanel;
+import com.thecsdev.commonmc.api.client.gui.panel.explorer.TFileExplorerPanel.PathFilter;
+import com.thecsdev.commonmc.api.client.gui.panel.window.TWindowElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.screen.ILastScreenProvider;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreen;
-import com.thecsdev.commonmc.api.client.gui.widget.TDropdownWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.*;
 
 import static com.thecsdev.commonmc.resource.TComponent.gui;
 import static com.thecsdev.commonmc.resource.TLanguage.*;
@@ -38,15 +39,25 @@ public final class TFileChooserScreen extends TCompletableScreen<Path> implement
 	// ================================================== ==================================================
 	private final @NotNull Mode             mode;
 	private final @NotNull List<PathFilter> pathFilters;
+	// --------------------------------------------------
+	private       @Nullable PathFilter  currFilter;
+	private       @NotNull  Path        history_dir;
+	private final @NotNull  Deque<Path> history_back;
+	private final @NotNull  Deque<Path> history_fwd;
 	// ==================================================
-	public TFileChooserScreen(
+	private TFileChooserScreen(
 			@Nullable Screen lastScreen,
 			@NotNull Mode mode,
-			@NotNull List<PathFilter> pathFilters) throws NullPointerException
+			@NotNull List<PathFilter> pathFilters,
+			@NotNull Path currentDir) throws NullPointerException
 	{
 		super(lastScreen);
-		this.mode        = Objects.requireNonNull(mode);
-		this.pathFilters = List.copyOf(Objects.requireNonNull(pathFilters));
+		titleProperty().set(Objects.requireNonNull(mode).getWindowTitle(), TFileChooserScreen.class);
+		this.mode         = mode;
+		this.pathFilters  = List.copyOf(Objects.requireNonNull(pathFilters));
+		this.history_dir  = Objects.requireNonNull(currentDir);
+		this.history_back = new LinkedList<>();
+		this.history_fwd  = new LinkedList<>();
 	}
 	// ==================================================
 	/**
@@ -66,7 +77,12 @@ public final class TFileChooserScreen extends TCompletableScreen<Path> implement
 	// --------------------------------------------------
 	protected final @Override void initCallback()
 	{
-		throw new NotImplementedException("This file-chooser is not implemented yet.");
+		//do not initialize a gui or even use this screen if this file chooser was used before
+		if(getResult().isDone()) { close(); return; }
+		//create and add the window element
+		final var wnd = new WindowElement();
+		add(wnd);
+		wnd.setBounds(new UDim2(0.1, 0, 0.1, 0), new UDim2(0.8, 0, 0.8, 0));
 	}
 	// ================================================== ==================================================
 	//                                               Mode IMPLEMENTATION
@@ -108,79 +124,120 @@ public final class TFileChooserScreen extends TCompletableScreen<Path> implement
 		// ==================================================
 	}
 	// ================================================== ==================================================
-	//                                         PathFilter IMPLEMENTATION
+	//                                            Builder IMPLEMENTATION
 	// ================================================== ==================================================
 	/**
-	 * A filter interface for filtering {@link Path}s displayed on the
-	 * {@link TFileChooserScreen} interface.
+	 * A builder class for creating {@link TFileChooserScreen} instances.
 	 */
-	@FunctionalInterface
-	public static interface PathFilter extends Predicate<Path>, TDropdownWidget.Entry
+	public static final class Builder
 	{
 		// ==================================================
+		private final @NotNull  Mode             mode;
+		private       @Nullable Screen           lastScreen;
+		private       @NotNull  Path             currDir;
+		private final @NotNull  List<PathFilter> pathFilters;
+		// ==================================================
+		public Builder(@NotNull Mode mode) throws NullPointerException {
+			this.mode        = Objects.requireNonNull(mode);
+			this.currDir     = Path.of(System.getProperty("user.dir"));
+			this.pathFilters = new ArrayList<>();
+		}
+		// ==================================================
 		/**
-		 * {@link PathFilter} instance that accepts all {@link Path}s.
+		 * Gets the {@link Mode} this {@link Builder} was initialized with.
 		 */
-		public static final PathFilter ALL = new PathFilter() {
-			public final @Override @NotNull Component getDisplayName() { return Component.literal("*.*"); }
-			public final @Override boolean test(Path path) { return true; }
-		};
-		// ==================================================
-		default @Override @NotNull Component getDisplayName() { return Component.literal("?.?"); }
+		public final @NotNull Mode getmode() { return this.mode; }
 		// ==================================================
 		/**
-		 * Creates a simple {@link PathFilter} that filters {@link Path}s based on their
-		 * extension name.
-		 * @param extname The extension name (<b>case-sensitive</b>).
+		 * Sets the {@link Screen} instance that will be assigned as the "last screen" for the
+		 * {@link TFileChooserScreen} instance created by this builder.
+		 * @param lastScreen The last {@link Screen} instance.
+		 */
+		public final Builder setLastScreen(@Nullable Screen lastScreen) {
+			this.lastScreen = lastScreen;
+			return this;
+		}
+		// --------------------------------------------------
+		/**
+		 * Sets the starting directory that the {@link TFileChooserScreen} instance created
+		 * by this builder will display upon opening.
+		 * @param currDir The current directory {@link Path}.
 		 * @throws NullPointerException If the argument is {@code null}.
-		 * @throws IllegalArgumentException If the extension name contains a known illegal character.
 		 */
-		public static PathFilter extname(@NotNull String extname)
-				throws NullPointerException, IllegalArgumentException
-		{
-			Objects.requireNonNull(extname);
-			if(!extname.startsWith(".")) extname = "." + extname;
-			return extnames(Component.literal(extname), extname);
+		public final Builder setCurrentDirectory(@NotNull Path currDir) throws NullPointerException {
+			this.currDir = Objects.requireNonNull(currDir);
+			return this;
+		}
+		// --------------------------------------------------
+		/**
+		 * Sets the {@link PathFilter} that will be used by the {@link TFileChooserScreen}
+		 * instance created by this builder.
+		 * @param pathFilter The {@link PathFilter} instance.
+		 * @throws NullPointerException If the argument is {@code null}.
+		 */
+		public final Builder setPathFilter(@NotNull PathFilter pathFilter) throws NullPointerException {
+			Objects.requireNonNull(pathFilter);
+			this.pathFilters.clear();
+			this.pathFilters.add(pathFilter);
+			return this;
 		}
 
 		/**
-		 * Creates a simple {@link PathFilter} that filters {@link Path}s based on their
-		 * extension names.
-		 * @param filterName The display name for the {@link PathFilter}.
-		 * @param extnames The extension names (<b>case-sensitive</b>).
-		 * @throws NullPointerException If an argument is {@code null}.
-		 * @throws IllegalArgumentException If an extension name contains a known illegal character.
+		 * Adds a {@link PathFilter} that will be used by the {@link TFileChooserScreen}
+		 * instance created by this builder.
+		 * @param pathFilter The {@link PathFilter} instance.
+		 * @throws NullPointerException If the argument is {@code null}.
+		 * @throws IllegalStateException If the {@link Mode} of this {@link Builder} is {@link Mode#EXPLORE}.
+		 * For now there is no interface to select a {@link PathFilter} in that mode. This may change in the
+		 * future.
 		 */
-		public static PathFilter extnames(@NotNull Component filterName, @NotNull String... extnames)
-				throws NullPointerException, IllegalArgumentException
+		public final Builder addPathFilter(@NotNull PathFilter pathFilter)
+				throws NullPointerException, IllegalStateException
 		{
-			//not null requirements
-			Objects.requireNonNull(filterName);
-			Objects.requireNonNull(extnames);
-
-			//check for illegal characters
-			final var illegalChars = new char[] { '/', '\\', '?', '%', '*', ':', '|', '"', '<', '>' };
-			for(final var illegalChar : illegalChars)
-				for(final var extname : extnames)
-					if(extname.indexOf(illegalChar) >= 0)
-						throw new IllegalArgumentException("Extension name cannot contain character: " + illegalChar);
-
-			//for simplicity, the extension names are prefixed with a period
-			for(int i = 0; i < extnames.length; i++)
-				if(!extnames[i].startsWith("."))
-					extnames[i] = "." + extnames[i];
-
-			//construct and return the path filter
-			return new PathFilter() {
-				public final @Override @NotNull Component getDisplayName() { return filterName; }
-				public final @Override boolean test(Path path) {
-					final var fileName = path.getFileName().toString();
-					for(final var extname : extnames)
-						if(fileName.endsWith(extname))
-							return true;
-					return false;
-				}
-			};
+			//not null requirement
+			Objects.requireNonNull(pathFilter);
+			//mode state requirement
+			if(this.mode == Mode.EXPLORE && this.pathFilters.size() == 1)
+				throw new IllegalStateException("Cannot have multiple file-filters in " + Mode.class.getName() + "#" + Mode.EXPLORE);
+			//add file filter and return
+			this.pathFilters.add(pathFilter);
+			return this;
+		}
+		// ==================================================
+		/**
+		 * Builds a new {@link TFileChooserScreen} instance using the parameters
+		 * previously set in this builder.
+		 */
+		public final @NotNull TFileChooserScreen build() {
+			return new TFileChooserScreen(this.lastScreen, this.mode, this.pathFilters, this.currDir);
+		}
+		// ==================================================
+	}
+	// ================================================== ==================================================
+	//                                      WindowElement IMPLEMENTATION
+	// ================================================== ==================================================
+	/**
+	 * The {@link TWindowElement} whose GUI features file-system navigation and file
+	 * selection.
+	 */
+	final class WindowElement extends TWindowElement
+	{
+		// ==================================================
+		WindowElement() {
+			titleProperty().set(TFileChooserScreen.this.titleProperty().get(), WindowElement.class);
+			backgroundColorProperty().set(0xFF2b2b2b, WindowElement.class);
+			closeOperationProperty().set(TWindowElement.CloseOperation.CLOSE_SCREEN, WindowElement.class);
+		}
+		// ==================================================
+		protected final @Override void initBodyCallback(@NotNull TElement body)
+		{
+			final var explorer = new TFileExplorerPanel(new TFileExplorerPanel.View() {
+				public final @Override @NotNull Path currentDirectory() { return TFileChooserScreen.this.history_dir; }
+				public final @Override @NotNull Deque<Path> backStack() { return TFileChooserScreen.this.history_back; }
+				public final @Override @NotNull Deque<Path> forwardStack() { return TFileChooserScreen.this.history_fwd; }
+			});
+			explorer.setBounds(body.getBounds());
+			body.add(explorer);
 		}
 		// ==================================================
 	}

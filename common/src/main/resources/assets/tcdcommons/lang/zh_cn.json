@@ -18,8 +18,8 @@
 	"tcdcommons.gui.screen.text_dialog.error_title": "出现错误",
 
 	"tcdcommons.gui.dropdown.default_label": "选择一个选项……",
-	"tcdcommons.gui.filechooser.mode.explore": "文件浏览器",
 
+	"tcdcommons.gui.filechooser.mode.explore": "文件浏览器",
 	"tcdcommons.gui.filechooser.mode.choose_file": "先择文件",
 	"tcdcommons.gui.filechooser.mode.create_file": "创建文件",
 	"tcdcommons.gui.filechooser.quick_access": "快速访问",

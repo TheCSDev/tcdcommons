@@ -57,7 +57,6 @@ public abstract class TWindowElement extends TElement
 			setBounds((n && parent != null) ? getParent().getBounds() : this.restoredBounds.get());
 			//must reinitialize the gui to fit the new bounds
 			clearAndInit();
-			//TODO ^ Again, the issue of focused element clearing, thus hindering accessibility, reoccurs.
 		});
 	}
 	// ==================================================
@@ -90,7 +89,7 @@ public abstract class TWindowElement extends TElement
 	 * The value of this property is automatically updated whenever the value of
 	 * {@link #maximizedProperty()} is set to {@code true}.
 	 * <p>
-	 * This value will be overriden when maximizing this {@link TWindowElement}.
+	 * This value will be overridden when maximizing this {@link TWindowElement}.
 	 * @see #maximizedProperty()
 	 */
 	public final NotNullProperty<Bounds2i> restoredBoundsProperty() { return this.restoredBounds; }
@@ -172,7 +171,7 @@ public abstract class TWindowElement extends TElement
 	}
 	// ==================================================
 	/**
-	 * Similar to {@link #initCallback()}, except elements are intialized onto the
+	 * Similar to {@link #initCallback()}, except elements are initialized onto the
 	 * provided "body" {@link TElement}.
 	 * @param body The parent element where the GUI is to be initialized.
 	 */
@@ -224,7 +223,7 @@ public abstract class TWindowElement extends TElement
 		 * The current screen instance the {@link TWindowElement} belongs to is closed.
 		 * @see TScreen#close()
 		 */
-		CLOSE_SCREEN;
+		CLOSE_SCREEN
 	}
 	// ================================================== ==================================================
 	//                                    TitlebarElement IMPLEMENTATION
@@ -261,7 +260,7 @@ public abstract class TWindowElement extends TElement
 			this.lbl_title.setText(TWindowElement.this.title.get());
 			add(this.lbl_title);
 
-			//initalize maximize button
+			//initialize maximize button
 			this.btn_maximize.setBounds(bb.width - 40, 0, 20, 15);
 			this.btn_maximize.eClicked.register(__ -> TWindowElement.this.maximized.toggle());
 			addRel(btn_maximize);

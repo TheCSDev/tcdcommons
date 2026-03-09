@@ -3,8 +3,12 @@ package com.thecsdev.commonmc.api.util.modinfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+
+import static com.thecsdev.common.util.TUtils.str2sha256base36;
 
 /**
  * Provides information about currently installed mods.
@@ -13,6 +17,8 @@ public abstract class ModInfoProvider
 {
 	// ==================================================
 	private static @Nullable ModInfoProvider INSTANCE = null;
+	// --------------------------------------------------
+	private @Nullable String modpackId;
 	// ==================================================
 	/**
 	 * Returns the current {@link ModInfoProvider} instance,
@@ -49,5 +55,25 @@ public abstract class ModInfoProvider
 	 * @throws NullPointerException When the argument is {@code null}.
 	 */
 	public abstract boolean isModLoaded(@NotNull String modid) throws NullPointerException;
+	// ==================================================
+	/**
+	 * Returns a unique ID for the current modpack installation, which is generated
+	 * by hashing the list of currently installed mods and their versions.
+	 */
+	public final @NotNull String getModpackID()
+	{
+		//return the value if already computed
+		if(this.modpackId != null) return this.modpackId;
+
+		//otherwise compute value
+		final var plaintext = new StringBuilder();
+		Arrays.stream(getLoadedModIDs())
+				.map(this::getModInfo)
+				.sorted(Comparator.comparing(ModInfo::getID))
+				.forEach(modInfo -> plaintext
+						.append(modInfo.getID()).append("+")
+						.append(modInfo.getVersion()).append("\n"));
+		return (this.modpackId = str2sha256base36(plaintext.toString()));
+	}
 	// ==================================================
 }

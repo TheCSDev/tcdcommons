@@ -2,18 +2,17 @@ package com.thecsdev.commonmc.client.gui.screen;
 
 import com.thecsdev.common.math.Point2d;
 import com.thecsdev.common.math.UDim2;
-import com.thecsdev.common.util.TUtils;
 import com.thecsdev.common.util.enumerations.CompassDirection;
-import com.thecsdev.commonmc.TCDCommons;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.ctxmenu.TContextMenu;
 import com.thecsdev.commonmc.api.client.gui.label.TLabelElement;
 import com.thecsdev.commonmc.api.client.gui.misc.TFillColorElement;
 import com.thecsdev.commonmc.api.client.gui.panel.TPanelElement;
-import com.thecsdev.commonmc.api.client.gui.screen.TFileChooserScreen;
+import com.thecsdev.commonmc.api.client.gui.panel.explorer.TFileExplorerPanel;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreen;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreenPlus;
 import com.thecsdev.commonmc.api.client.gui.screen.TTextDialogScreen;
+import com.thecsdev.commonmc.api.client.gui.screen.promise.TFileChooserScreen;
 import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TScrollBarWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TSliderWidget;
@@ -33,6 +32,7 @@ import java.util.Objects;
 
 import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.COLOR_BACKGROUND;
 import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.COLOR_OUTLINE;
+import static com.thecsdev.commonmc.api.client.gui.screen.promise.TFileChooserScreen.Mode.CREATE_FILE;
 import static com.thecsdev.commonmc.resource.TComponent.block;
 import static net.minecraft.network.chat.Component.literal;
 
@@ -72,6 +72,8 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus
 				.addButton(literal("Option 1"), ___ -> {})
 				.addButton(literal("Option 2"), ___ -> {})
 				.addButton(literal("Option 3"), ___ -> {})
+				.addSeparator()
+				.addSeparator()
 				.addSeparator()
 				.addButton(literal("Option 4"), ___ -> {})
 				.addButton(literal("Option 5"), ___ -> {})
@@ -113,26 +115,32 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus
 				.addButton(literal("mia"), ___ -> {})
 				.addButton(literal("pasta"), ___ -> {})
 				.addButton(literal("italia"), ___ -> {})
+				.addSeparator()
 				.build(), TTestScreen.class);
 		panel.addRel(el1);
 
 		final var el2 = new TButtonWidget();
 		el2.setBounds(10, 40, 300, 20);
 		el2.getLabel().setText(literal("Popup file chooser"));
-		el2.eClicked.register(__ -> {
-			assert getClient() != null;
-			getClient().setScreen(new TFileChooserScreen.Builder(TFileChooserScreen.Mode.CREATE_FILE)
+		el2.eClicked.register(__ ->
+		{
+			final var explorer = new TFileChooserScreen.Builder(CREATE_FILE)
 					.setLastScreen(getAsScreen())
-					.addFileFilter(TFileChooserScreen.FileFilter.ALL)
-					.addFileFilter(TFileChooserScreen.FileFilter.extname("txt"))
-					.addFileFilter(TFileChooserScreen.FileFilter.extname("png"))
-					.addFileFilter(TFileChooserScreen.FileFilter.extname("gif"))
-					.build((result, file) -> {
-						TCDCommons.LOGGER.info("File chooser result: {}, file: {}", result, file);
-						if(file != null && !file.exists())
-							TUtils.uncheckedCall(file::createNewFile);
-					})
-					.getAsScreen());
+					.addPathFilter(TFileExplorerPanel.PathFilter.ALL)
+					.addPathFilter(TFileExplorerPanel.PathFilter.extname("txt"))
+					.addPathFilter(TFileExplorerPanel.PathFilter.extname("png"))
+					.addPathFilter(TFileExplorerPanel.PathFilter.extname("gif"))
+					.build();
+			explorer.getResult().thenApply(path -> {
+				System.out.println("You have chosen the path: " + path);
+				return path;
+			});
+			explorer.getResult().exceptionally(throwable -> {
+				System.out.println("Something went wrong:");
+				throwable.printStackTrace();
+				return null;
+			});
+			getClient().setScreen(explorer.getAsScreen());
 		});
 		panel.addRel(el2);
 

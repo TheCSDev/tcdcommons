@@ -18,8 +18,8 @@
 	"tcdcommons.gui.screen.text_dialog.error_title": "Something went wrong",
 
 	"tcdcommons.gui.dropdown.default_label": "Select an option...",
-	"tcdcommons.gui.filechooser.mode.explore": "File explorer",
 
+	"tcdcommons.gui.filechooser.mode.explore": "File explorer",
 	"tcdcommons.gui.filechooser.mode.choose_file": "Choose a file",
 	"tcdcommons.gui.filechooser.mode.create_file": "Create a file",
 	"tcdcommons.gui.filechooser.quick_access": "Quick access",
