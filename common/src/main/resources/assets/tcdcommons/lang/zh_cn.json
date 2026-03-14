@@ -24,8 +24,10 @@
 	"tcdcommons.gui.filechooser.mode.create_file": "创建文件",
 	"tcdcommons.gui.filechooser.quick_access": "快速访问",
 	"tcdcommons.gui.filechooser.quick_access.mount_points": "设备和驱动器",
-	"tcdcommons.gui.filechooser.ctxmenu.open_in": "打开方式",
-	"tcdcommons.gui.filechooser.ctxmenu.open_in.assoc_app": "关联的应用程序",
+	"tcdcommons.gui.filechooser.ctxmenu.select": "选择",
+	"tcdcommons.gui.filechooser.ctxmenu.open": "打开",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with": "打开方式",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "关联的应用程序",
 	"tcdcommons.gui.filechooser.action.input_filename.placeholder": "文件名",
 
 	"tcdcommons.misc.loading": "加载中……",

@@ -5,6 +5,8 @@ import com.thecsdev.commonmc.api.client.gui.misc.TFillColorElement;
 import com.thecsdev.commonmc.api.client.gui.panel.TPanelElement;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreen;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreenPlus;
+import com.thecsdev.commonmc.api.client.gui.screen.promise.TFileChooserScreen;
+import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TScrollBarWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TBlockStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TEntityStatsWidget;
@@ -13,9 +15,13 @@ import com.thecsdev.commonmc.api.stats.RandomStatsProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.stream.Collectors;
+
+import static com.thecsdev.commonmc.TCDCommons.LOGGER;
 import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.COLOR_BACKGROUND;
 import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.COLOR_OUTLINE;
 
@@ -44,6 +50,28 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus
 		final var psX = new TScrollBarWidget.Flat(panel, TScrollBarWidget.ScrollDirection.HORIZONTAL);
 		psX.setBounds(0, panel.getBounds().endY, panel.getBounds().width, 10);
 		add(psX);
+
+		//test buttons
+		final var btn1 = new TButtonWidget();
+		btn1.getLabel().setText(Component.literal("Test file chooser"));
+		btn1.setBounds(10, 10, 150, 20);
+		btn1.eClicked.register(__ -> {
+			final var screen = new TFileChooserScreen.Builder(TFileChooserScreen.Mode.CHOOSE_FILE)
+					.setLastScreen(getAsScreen())
+					.addPathFilter(TFileChooserScreen.PathFilter.ALL)
+					.addPathFilter(TFileChooserScreen.PathFilter.extname(".txt"))
+					.build();
+			screen.getResult().handle((paths, throwable) -> {
+				if(paths != null)
+					LOGGER.info("File chooser completed: {}",
+							paths.stream().map(Object::toString).collect(Collectors.joining(", ")));
+				else if(throwable != null)
+					LOGGER.error("File chooser completed exceptionally: ", throwable);
+				return null;
+			});
+			getClient().setScreen(screen.getAsScreen());
+		});
+		panel.add(btn1);
 
 		//test statistics
 		initEnityStats(panel);

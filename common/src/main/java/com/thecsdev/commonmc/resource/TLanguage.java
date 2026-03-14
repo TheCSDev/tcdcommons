@@ -30,8 +30,10 @@ public final class TLanguage
 	public static final MutableComponent gui_fileChooser_mode_createFile() { return translatable("tcdcommons.gui.filechooser.mode.create_file"); }
 	public static final MutableComponent gui_fileChooser_quickAccess() { return translatable("tcdcommons.gui.filechooser.quick_access"); }
 	public static final MutableComponent gui_fileChooser_quickAccess_mountPoints() { return translatable("tcdcommons.gui.filechooser.quick_access.mount_points"); }
-	public static final MutableComponent gui_fileChooser_ctxmenu_openIn() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open_in"); }
-	public static final MutableComponent gui_fileChooser_ctxmenu_openIn_assocApp() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open_in.assoc_app"); }
+	public static final MutableComponent gui_fileChooser_ctxmenu_select() { return translatable("tcdcommons.gui.filechooser.ctxmenu.select"); }
+	public static final MutableComponent gui_fileChooser_ctxmenu_open() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open"); }
+	public static final MutableComponent gui_fileChooser_ctxmenu_openWith() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open_with"); }
+	public static final MutableComponent gui_fileChooser_ctxmenu_openWith_assocApp() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app"); }
 	public static final MutableComponent gui_fileChooser_action_inputFilename_placeholder() { return translatable("tcdcommons.gui.filechooser.action.input_filename.placeholder"); }
 	// --------------------------------------------------
 	public static final @Reflected MutableComponent misc_loading() { return translatable("tcdcommons.misc.loading"); }

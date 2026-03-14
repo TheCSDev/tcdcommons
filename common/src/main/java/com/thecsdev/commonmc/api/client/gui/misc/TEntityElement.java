@@ -1,7 +1,5 @@
 package com.thecsdev.commonmc.api.client.gui.misc;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.thecsdev.common.properties.BooleanProperty;
 import com.thecsdev.common.properties.DoubleProperty;
 import com.thecsdev.common.properties.NotNullProperty;
@@ -15,14 +13,17 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+
+import static net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED;
 
 /**
  * {@link TElement} that renders an entity on the screen.
@@ -55,10 +56,11 @@ public @Virtual class TEntityElement extends TElement
 	}
 	// --------------------------------------------------
 	/**
-	 * Refereshes the {@link #displayEntity} value. Called automatically
+	 * Refreshes the {@link #displayEntity} value. Called automatically
 	 * whenever {@link #entityTypeProperty()} value changes.
 	 */
-	private final @ApiStatus.Internal void refresh() {
+	private final @ApiStatus.Internal void refresh()
+	{
 		try {
 			this.displayEntity = EntityProvider.getOrCreate(this.entityType.get());
 		} catch(Exception e) {
@@ -87,7 +89,8 @@ public @Virtual class TEntityElement extends TElement
 	 */
 	public final DoubleProperty entityScaleProperty() { return this.entityScale; }
 	// ==================================================
-	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil) {
+	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil)
+	{
 		final var bb = this.getBounds();
 		if(this.displayEntity != null) {
 			pencil.pushScissors(bb.x, bb.y, bb.width, bb.height);
@@ -137,7 +140,7 @@ public @Virtual class TEntityElement extends TElement
 	public static final @ApiStatus.Internal class EntityProvider
 	{
 		// ==================================================
-		private static final Cache<EntityType<?>, Entity> CACHE = CacheBuilder.newBuilder().weakValues().build();
+		private static final Map<EntityType<?>, Entity> CACHE = new HashMap<>();
 		// ==================================================
 		private EntityProvider() {}
 		// ==================================================
@@ -145,27 +148,29 @@ public @Virtual class TEntityElement extends TElement
 		 * Returns an instance of the given {@link EntityType}.
 		 * @param entityType The {@link EntityType} to create an instance of.
 		 * @param <E> The type of the {@link Entity}.
-		 * @return An instance of the given {@link EntityType}.
-		 * @throws NullPointerException If the argument is {@code null} or if the entity could not be created.
+		 * @return An instance of the given {@link EntityType}, or {@code null} if the entity could not be created.
+		 * @throws NullPointerException If the argument is {@code null}.
 		 * @throws RuntimeException If an error occurs during {@link Entity} instance creation.
 		 */
 		@SuppressWarnings("unchecked")
-		public static final @NotNull <E extends Entity> E getOrCreate(@NotNull EntityType<E> entityType)
-				throws NullPointerException, RuntimeException {
+		public static final @Nullable <E extends Entity> E getOrCreate(@NotNull EntityType<E> entityType)
+				throws NullPointerException, RuntimeException
+		{
 			//not null enforcement
 			Objects.requireNonNull(entityType);
 			//create and return the entity
 			try {
 				//handle player entity type
 				if(entityType == EntityType.PLAYER)
-					return (E) Objects.requireNonNull(
-							Minecraft.getInstance().player,
-							"Local player instance is not present");
+					return (E) Minecraft.getInstance().player;
 				//handle all other types
-				return (E) CACHE.get(entityType, () -> Objects.requireNonNull(
-					entityType.create(SandboxLevel.INSTANCE, EntitySpawnReason.MOB_SUMMONED),
-					"Entity creator factory returned 'null'."));
-			} catch(Exception e) {
+				if(CACHE.containsKey(entityType)) //explicitly forces 'null' as a valid value
+					return (E) CACHE.get(entityType);
+				else
+					return (E) CACHE.computeIfAbsent(entityType,
+							__ -> entityType.create(SandboxLevel.INSTANCE, MOB_SUMMONED));
+			} catch(Throwable e) {
+				CACHE.put(entityType, null); //prevent future creation attempts
 				throw new RuntimeException("Failed to create entity of type " + entityType, e);
 			}
 		}

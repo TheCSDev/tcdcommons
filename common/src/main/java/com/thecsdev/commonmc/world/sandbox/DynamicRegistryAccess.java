@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeSources;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -58,11 +59,10 @@ public final class DynamicRegistryAccess implements RegistryAccess
 	}
 
 	@SuppressWarnings("unchecked")
-	public final @Override @NotNull <E> Optional<Registry<E>> lookup(ResourceKey<? extends Registry<? extends E>> resourceKey) {
+	public final @Override @NotNull <E> Optional<Registry<E>> lookup(@NonNull ResourceKey<? extends Registry<? extends E>> resourceKey) {
 		return (Optional<Registry<E>>) (Object) lookupM(resourceKey);
 	}
 
-	//@SuppressWarnings({"unchecked", "rawtypes"})
 	public final @Override @NotNull Stream<RegistryEntry<?>> registries() {
 		return Stream.empty(); //TODO - Implement
 	}
@@ -105,11 +105,11 @@ public final class DynamicRegistryAccess implements RegistryAccess
 		}
 		// ==================================================
 		@SuppressWarnings("unchecked")
-		public @Override @NotNull <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> resourceKey) {
+		public @Override @NotNull <S> HolderGetter<S> lookup(@NonNull ResourceKey<? extends Registry<? extends S>> resourceKey) {
 			return (HolderGetter<S>) this.registry.createRegistrationLookup();
 		}
 		// --------------------------------------------------
-		public @Override @NotNull Holder.Reference<T> register(ResourceKey<T> key, T value, Lifecycle lifecycle) {
+		public @Override @NotNull Holder.Reference<T> register(@NonNull ResourceKey<T> key, T value, @NonNull Lifecycle lifecycle) {
 			Registry.register(this.registry, key, value);
 			return Holder.Reference.createStandAlone(this.registry, key);
 		}

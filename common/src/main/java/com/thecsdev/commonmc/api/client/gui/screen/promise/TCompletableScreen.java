@@ -2,6 +2,7 @@ package com.thecsdev.commonmc.api.client.gui.screen.promise;
 
 import com.thecsdev.common.properties.BooleanProperty;
 import com.thecsdev.common.util.annotations.Virtual;
+import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.screen.ILastScreenProvider;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreen;
 import net.fabricmc.api.EnvType;
@@ -56,6 +57,16 @@ public abstract class TCompletableScreen<R> extends TScreen implements ILastScre
 	protected final BooleanProperty canCompleteAsync() { return this.canCompleteAsync; }
 	// ==================================================
 	public final @Override @Nullable Screen getLastScreen() { return this.lastScreen; }
+	// --------------------------------------------------
+	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil)
+	{
+		if(getLastScreen() == null) return;
+		//the last screen is to be visually rendered below this screen
+		getLastScreen().render(pencil.getNative(), pencil.getMouseX(), pencil.getMouseY(), pencil.getDeltaTicks());
+		//followed by a white plane background so it's easier to tell screens apart
+		final var bb = getBounds();
+		pencil.fillColor(bb.x, bb.y, bb.width, bb.height, 0x22FFFFFF);
+	}
 	// --------------------------------------------------
 	/**
 	 * {@inheritDoc}<p>

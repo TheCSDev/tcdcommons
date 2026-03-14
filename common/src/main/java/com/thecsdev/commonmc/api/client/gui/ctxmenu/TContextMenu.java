@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.thecsdev.commonmc.api.client.gui.ctxmenu.TContextMenu.PropertyAccessor.setRootCtxMenuValue;
 import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.calcMaxWidth;
@@ -306,12 +307,12 @@ public @Virtual class TContextMenu extends TElement
 		/**
 		 * Adds a {@link TButtonWidget} that opens a sub-menu when clicked.
 		 * @param text The text to display on the entry.
-		 * @param menu The {@link TContextMenu} to open when the entry is clicked.
+		 * @param menuBuilder The {@link TContextMenu} builder function.
 		 * @throws NullPointerException If an argument is {@code null}.
 		 */
 		public final Builder addContextMenu(
 				@NotNull Component text,
-				@NotNull TContextMenu menu) throws NullPointerException
+				@NotNull Function<TClickableWidget, TContextMenu> menuBuilder) throws NullPointerException
 		{
 			//create the button and configure it
 			final var btn = new Button();
@@ -320,6 +321,7 @@ public @Virtual class TContextMenu extends TElement
 			btn.setBounds(0, 0, this.client.font.width(text) + (TButtonWidget.LBL_PAD_X * 2), 15);
 			btn.eClicked.register(__ -> {
 				//add the context menu
+				final var menu = Objects.requireNonNull(menuBuilder.apply(btn), "Context menu Supplier returned 'null'");
 				btn.getParentMenu().add(menu);
 				//move the menu to the correct position
 				final var pbb = btn.getParentMenu().getBounds();

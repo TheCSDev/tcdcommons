@@ -998,14 +998,14 @@ public final class TFileChooserScreen extends TScreenPlus implements ILastScreen
 		 */
 		private static final Function<FileEntryElement, TContextMenu> CONTEXT_MENU = (fee) ->
 			new TContextMenu.Builder(Objects.requireNonNull(fee.getClient()))
-				.addContextMenu(
-					gui(TSprites.gui_icon_fsFolder()).append(" ").append(TLanguage.gui_fileChooser_ctxmenu_openIn()),
-					new TContextMenu.Builder(fee.getClient())
-						.addButton(
-							gui(TSprites.gui_icon_fsFile()).append(" ").append(TLanguage.gui_fileChooser_ctxmenu_openIn_assocApp()),
-							btn -> Util.getPlatform().openUri(fee.getFile().toURI()))
-						.build())
-				.build();
+					.addContextMenu(
+							gui(TSprites.gui_icon_fsFolder()).append(" ").append(TLanguage.gui_fileChooser_ctxmenu_openWith()),
+							__ -> new TContextMenu.Builder(fee.getClient())
+									.addButton(
+											gui(TSprites.gui_icon_fsFile()).append(" ").append(TLanguage.gui_fileChooser_ctxmenu_openWith_assocApp()),
+											btn -> Util.getPlatform().openUri(fee.getFile().toURI()))
+									.build())
+					.build();
 		// ==================================================
 	}
 	// ================================================== ==================================================
