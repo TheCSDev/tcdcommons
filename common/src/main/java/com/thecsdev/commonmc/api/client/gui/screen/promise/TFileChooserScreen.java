@@ -12,6 +12,7 @@ import com.thecsdev.commonmc.api.client.gui.panel.window.TWindowElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.screen.ILastScreenProvider;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreen;
+import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TDropdownWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TScrollBarWidget;
@@ -44,6 +45,8 @@ import static com.thecsdev.commonmc.resource.TComponent.gui;
 import static com.thecsdev.commonmc.resource.TLanguage.*;
 import static com.thecsdev.commonmc.resource.TSprites.gui_icon_fsFolder;
 import static java.nio.file.Files.readAttributes;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_4;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_5;
 
 /**
  * {@link TScreen} implementation that provides a user-friendly interface for selecting
@@ -109,6 +112,27 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 		final var wnd = new WindowElement();
 		add(wnd);
 		wnd.setBounds(new UDim2(0.1, 0, 0.1, 0), new UDim2(0.8, 0, 0.8, 0));
+	}
+	// --------------------------------------------------
+	public final @Override boolean inputCallback(
+			@NotNull TInputContext.InputDiscoveryPhase phase,
+			@NotNull TInputContext context) throws NullPointerException
+	{
+		//only handle preempt mouse releases
+		if(phase != TInputContext.InputDiscoveryPhase.PREEMPT || context.getInputType() != TInputContext.InputType.MOUSE_RELEASE)
+			return false;
+
+		//handle mouse navigation
+		assert (context.getMouseButton() != null);
+		if(context.getMouseButton() == GLFW_MOUSE_BUTTON_4) {
+			this.controller.navigateBack();
+			return true;
+		} else if(context.getMouseButton() == GLFW_MOUSE_BUTTON_5) {
+			this.controller.navigateForward();
+			return true;
+		} else {
+			return false;
+		}
 	}
 	// ================================================== ==================================================
 	//                                               Mode IMPLEMENTATION
@@ -664,6 +688,7 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 			//initialize fields and properties
 			this.path = Objects.requireNonNull(path);
 			this.attributes = Objects.requireNonNull(attributes);
+			super.eClicked.unregister(ONCLICK_SOUND);
 
 			//configure label
 			getLabel().setText(computeFileLabelText());
@@ -731,6 +756,7 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 
 			//directory navigation is independent and needs no double-clicking
 			if(this.attributes.isDirectory()) {
+				ONCLICK_SOUND.accept(this);
 				this.controller.navigateTo(this.path);
 				return;
 			}
@@ -738,7 +764,7 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 			//handle double click based on file chooser mode
 			switch(this.controller.getMode()) {
 				//when choosing/creating, approve the selection of this file
-				case CHOOSE_FILE, CREATE_FILE: { select(); break; }
+				case CHOOSE_FILE, CREATE_FILE: { ONCLICK_SOUND.accept(this); select(); break; }
 				//when exploring, open the file with the associated application
 				case EXPLORE:
 				default: { open(); break; }

@@ -4,11 +4,12 @@ import com.thecsdev.common.properties.BooleanProperty;
 import com.thecsdev.common.properties.DoubleProperty;
 import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.common.util.annotations.Virtual;
-import com.thecsdev.commonmc.TCDCommons;
 import com.thecsdev.commonmc.TCDCommonsConfig;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.world.sandbox.SandboxLevel;
+import dev.architectury.event.events.client.ClientLifecycleEvent;
+import dev.architectury.event.events.client.ClientPlayerEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -22,7 +23,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
+import static com.thecsdev.commonmc.TCDCommons.LOGGER;
 import static net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED;
 
 /**
@@ -39,6 +42,7 @@ public @Virtual class TEntityElement extends TElement
 	private final DoubleProperty                 entityScale   = new DoubleProperty(1d);
 	// --------------------------------------------------
 	private @Nullable Entity displayEntity; //used for rendering. 'null' = 'something went wrong'.
+	private @Nullable Throwable displayError; //used for debugging
 	// ==================================================
 	public TEntityElement(@NotNull EntityType<?> entityType) {
 		this();
@@ -62,11 +66,13 @@ public @Virtual class TEntityElement extends TElement
 	private final @ApiStatus.Internal void refresh()
 	{
 		try {
+			this.displayError = null;
 			this.displayEntity = EntityProvider.getOrCreate(this.entityType.get());
 		} catch(Exception e) {
-			if(TCDCommonsConfig.FLAG_DEV_ENV)
-				TCDCommons.LOGGER.error("Failed to create GUI entity instance for {}", this.entityType.get(), e);
+			this.displayError = e;
 			this.displayEntity = null;
+			if(TCDCommonsConfig.FLAG_DEV_ENV)
+				LOGGER.error("Failed to create GUI entity instance for {}", this.entityType.get(), e);
 		}
 	}
 	// ==================================================
@@ -89,29 +95,17 @@ public @Virtual class TEntityElement extends TElement
 	 */
 	public final DoubleProperty entityScaleProperty() { return this.entityScale; }
 	// ==================================================
-	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil)
-	{
-		final var bb = this.getBounds();
-		if(this.displayEntity != null) {
-			pencil.pushScissors(bb.x, bb.y, bb.width, bb.height);
-			try {
-				//attempt to render the entity (some modded ones can and do throw)
-				pencil.renderEntity(
-						this.displayEntity, bb.x, bb.y, bb.width, bb.height,
-						this.entityScale.getD(), this.followsCursor.getZ());
-			} catch(Exception e) {
-				//kill the rendering if something goes wrong, as some modded entities
-				//do not support being drawn on-screen. that is unfortunate
-				if(TCDCommonsConfig.FLAG_DEV_ENV)
-					TCDCommons.LOGGER.error("Failed to render GUI Entity {}", this.displayEntity, e);
-				this.displayEntity = null;
-			}
-			pencil.popScissors();
-		} else {
-			pencil.drawMissingNo(bb.x, bb.y, bb.width, bb.height, -1);
-		}
-	}
-	// ==================================================
+	/**
+	 * Returns the {@link Throwable} that was thrown during the last attempt
+	 * to create and/or render the display {@link Entity}, if any.
+	 * <p>
+	 * This is usually used for debugging purposes, as some modded entities
+	 * do not support being rendered on-screen, and will throw when attempts
+	 * are made to create and/or render them. In such cases, this method can
+	 * be used to retrieve the exception that was thrown.
+	 */
+	public final @Nullable Throwable getDisplayError() { return this.displayError; }
+	// --------------------------------------------------
 	/**
 	 * Cached {@link Entity} instance used by this {@link TEntityElement} for
 	 * rendering said {@link Entity} on the GUI screen.
@@ -122,13 +116,38 @@ public @Virtual class TEntityElement extends TElement
 	 * <p>
 	 * In addition, this value is {@code null} whenever something goes wrong
 	 * when attempting to create and/or render the {@link Entity} instance.
-	 * This is usually due to {@link Exception}s being raised during attemts
+	 * This is usually due to {@link Exception}s being raised during attempts
 	 * to render the display {@link Entity}.
 	 *
 	 * @see #renderCallback(TGuiGraphics)
 	 * @see EntityProvider
 	 */
 	public final @Nullable Entity getDisplayEntity() { return this.displayEntity; }
+	// ==================================================
+	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil)
+	{
+		final var bb = this.getBounds();
+		if(this.displayEntity != null)
+		{
+			pencil.pushScissors(bb.x, bb.y, bb.width, bb.height);
+			try {
+				//attempt to render the entity (some modded ones can and do throw)
+				pencil.renderEntity(
+						this.displayEntity, bb.x, bb.y, bb.width, bb.height,
+						this.entityScale.getD(), this.followsCursor.getZ());
+			} catch(Exception e) {
+				//kill the rendering if something goes wrong, as some modded entities
+				//do not support being drawn on-screen. that is unfortunate
+				if(TCDCommonsConfig.FLAG_DEV_ENV)
+					LOGGER.error("Failed to render GUI Entity {}", this.displayEntity, e);
+				this.displayError = e;
+				this.displayEntity = null;
+			}
+			pencil.popScissors();
+		} else {
+			pencil.drawMissingNo(bb.x, bb.y, bb.width, bb.height, -1);
+		}
+	}
 	// ================================================== ==================================================
 	//                                     EntityProvider IMPLEMENTATION
 	// ================================================== ==================================================
@@ -143,6 +162,12 @@ public @Virtual class TEntityElement extends TElement
 		private static final Map<EntityType<?>, Entity> CACHE = new HashMap<>();
 		// ==================================================
 		private EntityProvider() {}
+		static {
+			//clear cache when world-related events happen
+			ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(__ -> CACHE.clear());
+			ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(__ -> CACHE.clear());
+			ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(__ -> CACHE.clear());
+		}
 		// ==================================================
 		/**
 		 * Returns an instance of the given {@link EntityType}.
@@ -161,14 +186,13 @@ public @Virtual class TEntityElement extends TElement
 			//create and return the entity
 			try {
 				//handle player entity type
-				if(entityType == EntityType.PLAYER)
-					return (E) Minecraft.getInstance().player;
+				final var client = Minecraft.getInstance();
+				if(entityType == EntityType.PLAYER) return (E) client.player;
 				//handle all other types
 				if(CACHE.containsKey(entityType)) //explicitly forces 'null' as a valid value
 					return (E) CACHE.get(entityType);
 				else
-					return (E) CACHE.computeIfAbsent(entityType,
-							__ -> entityType.create(SandboxLevel.INSTANCE, MOB_SUMMONED));
+					return (E) CACHE.computeIfAbsent(entityType, __ -> entityType.create(Optional.ofNullable((Level) client.level).orElse(SandboxLevel.INSTANCE), MOB_SUMMONED));
 			} catch(Throwable e) {
 				CACHE.put(entityType, null); //prevent future creation attempts
 				throw new RuntimeException("Failed to create entity of type " + entityType, e);
