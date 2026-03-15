@@ -16,6 +16,7 @@ import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TDropdownWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TScrollBarWidget;
+import com.thecsdev.commonmc.api.client.gui.widget.text.TSimpleTextFieldWidget;
 import com.thecsdev.commonmc.resource.TLanguage;
 import com.thecsdev.commonmc.resource.TSprites;
 import net.fabricmc.api.EnvType;
@@ -45,8 +46,7 @@ import static com.thecsdev.commonmc.resource.TComponent.gui;
 import static com.thecsdev.commonmc.resource.TLanguage.*;
 import static com.thecsdev.commonmc.resource.TSprites.gui_icon_fsFolder;
 import static java.nio.file.Files.readAttributes;
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_4;
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_5;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * {@link TScreen} implementation that provides a user-friendly interface for selecting
@@ -118,21 +118,32 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 			@NotNull TInputContext.InputDiscoveryPhase phase,
 			@NotNull TInputContext context) throws NullPointerException
 	{
-		//only handle preempt mouse releases
-		if(phase != TInputContext.InputDiscoveryPhase.PREEMPT || context.getInputType() != TInputContext.InputType.MOUSE_RELEASE)
-			return false;
+		//only handle preempt phase
+		if(phase != TInputContext.InputDiscoveryPhase.PREEMPT) return false;
+
+		//handle refreshing (F5)
+		if(context.getInputType() == TInputContext.InputType.KEY_RELEASE) {
+			assert (context.getKeyCode() != null);
+			if(context.getKeyCode() == GLFW_KEY_F5) {
+				refresh();
+				return true;
+			}
+		}
 
 		//handle mouse navigation
-		assert (context.getMouseButton() != null);
-		if(context.getMouseButton() == GLFW_MOUSE_BUTTON_4) {
-			this.controller.navigateBack();
-			return true;
-		} else if(context.getMouseButton() == GLFW_MOUSE_BUTTON_5) {
-			this.controller.navigateForward();
-			return true;
-		} else {
-			return false;
+		if(context.getInputType() == TInputContext.InputType.MOUSE_RELEASE) {
+			assert (context.getMouseButton() != null);
+			if(context.getMouseButton() == GLFW_MOUSE_BUTTON_4) {
+				this.controller.navigateBack();
+				return true;
+			} else if(context.getMouseButton() == GLFW_MOUSE_BUTTON_5) {
+				this.controller.navigateForward();
+				return true;
+			}
 		}
+
+		//all else is ignored
+		return false;
 	}
 	// ================================================== ==================================================
 	//                                               Mode IMPLEMENTATION
@@ -360,6 +371,11 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 	{
 		// ==================================================
 		private final TFileChooserController controller = TFileChooserScreen.this.controller;
+		// --------------------------------------------------
+		final @NotNull NavigationPanel  panel_nav = new NavigationPanel();
+		final @NotNull QuickAccessPanel panel_qa  = new QuickAccessPanel();
+		final @NotNull ExplorerPanel    panel_ex  = new ExplorerPanel();
+		final @NotNull ActionPanel      panel_act = new ActionPanel();
 		// ==================================================
 		WindowElement() {
 			titleProperty().set(TFileChooserScreen.this.titleProperty().get(), WindowElement.class);
@@ -376,17 +392,14 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 			body.add(panel_main);
 
 			//navigation panel
-			final var panel_nav = new NavigationPanel();
 			panel_main.add(panel_nav);
 			panel_nav.setBounds(UDim2.ZERO, new UDim2(1, 0, 0, 15));
 
 			//quick access panel
-			final var panel_qa = new QuickAccessPanel();
 			panel_main.add(panel_qa);
 			panel_qa.setBounds(new UDim2(0, 0, 0, 15), new UDim2(0.25, -7, 1, -15));
 
 			//explorer panel
-			final var panel_ex = new ExplorerPanel();
 			panel_main.add(panel_ex);
 			panel_ex.setBounds(new UDim2(0.25, 0, 0, 15), new UDim2(0.75, -7, 1, -15));
 
@@ -399,7 +412,11 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 			panel_main.add(scroll_ex);
 			scroll_ex.setBounds(new UDim2(1, -8, 0, 15), new UDim2(0, 8, 1, -15));
 
-			//FIXME - IMPLEMENT
+			//action panel
+			if(this.controller.getMode() != Mode.EXPLORE) {
+				body.add(panel_act);
+				panel_act.setBounds(new UDim2(0, 0, 1, -18), new UDim2(1, 0, 0, 18));
+			}
 		}
 		// ==================================================
 	}
@@ -658,11 +675,96 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 				return futures.stream()
 						.map(CompletableFuture::join)
 						.filter(Objects::nonNull)
+						.filter(en -> en.getValue().isDirectory() || this.controller.getFilter().test(en.getKey()))
 						.sorted(Comparator
 								.comparing((Map.Entry<Path, BasicFileAttributes> e) -> !e.getValue().isDirectory())
 								.thenComparing(e -> e.getKey().getFileName().toString().toLowerCase()))
 						.toList();
 			}
+		}
+		// ==================================================
+	}
+	// ================================================== ==================================================
+	//                                        ActionPanel IMPLEMENTATION
+	// ================================================== ==================================================
+	/**
+	 * The bottom action panel that contains action buttons like "Open", "Save", "Cancel", etc.
+	 */
+	private final @ApiStatus.Internal class ActionPanel extends TElement
+	{
+		// ==================================================
+		private final TFileChooserController      controller = TFileChooserScreen.this.controller;
+		// --------------------------------------------------
+		private final TSimpleTextFieldWidget      in_filename;
+		private final TDropdownWidget<PathFilter> dd_filefilter;
+		private final TButtonWidget.Paintable     btn_cancel;
+		private final TButtonWidget.Paintable     btn_accept;
+		// ==================================================
+		public ActionPanel()
+		{
+			//initialize fields
+			this.in_filename   = new TSimpleTextFieldWidget();
+			this.dd_filefilter = new TDropdownWidget<>(this.controller.getFilter());
+			this.btn_cancel    = new TButtonWidget.Paintable(0x50440000, 0x50FFFFFF, 0xFFAAFFFF);
+			this.btn_accept    = new TButtonWidget.Paintable(0x50004400, 0x50FFFFFF, 0xFFAAFFFF);
+
+			//configure child elements
+			this.in_filename.placeholderProperty().set(
+					TLanguage.gui_fileChooser_action_inputFilename_placeholder(),
+					ActionPanel.class);
+			this.in_filename.getTextLabel().textScaleProperty().set(0.8, ActionPanel.class);
+			this.in_filename.getPlaceholderLabel().textScaleProperty().set(0.8, ActionPanel.class);
+			this.dd_filefilter.getLabel().textScaleProperty().set(0.8, ActionPanel.class);
+			this.dd_filefilter.getLabel().textAlignmentProperty().set(CompassDirection.WEST, ActionPanel.class);
+			this.btn_cancel.getLabel().setText(Component.literal("x"));
+			this.btn_cancel.getLabel().textAlignmentProperty().set(CompassDirection.CENTER, ActionPanel.class);
+			this.btn_cancel.getLabel().textScaleProperty().set(0.8, ActionPanel.class);
+			this.btn_accept.getLabel().setText(Component.literal("✓"));
+			this.btn_accept.getLabel().textAlignmentProperty().set(CompassDirection.CENTER, ActionPanel.class);
+			this.btn_accept.getLabel().textScaleProperty().set(0.8, ActionPanel.class);
+			this.btn_accept.visibleProperty().set(this.controller.getMode() != Mode.EXPLORE, ActionPanel.class);
+
+			//barebones minimal filename input filtering
+			this.in_filename.textProperty().addFilter(n -> //note: #trim()-ing is done in btn_accept
+					n.replace("\\", "/").replace("/", ""), ActionPanel.class);
+			//to avoid cyclic dependencies, the filename input field shall not have
+			//any change listeners for its text property
+
+			//initialize file filter dropdown entries, and its value change listener
+			this.dd_filefilter.getEntries().addAll(this.controller.getFilters());
+			this.dd_filefilter.selectedEntryProperty().addChangeListener((p, o, n) ->
+					this.controller.setPathFilter(n));
+
+			//the cancel button closes the dialog with CANCEL result
+			this.btn_cancel.eClicked.register(__ -> TFileChooserScreen.this.close());
+
+			//the accept button closes the dialog with ACCEPT result.
+			//behavior varies based on the dialog's Mode
+			this.btn_accept.eClicked.register(__ ->
+			{
+				//FIXME - IMPLEMENT
+			});
+		}
+		// ==================================================
+		protected final @Override void initCallback()
+		{
+			//obtain the bounding box for math calculations
+			final var bb = getBounds();
+			//recalculate bounds for children and add them
+			this.in_filename.setBounds(bb.x + 2, bb.y + 2, bb.width - 150, 15);
+			add(this.in_filename);
+			this.dd_filefilter.setBounds(bb.endX - 146, bb.y + 2, 90, 15);
+			add(this.dd_filefilter);
+			this.btn_cancel.setBounds(bb.endX - 54, bb.y + 2, 25, 15);
+			add(this.btn_cancel);
+			this.btn_accept.setBounds(bb.endX - 27, bb.y + 2, 25, 15);
+			add(this.btn_accept);
+		}
+		// --------------------------------------------------
+		public final @Override void renderCallback(@NotNull TGuiGraphics pencil) {
+			final var bb = getBounds();
+			pencil.fillColor(bb.x, bb.y, bb.width, bb.height, 0xFF2b2b2b);
+			pencil.fillColor(bb.x, bb.y, bb.width, 1, 0xFF000000);
 		}
 		// ==================================================
 	}
