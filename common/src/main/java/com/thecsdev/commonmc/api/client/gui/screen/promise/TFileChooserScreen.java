@@ -62,10 +62,8 @@ import static org.lwjgl.glfw.GLFW.*;
  * require file opening and saving functionalities, allowing users to easily navigate
  * through their directories and choose the desired files.
  */
-@ApiStatus.Internal
-@ApiStatus.Experimental
 @Environment(EnvType.CLIENT)
-public final class TFileChooserScreen extends TCompletableScreen<Collection<Path>> implements ILastScreenProvider
+public final class TFileChooserScreen extends TCompletableScreen<List<Path>> implements ILastScreenProvider
 {
 	// ================================================== ==================================================
 	//                                 TFileChooserScreen IMPLEMENTATION
