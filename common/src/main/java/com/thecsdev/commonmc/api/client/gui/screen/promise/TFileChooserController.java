@@ -72,6 +72,10 @@ final class TFileChooserController
 		addEditCount();
 	}
 	public final @NotNull Path getDirectory() { return this.dir; }
+	// --------------------------------------------------
+	public final boolean isDirectoryRoot() {
+		return this.dir.getParent() == null && this.dir.isAbsolute();
+	}
 	// ==================================================
 	/**
 	 * Navigates to the specified directory, updating the current directory

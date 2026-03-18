@@ -34,7 +34,8 @@ public final class TLanguage
 	public static final MutableComponent gui_fileChooser_ctxmenu_open() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open"); }
 	public static final MutableComponent gui_fileChooser_ctxmenu_openWith() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open_with"); }
 	public static final MutableComponent gui_fileChooser_ctxmenu_openWith_assocApp() { return translatable("tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app"); }
-	public static final MutableComponent gui_fileChooser_action_inputFilename_placeholder() { return translatable("tcdcommons.gui.filechooser.action.input_filename.placeholder"); }
+	public static final MutableComponent gui_fileChooser_action_fileName() { return translatable("tcdcommons.gui.filechooser.action.file_name"); }
+	public static final MutableComponent gui_fileChooser_action_fileType() { return translatable("tcdcommons.gui.filechooser.action.file_type"); }
 	// --------------------------------------------------
 	public static final @Reflected MutableComponent misc_loading() { return translatable("tcdcommons.misc.loading"); }
 	public static final @Reflected MutableComponent misc_somethingWentWrong() { return translatable("tcdcommons.misc.something_went_wrong"); }

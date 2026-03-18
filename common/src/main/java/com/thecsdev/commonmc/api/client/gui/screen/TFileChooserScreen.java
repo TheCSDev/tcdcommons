@@ -49,6 +49,7 @@ import static net.minecraft.network.chat.Component.literal;
  * through their directories and choose the desired files.
  */
 @Environment(EnvType.CLIENT)
+@Deprecated(since = "5.0.0-beta.7", forRemoval = true)
 public final class TFileChooserScreen extends TScreenPlus implements ILastScreenProvider
 {
 	// ================================================== ==================================================
@@ -799,7 +800,7 @@ public final class TFileChooserScreen extends TScreenPlus implements ILastScreen
 
 			//configure child elements
 			this.in_filename.placeholderProperty().set(
-					TLanguage.gui_fileChooser_action_inputFilename_placeholder(),
+					TLanguage.gui_fileChooser_action_fileName(),
 					ActionPanel.class);
 			this.in_filename.getTextLabel().textScaleProperty().set(0.8, ActionPanel.class);
 			this.in_filename.getPlaceholderLabel().textScaleProperty().set(0.8, ActionPanel.class);

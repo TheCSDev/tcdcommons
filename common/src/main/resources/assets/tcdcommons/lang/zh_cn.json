@@ -28,7 +28,8 @@
 	"tcdcommons.gui.filechooser.ctxmenu.open": "打开",
 	"tcdcommons.gui.filechooser.ctxmenu.open_with": "打开方式",
 	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "关联的应用程序",
-	"tcdcommons.gui.filechooser.action.input_filename.placeholder": "文件名",
+	"tcdcommons.gui.filechooser.action.file_name": "文件名",
+	"tcdcommons.gui.filechooser.action.file_type": "文件类型",
 
 	"tcdcommons.misc.loading": "加载中……",
 	"tcdcommons.misc.something_went_wrong": "出现错误",

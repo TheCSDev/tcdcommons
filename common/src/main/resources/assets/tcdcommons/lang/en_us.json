@@ -28,7 +28,8 @@
 	"tcdcommons.gui.filechooser.ctxmenu.open": "Open",
 	"tcdcommons.gui.filechooser.ctxmenu.open_with": "Open in",
 	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "Associated application",
-	"tcdcommons.gui.filechooser.action.input_filename.placeholder": "File name",
+	"tcdcommons.gui.filechooser.action.file_name": "File name",
+	"tcdcommons.gui.filechooser.action.file_type": "File type",
 
 	"tcdcommons.misc.loading": "Loading...",
 	"tcdcommons.misc.something_went_wrong": "Something went wrong",
