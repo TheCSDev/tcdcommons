@@ -1,14 +1,17 @@
 package com.thecsdev.commonmc.api.client.gui.screen.promise;
 
+import com.thecsdev.commonmc.api.client.gui.screen.promise.TFileChooserScreen.Mode;
+import com.thecsdev.commonmc.api.client.gui.screen.promise.TFileChooserScreen.PathFilter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import com.thecsdev.commonmc.api.client.gui.screen.promise.TFileChooserScreen.PathFilter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import com.thecsdev.commonmc.api.client.gui.screen.promise.TFileChooserScreen.Mode;
 
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Controller class for the {@link TFileChooserScreen}, responsible for managing
@@ -18,11 +21,9 @@ import java.util.concurrent.CompletableFuture;
  * file system, providing a structured way to control the file chooser's functionality.
  */
 @Environment(EnvType.CLIENT)
-final class TFileChooserController
+final @ApiStatus.Internal class TFileChooserController
 {
 	// ==================================================
-	private final @NotNull CompletableFuture<Collection<Path>> promise;
-	// --------------------------------------------------
 	private final @NotNull Mode             mode;
 	private final @NotNull List<PathFilter> pathFilters;
 	private       @NotNull PathFilter       pathFilter;
@@ -34,12 +35,10 @@ final class TFileChooserController
 	private long _editCount = Long.MIN_VALUE;
 	// ==================================================
 	public TFileChooserController(
-			@NotNull CompletableFuture<Collection<Path>> promise,
 			@NotNull Mode mode,
 			@NotNull Path dir,
 			@NotNull List<PathFilter> pathFilters) throws NullPointerException
 	{
-		this.promise      = Objects.requireNonNull(promise);
 		this.mode         = Objects.requireNonNull(mode);
 		this.pathFilters  = Objects.requireNonNull(pathFilters);
 		this.pathFilter   = pathFilters.isEmpty() ? PathFilter.ALL : pathFilters.getFirst();
@@ -73,6 +72,10 @@ final class TFileChooserController
 	}
 	public final @NotNull Path getDirectory() { return this.dir; }
 	// --------------------------------------------------
+	/**
+	 * Returns {@code true} if {@link #getDirectory()} is a root directory
+	 * (i.e., it has no parent and is an absolute path).
+	 */
 	public final boolean isDirectoryRoot() {
 		return this.dir.getParent() == null && this.dir.isAbsolute();
 	}

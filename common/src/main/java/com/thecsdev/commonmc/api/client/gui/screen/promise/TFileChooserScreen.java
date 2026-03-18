@@ -33,6 +33,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -51,6 +52,8 @@ import static com.thecsdev.commonmc.resource.TComponent.gui;
 import static com.thecsdev.commonmc.resource.TLanguage.*;
 import static com.thecsdev.commonmc.resource.TSprites.gui_icon_fsFolder;
 import static java.nio.file.Files.readAttributes;
+import static org.apache.commons.io.FilenameUtils.isExtension;
+import static org.apache.commons.io.FilenameUtils.removeExtension;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -79,7 +82,7 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 	{
 		super(lastScreen);
 		titleProperty().set(Objects.requireNonNull(mode).getWindowTitle(), TFileChooserScreen.class);
-		this.controller = new TFileChooserController(getResult(), mode, currentDir, pathFilters);
+		this.controller = new TFileChooserController(mode, currentDir, pathFilters);
 		this.window     = new WindowElement();
 	}
 	// ==================================================
@@ -203,6 +206,13 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 		 * window depending on its {@link Mode}.
 		 */
 		public final @NotNull Component getWindowTitle() { return this.windowTitle; }
+		// --------------------------------------------------
+		/**
+		 * Returns whether this {@link Mode} is related to file selection.
+		 * @see #CHOOSE_FILE
+		 * @see #CREATE_FILE
+		 */
+		public final boolean isFileSelection() { return this == CHOOSE_FILE || this == CREATE_FILE; }
 		// ==================================================
 	}
 	// ================================================== ==================================================
@@ -221,10 +231,28 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 		 */
 		public static final PathFilter ALL = new PathFilter() {
 			public final @Override @NotNull Component getDisplayName() { return Component.literal("*.*"); }
-			public final @Override boolean test(Path path) { return true; }
+			public final @Override boolean test(@NonNull Path path) { return true; }
 		};
 		// ==================================================
 		default @Override @NotNull Component getDisplayName() { return Component.literal("?.?"); }
+
+		/**
+		 * {@inheritDoc}
+		 * @throws NullPointerException If the argument is {@code null}.
+		 */
+		@Override boolean test(@NotNull Path path) throws NullPointerException;
+
+		/**
+		 * Suggests a valid {@link Path} based on the provided original.
+		 * @param original The {@link Path} to validate.
+		 * @return The original path if it satisfies {@link #test(Path)};
+		 * otherwise, a modified path that conforms to this filter's requirements.
+		 * @throws NullPointerException If the argument is {@code null}.
+		 */
+		default @NotNull Path suggestValidPath(@NotNull Path original) throws NullPointerException {
+			Objects.requireNonNull(original);
+			return original;
+		}
 		// ==================================================
 		/**
 		 * Creates a simple {@link PathFilter} that filters {@link Path}s based on their
@@ -247,14 +275,15 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 		 * @param filterName The display name for the {@link PathFilter}.
 		 * @param extnames The extension names (<b>case-sensitive</b>).
 		 * @throws NullPointerException If an argument is {@code null}.
-		 * @throws IllegalArgumentException If an extension name contains a known illegal character.
+		 * @throws IllegalArgumentException If the array is empty or an extension name contains a known illegal character.
 		 */
 		public static PathFilter extnames(@NotNull Component filterName, @NotNull String... extnames)
 				throws NullPointerException, IllegalArgumentException
 		{
 			//not null requirements
 			Objects.requireNonNull(filterName);
-			Objects.requireNonNull(extnames);
+			if(Objects.requireNonNull(extnames).length == 0)
+				throw new IllegalArgumentException("At least one extension name must be provided");
 
 			//check for illegal characters
 			final var illegalChars = new char[] { '/', '\\', '?', '%', '*', ':', '|', '"', '<', '>' };
@@ -263,20 +292,18 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 					if(extname.indexOf(illegalChar) >= 0)
 						throw new IllegalArgumentException("Extension name cannot contain character: " + illegalChar);
 
-			//for simplicity, the extension names are prefixed with a period
+			//for consistency, extension names do not start with periods
 			for(int i = 0; i < extnames.length; i++)
-				if(!extnames[i].startsWith("."))
-					extnames[i] = "." + extnames[i];
+				if(extnames[i].startsWith("."))
+					extnames[i] = extnames[i].substring(1);
 
 			//construct and return the path filter
 			return new PathFilter() {
 				public final @Override @NotNull Component getDisplayName() { return filterName; }
-				public final @Override boolean test(Path path) {
-					final var fileName = filename(path);
-					for(final var extname : extnames)
-						if(fileName.endsWith(extname))
-							return true;
-					return false;
+				public final @Override boolean test(@NonNull Path path) { return isExtension(filename(path), extnames); }
+				public final @Override @NotNull Path suggestValidPath(@NotNull Path original) {
+					Objects.requireNonNull(original);
+					return test(original) ? original : original.resolveSibling(removeExtension(filename(original)) + "." + extnames[0]);
 				}
 			};
 		}
@@ -673,7 +700,7 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 			}
 
 			//initialize entries for all directories and then files in the current directory
-			else for(final var file : dir_files) {
+			for(final var file : dir_files) {
 				final var el = new FileEntryElement(file.getKey(), file.getValue());
 				el.setBounds(computeNextYBounds(15, 0));
 				add(el);
@@ -847,13 +874,29 @@ public final class TFileChooserScreen extends TCompletableScreen<Collection<Path
 			}
 		}
 		// --------------------------------------------------
-		public final void submitForm() {
+		/**
+		 * Handles the form submission logic when the accept button is clicked. The behavior
+		 * varies based on the {@link Mode} of the dialog.<br>
+		 * If any exceptions occur during this process, the result is completed exceptionally
+		 * with the encountered exception, and the dialog is closed.
+		 * @see Mode
+		 * @see TFileChooserScreen#getResult()
+		 */
+		public final void submitForm()
+		{
 			try {
 				//resolve chosen file
 				@NotNull String input  = this.in_filename.textProperty().get().trim();
 				@NotNull Path   choice;
 				try { choice = this.controller.getDirectory().resolve(input); }
 				catch (Exception ignored) { return; } //invalid paths do nothing
+
+				//sanitize chosen file name if needed
+				if(this.controller.getMode().isFileSelection()) {
+					final var filter = this.controller.getFilter();
+					if(!filter.test(choice))
+						choice = Objects.requireNonNull(filter.suggestValidPath(choice), "Path filter returned 'null'");
+				}
 
 				//handle based on mode
 				switch (this.controller.getMode()) {
