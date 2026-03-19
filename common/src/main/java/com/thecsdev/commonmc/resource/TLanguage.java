@@ -13,6 +13,9 @@ public final class TLanguage
 	// ==================================================
 	private TLanguage() {}
 	// ==================================================
+	public static final MutableComponent mmName_tcdcommons() { return translatable("modmenu.nameTranslation.tcdcommons"); }
+	public static final MutableComponent mmSummary_tcdcommons() { return translatable("modmenu.summaryTranslation.tcdcommons"); }
+	// --------------------------------------------------
 	public static final @Reflected MutableComponent config_propertyValue() { return translatable("tcdcommons.config.property_value"); }
 	public static final @Reflected MutableComponent config_common() { return translatable("tcdcommons.config.common"); }
 	public static final @Reflected MutableComponent config_client() { return translatable("tcdcommons.config.client"); }

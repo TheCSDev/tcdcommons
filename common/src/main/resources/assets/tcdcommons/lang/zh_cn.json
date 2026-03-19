@@ -1,5 +1,6 @@
 {
-	"tcdcommons": "TCDCommons API",
+	"modmenu.nameTranslation.tcdcommons": "TCDCommons API!",
+	"modmenu.summaryTranslation.tcdcommons": "TheCSDev's personal Minecraft modding library.",
 
 	"tcdcommons.config.common": "客户端/服务端属性",
 	"tcdcommons.config.client": "客户端属性",
