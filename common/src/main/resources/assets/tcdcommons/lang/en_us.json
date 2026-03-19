@@ -1,5 +1,6 @@
 {
-	"tcdcommons": "TCDCommons API",
+	"modmenu.nameTranslation.tcdcommons": "TCDCommons API",
+	"modmenu.summaryTranslation.tcdcommons": "TheCSDev's personal Minecraft modding library.",
 
 	"tcdcommons.config.common": "Client/server properties",
 	"tcdcommons.config.client": "Client properties",
