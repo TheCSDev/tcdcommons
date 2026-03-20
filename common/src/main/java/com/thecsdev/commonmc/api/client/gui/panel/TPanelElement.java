@@ -260,6 +260,22 @@ public @Virtual class TPanelElement extends TElement
 	}
 
 	/**
+	 * Computes the bounds for the next element to be added horizontally,
+	 * given the specified width and gap.
+	 * @param width The width of the next element.
+	 * @param gap The horizontal gap between the last element and the next one.
+	 * @return A {@link Bounds2i} representing the position and size of the next element.
+	 */
+	public final @NotNull Bounds2i computeNextXBounds(int width, int gap) {
+		final var bb  = getBounds();
+		final var cbb = getContentBounds();
+		final int pad = scrollPaddingProperty().getI();
+		return new Bounds2i(
+				isEmpty() ? (bb.x + pad) : (cbb.endX + gap), bb.y + pad,
+				width, bb.height - (pad * 2));
+	}
+
+	/**
 	 * Adds all specified elements vertically with the given gap between each element.
 	 * Each added element is resized horizontally to fit the {@link TPanelElement}'s
 	 * viewport width.
