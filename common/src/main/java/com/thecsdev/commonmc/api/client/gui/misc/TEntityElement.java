@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.thecsdev.commonmc.TCDCommons.LOGGER;
 import static net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED;
@@ -66,10 +65,10 @@ public @Virtual class TEntityElement extends TElement
 	private final @ApiStatus.Internal void refresh()
 	{
 		try {
-			this.displayError = null;
+			this.displayError  = null;
 			this.displayEntity = EntityProvider.getOrCreate(this.entityType.get());
 		} catch(Exception e) {
-			this.displayError = e;
+			this.displayError  = e;
 			this.displayEntity = null;
 			if(TCDCommonsConfig.FLAG_DEV_ENV)
 				LOGGER.error("Failed to create GUI entity instance for {}", this.entityType.get(), e);
@@ -140,7 +139,7 @@ public @Virtual class TEntityElement extends TElement
 				//do not support being drawn on-screen. that is unfortunate
 				if(TCDCommonsConfig.FLAG_DEV_ENV)
 					LOGGER.error("Failed to render GUI Entity {}", this.displayEntity, e);
-				this.displayError = e;
+				this.displayError  = e;
 				this.displayEntity = null;
 			}
 			pencil.popScissors();
@@ -159,7 +158,7 @@ public @Virtual class TEntityElement extends TElement
 	public static final @ApiStatus.Internal class EntityProvider
 	{
 		// ==================================================
-		private static final Map<EntityType<?>, Entity> CACHE = new HashMap<>();
+		private static final Map<EntityType<?>, Object> CACHE = new HashMap<>();
 		// ==================================================
 		private EntityProvider() {}
 		static {
@@ -173,29 +172,48 @@ public @Virtual class TEntityElement extends TElement
 		 * Returns an instance of the given {@link EntityType}.
 		 * @param entityType The {@link EntityType} to create an instance of.
 		 * @param <E> The type of the {@link Entity}.
-		 * @return An instance of the given {@link EntityType}, or {@code null} if the entity could not be created.
+		 * @return An instance of the given {@link EntityType}.
 		 * @throws NullPointerException If the argument is {@code null}.
 		 * @throws RuntimeException If an error occurs during {@link Entity} instance creation.
 		 */
 		@SuppressWarnings("unchecked")
-		public static final @Nullable <E extends Entity> E getOrCreate(@NotNull EntityType<E> entityType)
+		public static final @NotNull <E extends Entity> E getOrCreate(@NotNull EntityType<E> entityType)
 				throws NullPointerException, RuntimeException
 		{
 			//not null enforcement
 			Objects.requireNonNull(entityType);
-			//create and return the entity
+
+			//if a value is cached, use that (depending on what it is)
+			final @Nullable var cached = CACHE.get(entityType);
+			if(cached instanceof Entity)
+				return (E) cached;
+			else if(cached instanceof RuntimeException error)
+				throw error; //yes, reusing exceptions because creating them is **VERY** expensive
+
+			//create the entity if not done so before
+			final var client = Minecraft.getInstance();
+
+			if(entityType == EntityType.PLAYER) try {
+				final var player = Objects.requireNonNull(client.player, "Missing 'Minecraft#player' instance");
+				CACHE.put(entityType, player);
+				return (E) player;
+			} catch (Exception e) {
+				final var error = new RuntimeException("Cannot render 'EntityType.PLAYER' without the 'Minecraft#player' instance", e);
+				CACHE.put(entityType, error);
+				throw error;
+			}
+
 			try {
-				//handle player entity type
-				final var client = Minecraft.getInstance();
-				if(entityType == EntityType.PLAYER) return (E) client.player;
-				//handle all other types
-				if(CACHE.containsKey(entityType)) //explicitly forces 'null' as a valid value
-					return (E) CACHE.get(entityType);
-				else
-					return (E) CACHE.computeIfAbsent(entityType, __ -> entityType.create(Optional.ofNullable((Level) client.level).orElse(SandboxLevel.INSTANCE), MOB_SUMMONED));
-			} catch(Throwable e) {
-				CACHE.put(entityType, null); //prevent future creation attempts
-				throw new RuntimeException("Failed to create entity of type " + entityType, e);
+				Level level = client.level;
+				if(level == null) level = SandboxLevel.INSTANCE;
+
+				final var entity = entityType.create(level, MOB_SUMMONED);
+				CACHE.put(entityType, Objects.requireNonNull(entity, "'EntityType#create(...)' returned 'null' for " + entityType));
+				return entity;
+			} catch (Exception e) {
+				final var error = new RuntimeException("Failed to create 'Entity' instance of type " + entityType, e);
+				CACHE.put(entityType, error);
+				throw error;
 			}
 		}
 		// ==================================================
