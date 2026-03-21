@@ -17,7 +17,7 @@ public final @ApiStatus.Experimental class HttpProfile
 	 * Default {@link HttpProfile} instance that stores 
 	 */
 	public static final HttpProfile DEFAULT = new HttpProfile(Path.of(
-			System.getProperty("user.home"), ".cache", "thecsdev", "20260202"));
+			System.getProperty("user.home"), ".cache", "thecsdev", "20260321"));
 	// ==================================================
 	private final @NotNull Path             dirname;
 	private final @NotNull HttpProfileCache cache;
