@@ -1,0 +1,38 @@
+{
+	"modmenu.nameTranslation.tcdcommons": "TCDCommons API",
+	"modmenu.summaryTranslation.tcdcommons": "TheCSDev's personal Minecraft modding library.",
+
+	"tcdcommons.config.common": "客户端/服务端属性",
+	"tcdcommons.config.client": "客户端属性",
+	"tcdcommons.config.client.update_item_groups_on_join": "加入游戏时更新物品组",
+	"tcdcommons.config.client.update_item_groups_on_join.tooltip": "性能优化功能。原版游戏在打开物品栏时更新物品组，这在大型模组包中会导致卡顿。此功能在加载界面期间执行该操作，使游戏内不再会因此发生卡顿。",
+	"tcdcommons.config.server": "服务端属性",
+	"tcdcommons.config.property_value": "Value",
+
+	"tcdcommons.stat_type.minecraft.killed": "击杀",
+	"tcdcommons.stat_type.minecraft.killed_by": "被击杀",
+	"tcdcommons.stat_type.morestats.damaged": "造成伤害",
+	"tcdcommons.stat_type.morestats.damaged_by": "受到伤害",
+	"tcdcommons.stat_type.morestats.totem_popped_by": "触发图腾",
+
+	"tcdcommons.gui.screen.text_dialog.default_title": "对话框",
+	"tcdcommons.gui.screen.text_dialog.error_title": "出现错误",
+
+	"tcdcommons.gui.dropdown.default_label": "选择一个选项……",
+
+	"tcdcommons.gui.filechooser.mode.explore": "文件浏览器",
+	"tcdcommons.gui.filechooser.mode.choose_file": "先择文件",
+	"tcdcommons.gui.filechooser.mode.create_file": "创建文件",
+	"tcdcommons.gui.filechooser.quick_access": "快速访问",
+	"tcdcommons.gui.filechooser.quick_access.mount_points": "设备和驱动器",
+	"tcdcommons.gui.filechooser.ctxmenu.select": "选择",
+	"tcdcommons.gui.filechooser.ctxmenu.open": "打开",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with": "打开方式",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "关联的应用程序",
+	"tcdcommons.gui.filechooser.action.file_name": "文件名",
+	"tcdcommons.gui.filechooser.action.file_type": "文件类型",
+
+	"tcdcommons.misc.loading": "加载中……",
+	"tcdcommons.misc.something_went_wrong": "出现错误",
+	"tcdcommons.misc.coming_soon": "即将到来"
+}

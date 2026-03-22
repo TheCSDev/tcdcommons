@@ -19,15 +19,19 @@ public final class FabricModInfo extends ModInfo
 {
 	// ==================================================
 	private final @NotNull Component name;
+	private final @NotNull String    version;
 	// ==================================================
-	public FabricModInfo(@NotNull String modid) throws NullPointerException, NoSuchElementException {
+	public FabricModInfo(@NotNull String modid) throws NullPointerException, NoSuchElementException
+	{
 		super(modid);
 		final var info = FabricLoader.getInstance().getModContainer(modid).orElseThrow();
 		final var meta = info.getMetadata();
 		final var lang = Language.getInstance();
 		this.name      = lang.has(modid) ? translatable(modid) : literal(meta.getName());
+		this.version   = meta.getVersion().getFriendlyString();
 	}
 	// ==================================================
 	public final @Override @NotNull Component getName() { return this.name; }
+	public final @Override @NotNull String getVersion() { return this.version; }
 	// ==================================================
 }

@@ -87,6 +87,13 @@ public final class TEntityStatsWidget extends TStatsWidget
 	 * @see TEntityElement#followsCursorProperty()
 	 */
 	public final BooleanProperty followsCursorProperty() { return this.el_entity.followsCursorProperty(); }
+	// --------------------------------------------------
+	/**
+	 * Returns the {@link Throwable} that was thrown during the last attempt
+	 * to create and/or render the display {@link Entity}, if any.
+	 * @see TEntityElement#getDisplayError()
+	 */
+	public final @Nullable Throwable getDisplayError() { return this.el_entity.getDisplayError(); }
 	// ==================================================
 	protected final @Override void initCallback() {
 		//the entity element goes below the label

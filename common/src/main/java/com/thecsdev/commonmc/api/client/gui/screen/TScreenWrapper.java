@@ -78,33 +78,43 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	public final @Override boolean shouldCloseOnEsc() { return false; }
 	public final @Override boolean isPauseScreen() { return this.target.isPauseScreen(); }
 	// --------------------------------------------------
-	//TODO - These two should not invoke while the client is closing:
-	public final @Override void added() { this.target.openCallback(); }
-	public final @Override void removed() {
-		this.target.closeCallback();
-		//clean-up tasks for if closed - removing elements triggers their cleanup handlers
-		if(!this.target.isOpen()) this.target.clear();
-	}
-	// --------------------------------------------------
 	//note: the game should rename this method to #close(). current name "onClose" is confusing
 	//      because it implies the screen had been closed by now when that's not the case.
 	public final @Override void onClose() { //(intentionally overrides 'super')
 		if(this.target.isOpen()) this.target.close();
 	}
 	// ==================================================
-	protected final @Override void init()
-	{
-		//begin measuring initialization time
-		final var ns = nanoTime();
-		//trigger (re/)initialization by updating the bounds
-		this.target.boundsProperty().getHandle().set(Bounds2i.ZERO); //so next call triggers change listeners
-		this.target.setBounds(0, 0, this.width, this.height);        //<- this now triggers change listeners
-		//initialize super
-		super.init();
-		//log initialization time
-		if(FLAG_DEV_ENV)
-			LOGGER.info("Initialized '" + this.target.getClass() + "' in " + (nanoTime() - ns) + "ns.");
+	public final @Override void added() {
+		getClient().schedule(() -> {
+			if(getClient().screen == this) this.target.openCallback();
+		});
 	}
+	// --------------------------------------------------
+	protected final @Override void init() {
+		getClient().schedule(() -> {
+			if(getClient().screen != this) return;
+			//begin measuring initialization time
+			final var ns = nanoTime();
+			//trigger (re/)initialization by updating the bounds
+			this.target.boundsProperty().getHandle().set(Bounds2i.ZERO); //so next call triggers change listeners
+			this.target.setBounds(0, 0, this.width, this.height);        //<- this now triggers change listeners
+			//initialize super
+			super.init();
+			//log initialization time
+			if(FLAG_DEV_ENV)
+				LOGGER.info("Initialized '{}' in {}ns.", this.target.getClass(), nanoTime() - ns);
+		});
+	}
+	// --------------------------------------------------
+	public final @Override void removed() {
+		getClient().schedule(() -> {
+			if(getClient().screen != this) {
+				this.target.closeCallback();
+				this.target.clear(); //cleanup tasks for if closed
+			}
+		});
+	}
+	// ==================================================
 	public final @Override void tick() {
 		((AccessorTElement)(Object)this.target)._tick();
 		super.tick();

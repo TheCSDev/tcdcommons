@@ -27,7 +27,7 @@ public final class TCDCommonsConfig extends ModConfig
 	 * This optimization feature aims to move the lag spike that occurs when
 	 * opening an inventory screen - to the loading screen.
 	 */
-	public final boolean updateItemGroupsOnJoin() { return updateItemGroupsOnJoin; }
+	public final boolean updateItemGroupsOnJoin() { return this.updateItemGroupsOnJoin; }
 
 	/**
 	 * Sets the value of {@link #updateItemGroupsOnJoin()}.

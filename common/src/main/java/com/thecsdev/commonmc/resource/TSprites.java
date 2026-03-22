@@ -34,6 +34,7 @@ public class TSprites
 	public static final            Identifier gui_icon_fsFile() { return fromNamespaceAndPath(MOD_ID, "icon/fs_file"); }
 	public static final            Identifier gui_icon_fsFileImage() { return fromNamespaceAndPath(MOD_ID, "icon/fs_file_image"); }
 	public static final            Identifier gui_icon_fsFileTxt() { return fromNamespaceAndPath(MOD_ID, "icon/fs_file_txt"); }
+	public static final            Identifier gui_icon_fsFileJson() { return fromNamespaceAndPath(MOD_ID, "icon/fs_file_json"); }
 	public static final @Reflected Identifier gui_icon_fsFolder() { return fromNamespaceAndPath(MOD_ID, "icon/fs_folder"); }
 	public static final            Identifier gui_icon_fsFolderGray() { return fromNamespaceAndPath(MOD_ID, "icon/fs_folder_gray"); }
 	// ==================================================

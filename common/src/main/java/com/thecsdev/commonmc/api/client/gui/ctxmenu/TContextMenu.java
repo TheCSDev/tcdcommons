@@ -25,8 +25,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.thecsdev.commonmc.api.client.gui.ctxmenu.TContextMenu.PropertyAccessor.setRootCtxMenuValue;
 import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.calcMaxWidth;
@@ -73,7 +75,7 @@ public @Virtual class TContextMenu extends TElement
 				//2. element must not be 'this'
 				//3. element must not be a (grand/)child or a (grand/)parent
 				if(el instanceof TContextMenu && el != this && !isAncestor(el, this) && !isAncestor(this, el))
-					el.remove(); //remove elements matching such criterions
+					el.remove(); //remove elements matching such criteria
 			}, true);
 			//focus onto this element once added to a screen
 			n.focusedElementProperty().set(this, TContextMenu.class);
@@ -121,7 +123,7 @@ public @Virtual class TContextMenu extends TElement
 		if(phase == PREEMPT)
 			switch(context.getInputType())
 			{
-				//nillify out of bounds mouse scrolls
+				//nullify out of bounds mouse scrolls
 				//(only the "main/root/top" context menu element can this)
 				case MOUSE_SCROLL: return !isHoverAncestor() && !(getParent() instanceof TContextMenu);
 				//close this dropdown if mouse was pressed out of bounds,
@@ -203,7 +205,7 @@ public @Virtual class TContextMenu extends TElement
 		if(viewport == null) return; //viewport element is required
 		final @Nullable var parentcm = (getParent() instanceof TContextMenu pcm) ? pcm : null;
 
-		//calculate the detla x and delta y
+		//calculate the delta x and delta y
 		final var bb  = getBounds();
 		final var vbb = viewport.getBounds();
 		int dX = 0, dY = 0;
@@ -237,8 +239,8 @@ public @Virtual class TContextMenu extends TElement
 	public static final class Builder
 	{
 		// ==================================================
-		private final Minecraft           client;
-		private final ArrayList<TElement> entries = new ArrayList<>();
+		private final Minecraft      client;
+		private final List<TElement> entries = new ArrayList<>();
 		// --------------------------------------------------
 		private int maxW, maxH;
 		// ==================================================
@@ -305,12 +307,12 @@ public @Virtual class TContextMenu extends TElement
 		/**
 		 * Adds a {@link TButtonWidget} that opens a sub-menu when clicked.
 		 * @param text The text to display on the entry.
-		 * @param menu The {@link TContextMenu} to open when the entry is clicked.
+		 * @param menuBuilder The {@link TContextMenu} builder function.
 		 * @throws NullPointerException If an argument is {@code null}.
 		 */
 		public final Builder addContextMenu(
 				@NotNull Component text,
-				@NotNull TContextMenu menu) throws NullPointerException
+				@NotNull Function<TClickableWidget, TContextMenu> menuBuilder) throws NullPointerException
 		{
 			//create the button and configure it
 			final var btn = new Button();
@@ -319,6 +321,7 @@ public @Virtual class TContextMenu extends TElement
 			btn.setBounds(0, 0, this.client.font.width(text) + (TButtonWidget.LBL_PAD_X * 2), 15);
 			btn.eClicked.register(__ -> {
 				//add the context menu
+				final var menu = Objects.requireNonNull(menuBuilder.apply(btn), "Context menu Supplier returned 'null'");
 				btn.getParentMenu().add(menu);
 				//move the menu to the correct position
 				final var pbb = btn.getParentMenu().getBounds();
@@ -334,28 +337,62 @@ public @Virtual class TContextMenu extends TElement
 		/**
 		 * Adds a separator line to the context menu.
 		 */
-		public final Builder addSeparator()
-		{
-			final var sep = new TElement() {
-				public final @Override void renderCallback(@NotNull TGuiGraphics pencil){
-					final var bb = getBounds();
-					pencil.fillColor(bb.x + 2, bb.y + (bb.height / 2), bb.width - 4, 1, 0x2eFFFFFF);
-				}
-			};
-			sep.setBounds(0, 0, 0, 4);
-			this.entries.add(sep);
-			return this;
-		}
+		public final Builder addSeparator() { this.entries.add(new Separator()); return this; }
 		// ==================================================
+		/**
+		 * Returns a duplicated {@link #entries} list with filtered out duplicate
+		 * and trailing {@link Separator} entries.
+		 */
+		@ApiStatus.Internal
+		private final @NotNull List<TElement> computeFilteredEntries()
+		{
+			//return an empty list if there are no entries
+			if(this.entries.isEmpty()) return List.of();
+
+			//prepare for iteration
+			final var deduplicated = new ArrayList<TElement>();
+			@Nullable TElement previous = null;
+			boolean isFirst = true;
+
+			//iterate and handle entries
+			for(final var entry : this.entries)
+			{
+				//handle first element
+				if(isFirst && entry.getClass() == Separator.class)
+					continue;
+				else if(isFirst) {
+					deduplicated.add(previous = entry);
+					isFirst = false;
+					continue;
+				}
+				//side-by-side separators are filtered out
+				if(previous.getClass() == Separator.class && entry.getClass() == Separator.class)
+					continue;
+				//add and record previous element
+				deduplicated.add(previous = entry);
+			}
+
+			//remove trailing separator entries
+			int endIndex = deduplicated.size() - 1;
+			while(endIndex >= 0 && deduplicated.get(endIndex).getClass() == Separator.class)
+				endIndex--;
+
+			//return a new list containing the final sub-sequence
+			return new ArrayList<>(deduplicated.subList(0, endIndex + 1));
+		}
+
 		/**
 		 * Builds and returns the {@link TContextMenu} instance.
 		 */
 		public final @NotNull TContextMenu build()
 		{
+			//compute filtered entries
+			final var entries = computeFilteredEntries();
+
 			//construct the panel and add entries to it
 			final var panel = new TPanelElement.Transparent();
-			panel.setBounds(0, 0, calcMaxWidth(this.entries), 0);
-			panel.addAllVertically(this.entries, 0);
+			panel.setBounds(0, 0, calcMaxWidth(entries), 0);
+			panel.addAllVertically(entries, 0);
 			panel.setBounds(panel.getContentBounds());
 
 			//constrain panel's size
@@ -386,6 +423,7 @@ public @Virtual class TContextMenu extends TElement
 			{
 				//obtain context menu bounding box
 				final var mbb = ctx.getBounds();
+
 				//create hover-scrolls and add them to the context menu
 				final var scroll_up = new HScroll(panel);
 				scroll_up.directionProperty().set(CompassDirection.NORTH, Builder.class);
@@ -395,6 +433,7 @@ public @Virtual class TContextMenu extends TElement
 				scroll_down.directionProperty().set(CompassDirection.SOUTH, Builder.class);
 				scroll_down.setBounds(mbb.x + 2, mbb.endY - 15 - 1, mbb.width - 4, 15);
 				ctx.add(scroll_down);
+
 				//create arrow labels and add them to the hover-scrolls
 				final var lbl_up = new TLabelElement();
 				lbl_up.setText(Component.literal("▲"));
@@ -431,6 +470,18 @@ public @Virtual class TContextMenu extends TElement
 		}
 
 		/**
+		 * {@link TElement} implementation that draws a horizontal separator line.
+		 */
+		private static final class Separator extends TElement
+		{
+			public Separator() { setBounds(0, 0, 0, 4); }
+			public final @Override void renderCallback(@NotNull TGuiGraphics pencil){
+				final var bb = getBounds();
+				pencil.fillColor(bb.x + 2, bb.y + (bb.height / 2), bb.width - 4, 1, 0x2eFFFFFF);
+			}
+		}
+
+		/**
 		 * {@link THoverScrollElement} with a fitting texture.
 		 */
 		private static final class HScroll extends THoverScrollElement.Panel
@@ -439,9 +490,6 @@ public @Virtual class TContextMenu extends TElement
 			public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil) {
 				final var bb = getBounds();
 				pencil.fillColor(bb.x, bb.y, bb.width, bb.height, 0xAA000000);
-				//the following didn't work out. incompatible with custom resource packs:
-				//pencil.drawGuiSprite(TCDCSprites.gui_ctxmenu(), bb.x, bb.y, bb.width, bb.height, 0xFFDDDDDD);
-				//pencil.drawTexture(TCDCTex.gui_ctxmenu(), bb.x, bb.y, bb.width, bb.height, 4, 4, 4, 4, 12, 12, 0xFFDDDDDD);
 			}
 		}
 		// ==================================================

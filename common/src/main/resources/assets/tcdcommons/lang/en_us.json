@@ -1,5 +1,6 @@
 {
-	"tcdcommons": "TCDCommons API",
+	"modmenu.nameTranslation.tcdcommons": "TCDCommons API",
+	"modmenu.summaryTranslation.tcdcommons": "TheCSDev's personal Minecraft modding library.",
 
 	"tcdcommons.config.common": "Client/server properties",
 	"tcdcommons.config.client": "Client properties",
@@ -18,15 +19,18 @@
 	"tcdcommons.gui.screen.text_dialog.error_title": "Something went wrong",
 
 	"tcdcommons.gui.dropdown.default_label": "Select an option...",
-	"tcdcommons.gui.filechooser.mode.explore": "File explorer",
 
+	"tcdcommons.gui.filechooser.mode.explore": "File explorer",
 	"tcdcommons.gui.filechooser.mode.choose_file": "Choose a file",
 	"tcdcommons.gui.filechooser.mode.create_file": "Create a file",
 	"tcdcommons.gui.filechooser.quick_access": "Quick access",
 	"tcdcommons.gui.filechooser.quick_access.mount_points": "Mount points",
-	"tcdcommons.gui.filechooser.ctxmenu.open_in": "Open in",
-	"tcdcommons.gui.filechooser.ctxmenu.open_in.assoc_app": "Associated application",
-	"tcdcommons.gui.filechooser.action.input_filename.placeholder": "File name",
+	"tcdcommons.gui.filechooser.ctxmenu.select": "Select",
+	"tcdcommons.gui.filechooser.ctxmenu.open": "Open",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with": "Open in",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "Associated application",
+	"tcdcommons.gui.filechooser.action.file_name": "File name",
+	"tcdcommons.gui.filechooser.action.file_type": "File type",
 
 	"tcdcommons.misc.loading": "Loading...",
 	"tcdcommons.misc.something_went_wrong": "Something went wrong",

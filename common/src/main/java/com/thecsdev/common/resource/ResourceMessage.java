@@ -175,6 +175,11 @@ public abstract sealed class ResourceMessage permits ResourceRequest, ResourceRe
 		}
 		// ==================================================
 		/**
+		 * Returns the {@link URI} this {@link AbstractBuilder} is for.
+		 */
+		public final @NotNull URI getUri() { return this.uri; }
+		// ==================================================
+		/**
 		 * Adds a metadata entry to this {@link ResourceMessage}.
 		 * @param metadataName  The name of the metadata entry.
 		 * @param metadataValue The value of the metadata entry.

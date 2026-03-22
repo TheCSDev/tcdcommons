@@ -1,28 +1,31 @@
 package com.thecsdev.commonmc.api.client.gui.misc;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.thecsdev.common.properties.BooleanProperty;
 import com.thecsdev.common.properties.DoubleProperty;
 import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.common.util.annotations.Virtual;
-import com.thecsdev.commonmc.TCDCommons;
 import com.thecsdev.commonmc.TCDCommonsConfig;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.world.sandbox.SandboxLevel;
+import dev.architectury.event.events.client.ClientLifecycleEvent;
+import dev.architectury.event.events.client.ClientPlayerEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+
+import static com.thecsdev.commonmc.TCDCommons.LOGGER;
+import static net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED;
 
 /**
  * {@link TElement} that renders an entity on the screen.
@@ -38,6 +41,7 @@ public @Virtual class TEntityElement extends TElement
 	private final DoubleProperty                 entityScale   = new DoubleProperty(1d);
 	// --------------------------------------------------
 	private @Nullable Entity displayEntity; //used for rendering. 'null' = 'something went wrong'.
+	private @Nullable Throwable displayError; //used for debugging
 	// ==================================================
 	public TEntityElement(@NotNull EntityType<?> entityType) {
 		this();
@@ -55,16 +59,19 @@ public @Virtual class TEntityElement extends TElement
 	}
 	// --------------------------------------------------
 	/**
-	 * Refereshes the {@link #displayEntity} value. Called automatically
+	 * Refreshes the {@link #displayEntity} value. Called automatically
 	 * whenever {@link #entityTypeProperty()} value changes.
 	 */
-	private final @ApiStatus.Internal void refresh() {
+	private final @ApiStatus.Internal void refresh()
+	{
 		try {
+			this.displayError  = null;
 			this.displayEntity = EntityProvider.getOrCreate(this.entityType.get());
 		} catch(Exception e) {
-			if(TCDCommonsConfig.FLAG_DEV_ENV)
-				TCDCommons.LOGGER.error("Failed to create GUI entity instance for {}", this.entityType.get(), e);
+			this.displayError  = e;
 			this.displayEntity = null;
+			if(TCDCommonsConfig.FLAG_DEV_ENV)
+				LOGGER.error("Failed to create GUI entity instance for {}", this.entityType.get(), e);
 		}
 	}
 	// ==================================================
@@ -87,28 +94,17 @@ public @Virtual class TEntityElement extends TElement
 	 */
 	public final DoubleProperty entityScaleProperty() { return this.entityScale; }
 	// ==================================================
-	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil) {
-		final var bb = this.getBounds();
-		if(this.displayEntity != null) {
-			pencil.pushScissors(bb.x, bb.y, bb.width, bb.height);
-			try {
-				//attempt to render the entity (some modded ones can and do throw)
-				pencil.renderEntity(
-						this.displayEntity, bb.x, bb.y, bb.width, bb.height,
-						this.entityScale.getD(), this.followsCursor.getZ());
-			} catch(Exception e) {
-				//kill the rendering if something goes wrong, as some modded entities
-				//do not support being drawn on-screen. that is unfortunate
-				if(TCDCommonsConfig.FLAG_DEV_ENV)
-					TCDCommons.LOGGER.error("Failed to render GUI Entity {}", this.displayEntity, e);
-				this.displayEntity = null;
-			}
-			pencil.popScissors();
-		} else {
-			pencil.drawMissingNo(bb.x, bb.y, bb.width, bb.height, -1);
-		}
-	}
-	// ==================================================
+	/**
+	 * Returns the {@link Throwable} that was thrown during the last attempt
+	 * to create and/or render the display {@link Entity}, if any.
+	 * <p>
+	 * This is usually used for debugging purposes, as some modded entities
+	 * do not support being rendered on-screen, and will throw when attempts
+	 * are made to create and/or render them. In such cases, this method can
+	 * be used to retrieve the exception that was thrown.
+	 */
+	public final @Nullable Throwable getDisplayError() { return this.displayError; }
+	// --------------------------------------------------
 	/**
 	 * Cached {@link Entity} instance used by this {@link TEntityElement} for
 	 * rendering said {@link Entity} on the GUI screen.
@@ -119,13 +115,38 @@ public @Virtual class TEntityElement extends TElement
 	 * <p>
 	 * In addition, this value is {@code null} whenever something goes wrong
 	 * when attempting to create and/or render the {@link Entity} instance.
-	 * This is usually due to {@link Exception}s being raised during attemts
+	 * This is usually due to {@link Exception}s being raised during attempts
 	 * to render the display {@link Entity}.
 	 *
 	 * @see #renderCallback(TGuiGraphics)
 	 * @see EntityProvider
 	 */
 	public final @Nullable Entity getDisplayEntity() { return this.displayEntity; }
+	// ==================================================
+	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil)
+	{
+		final var bb = this.getBounds();
+		if(this.displayEntity != null)
+		{
+			pencil.pushScissors(bb.x, bb.y, bb.width, bb.height);
+			try {
+				//attempt to render the entity (some modded ones can and do throw)
+				pencil.renderEntity(
+						this.displayEntity, bb.x, bb.y, bb.width, bb.height,
+						this.entityScale.getD(), this.followsCursor.getZ());
+			} catch(Exception e) {
+				//kill the rendering if something goes wrong, as some modded entities
+				//do not support being drawn on-screen. that is unfortunate
+				if(TCDCommonsConfig.FLAG_DEV_ENV)
+					LOGGER.error("Failed to render GUI Entity {}", this.displayEntity, e);
+				this.displayError  = e;
+				this.displayEntity = null;
+			}
+			pencil.popScissors();
+		} else {
+			pencil.drawMissingNo(bb.x, bb.y, bb.width, bb.height, -1);
+		}
+	}
 	// ================================================== ==================================================
 	//                                     EntityProvider IMPLEMENTATION
 	// ================================================== ==================================================
@@ -137,36 +158,62 @@ public @Virtual class TEntityElement extends TElement
 	public static final @ApiStatus.Internal class EntityProvider
 	{
 		// ==================================================
-		private static final Cache<EntityType<?>, Entity> CACHE = CacheBuilder.newBuilder().weakValues().build();
+		private static final Map<EntityType<?>, Object> CACHE = new HashMap<>();
 		// ==================================================
 		private EntityProvider() {}
+		static {
+			//clear cache when world-related events happen
+			ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(__ -> CACHE.clear());
+			ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(__ -> CACHE.clear());
+			ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(__ -> CACHE.clear());
+		}
 		// ==================================================
 		/**
 		 * Returns an instance of the given {@link EntityType}.
 		 * @param entityType The {@link EntityType} to create an instance of.
 		 * @param <E> The type of the {@link Entity}.
 		 * @return An instance of the given {@link EntityType}.
-		 * @throws NullPointerException If the argument is {@code null} or if the entity could not be created.
+		 * @throws NullPointerException If the argument is {@code null}.
 		 * @throws RuntimeException If an error occurs during {@link Entity} instance creation.
 		 */
 		@SuppressWarnings("unchecked")
 		public static final @NotNull <E extends Entity> E getOrCreate(@NotNull EntityType<E> entityType)
-				throws NullPointerException, RuntimeException {
+				throws NullPointerException, RuntimeException
+		{
 			//not null enforcement
 			Objects.requireNonNull(entityType);
-			//create and return the entity
+
+			//if a value is cached, use that (depending on what it is)
+			final @Nullable var cached = CACHE.get(entityType);
+			if(cached instanceof Entity)
+				return (E) cached;
+			else if(cached instanceof RuntimeException error)
+				throw error; //yes, reusing exceptions because creating them is **VERY** expensive
+
+			//create the entity if not done so before
+			final var client = Minecraft.getInstance();
+
+			if(entityType == EntityType.PLAYER) try {
+				final var player = Objects.requireNonNull(client.player, "Missing 'Minecraft#player' instance");
+				CACHE.put(entityType, player);
+				return (E) player;
+			} catch (Exception e) {
+				final var error = new RuntimeException("Cannot render 'EntityType.PLAYER' without the 'Minecraft#player' instance", e);
+				CACHE.put(entityType, error);
+				throw error;
+			}
+
 			try {
-				//handle player entity type
-				if(entityType == EntityType.PLAYER)
-					return (E) Objects.requireNonNull(
-							Minecraft.getInstance().player,
-							"Local player instance is not present");
-				//handle all other types
-				return (E) CACHE.get(entityType, () -> Objects.requireNonNull(
-					entityType.create(SandboxLevel.INSTANCE, EntitySpawnReason.MOB_SUMMONED),
-					"Entity creator factory returned 'null'."));
-			} catch(Exception e) {
-				throw new RuntimeException("Failed to create entity of type " + entityType, e);
+				Level level = client.level;
+				if(level == null) level = SandboxLevel.INSTANCE;
+
+				final var entity = entityType.create(level, MOB_SUMMONED);
+				CACHE.put(entityType, Objects.requireNonNull(entity, "'EntityType#create(...)' returned 'null' for " + entityType));
+				return entity;
+			} catch (Exception e) {
+				final var error = new RuntimeException("Failed to create 'Entity' instance of type " + entityType, e);
+				CACHE.put(entityType, error);
+				throw error;
 			}
 		}
 		// ==================================================
