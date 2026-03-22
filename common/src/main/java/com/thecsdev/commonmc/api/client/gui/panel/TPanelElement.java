@@ -87,10 +87,11 @@ public @Virtual class TPanelElement extends TElement
 			case MOUSE_PRESS: return (context.getMouseButton() == 0 || context.getMouseButton() == 2) && isFocusable();
 			//mouse scroll should result in scrolling
 			case MOUSE_SCROLL: {
-				final int s = this.scrollSensitivity.getI();
-				//noinspection DataFlowIssue
-				scroll((int) (-context.getScrollX() * s), (int) (context.getScrollY() * s));
-				return true;
+				final int ss    = this.scrollSensitivity.getI();
+				final var oldCb = getContentBounds(); //TODO - Make #scroll return a 'boolean' instead
+				scroll((int) (-context.getScrollX() * ss), (int) (context.getScrollY() * ss));
+				final var newCb = getContentBounds(); //TODO - Make #scroll return a 'boolean' instead
+				return !oldCb.equals(newCb);          //TODO - Make #scroll return a 'boolean' instead
 			}
 			//handle mouse dragging
 			case MOUSE_DRAG:
@@ -111,7 +112,7 @@ public @Virtual class TPanelElement extends TElement
 			//and pressing arrow keys should also scroll
 			case KEY_PRESS:
 			{
-				//only handle if explicily focused (aka focus isn't on a child)
+				//only handle if explicitly focused (aka focus isn't on a child)
 				if(!isFocused()) break;
 				final int s = this.scrollSensitivity.getI();
 				int dX = 0, dY = 0;
@@ -171,7 +172,7 @@ public @Virtual class TPanelElement extends TElement
 		final int newX = (int) (bb.x + sp - (sa.x * maxScrollX));
 		final int newY = (int) (bb.y + sp - (sa.y * maxScrollY));
 
-		// Create a new Bounds2i with the calculated position, keeping the original size.
+		//create a new Bounds2i with the calculated position, keeping the original size.
 		return new Bounds2i(newX, newY, cbb.width, cbb.height);
 	}
 
