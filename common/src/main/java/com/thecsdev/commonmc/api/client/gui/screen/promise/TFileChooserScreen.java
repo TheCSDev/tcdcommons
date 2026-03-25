@@ -481,21 +481,21 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>> imp
 			btn_back.setBounds(0, 0, 20, 15);
 			btn_back.getLabel().setText(Component.literal("<"));
 			btn_back.getLabel().textScaleProperty().set(0.8, NavigationPanel.class);
-			btn_back.eClicked.register(__ -> this.controller.navigateBack());
+			btn_back.eClicked.addListener(__ -> this.controller.navigateBack());
 			addRel(btn_back);
 
 			final var btn_fwd = new TButtonWidget.Paintable(0x66888888, 0, 0xFFFFFFFF);
 			btn_fwd.setBounds(20, 0, 20, 15);
 			btn_fwd.getLabel().setText(Component.literal(">"));
 			btn_fwd.getLabel().textScaleProperty().set(0.8, NavigationPanel.class);
-			btn_fwd.eClicked.register(__ -> this.controller.navigateForward());
+			btn_fwd.eClicked.addListener(__ -> this.controller.navigateForward());
 			addRel(btn_fwd);
 
 			final var btn_refresh = new TButtonWidget.Paintable(0x66888888, 0, 0xFFFFFFFF);
 			btn_refresh.setBounds(40, 0, 20, 15);
 			btn_refresh.getLabel().setText(Component.literal("o"));
 			btn_refresh.getLabel().textScaleProperty().set(0.85, NavigationPanel.class);
-			btn_refresh.eClicked.register(__ -> TFileChooserScreen.this.refresh());
+			btn_refresh.eClicked.addListener(__ -> TFileChooserScreen.this.refresh());
 			addRel(btn_refresh);
 
 			//the label that shows the current directory path
@@ -814,11 +814,11 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>> imp
 					this.controller.setPathFilter(n));
 
 			//the cancel button closes the dialog with CANCEL result
-			this.btn_cancel.eClicked.register(__ -> TFileChooserScreen.this.close());
+			this.btn_cancel.eClicked.addListener(__ -> TFileChooserScreen.this.close());
 
 			//the accept button closes the dialog with ACCEPT result.
 			//behavior varies based on the dialog's Mode
-			this.btn_accept.eClicked.register(__ -> submitForm());
+			this.btn_accept.eClicked.addListener(__ -> submitForm());
 		}
 		// ==================================================
 		protected final @Override void initCallback()
@@ -982,7 +982,7 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>> imp
 			//initialize fields and properties
 			this.path = Objects.requireNonNull(path);
 			this.attributes = Objects.requireNonNull(attributes);
-			super.eClicked.unregister(ONCLICK_SOUND);
+			super.eClicked.removeListener(ONCLICK_SOUND);
 
 			//configure label
 			getLabel().setText(computeFileLabelText());

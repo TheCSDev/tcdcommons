@@ -1,7 +1,7 @@
 package com.thecsdev.commonmc.api.events;
 
-import dev.architectury.event.Event;
-import dev.architectury.event.EventFactory;
+import com.thecsdev.common.event.Event;
+import com.thecsdev.common.event.Events;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
@@ -24,7 +24,7 @@ public final class CreativeModeTabEvent
 	 *
 	 * @see RebuildContents#invoke(FeatureFlagSet, boolean, HolderLookup.Provider)
 	 */
-	public static final Event<RebuildContents> REBUILD_CONTENTS_POST = EventFactory.createLoop();
+	public static final Event<RebuildContents> REBUILD_CONTENTS_POST = Events.createLoop();
 	// ==================================================
 	public static interface RebuildContents
 	{

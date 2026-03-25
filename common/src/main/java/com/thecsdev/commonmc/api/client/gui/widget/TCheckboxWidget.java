@@ -21,7 +21,7 @@ public @Virtual class TCheckboxWidget extends TClickableWidget
 	public TCheckboxWidget()
 	{
 		//play click sound and toggle value on click
-		super.eClicked.register(__ -> {
+		super.eClicked.addListener(__ -> {
 			this.checked.set(!this.checked.get(), TCheckboxWidget.class); //toggle checkbox value
 		});
 	}

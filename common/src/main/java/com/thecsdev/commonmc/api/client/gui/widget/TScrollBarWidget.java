@@ -69,11 +69,11 @@ public @Virtual class TScrollBarWidget extends TSliderWidget
 		final IChangeListener<Point2d> onPanelScrollValueChange = (p, o, n) -> _refreshValue();
 		this.panel.addChangeListener((p, o, n) -> {
 			if(o != null) {
-				o.eInitialized.unregister(onPanelInit);
+				o.eInitialized.removeListener(onPanelInit);
 				o.scrollAmountProperty().removeChangeListener(onPanelScrollValueChange);
 			}
 			if(n != null) {
-				n.eInitialized.register(onPanelInit);
+				n.eInitialized.addListener(onPanelInit);
 				n.scrollAmountProperty().addChangeListener(onPanelScrollValueChange);
 			}
 		});

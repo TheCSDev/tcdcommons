@@ -1,5 +1,7 @@
 package com.thecsdev.commonmc.api.client.gui.widget;
 
+import com.thecsdev.common.event.Event;
+import com.thecsdev.common.event.Events;
 import com.thecsdev.common.properties.BooleanProperty;
 import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.api.client.gui.TElement;
@@ -8,8 +10,6 @@ import com.thecsdev.commonmc.api.client.gui.util.CursorType;
 import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext.InputDiscoveryPhase;
-import dev.architectury.event.Event;
-import dev.architectury.event.EventFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
@@ -36,12 +36,12 @@ public @Virtual class TClickableWidget extends TElement
 	 * <p>
 	 * The {@link Consumer} provides an instance of {@code this} for convenience.
 	 */
-	public final Event<Consumer<TClickableWidget>> eClicked = EventFactory.createLoop();
+	public final Event<Consumer<TClickableWidget>> eClicked = Events.createLoop();
 
 	/**
 	 * Default event handler that plays a GUI click sound whenever this
 	 * {@link TClickableWidget} is clicked. If you do not prefer this, you may
-	 * remove this handler via {@link Event#unregister(Object)}.
+	 * remove this handler via {@link Event#removeListener(Object)}.
 	 * @see #eClicked
 	 */
 	protected static final Consumer<TClickableWidget> ONCLICK_SOUND = (__) -> playGuiButtonClickSound();
@@ -49,7 +49,7 @@ public @Virtual class TClickableWidget extends TElement
 	public TClickableWidget() {
 		super();
 		super.focusableProperty().set(true, TClickableWidget.class);
-		this.eClicked.register(ONCLICK_SOUND);
+		this.eClicked.addListener(ONCLICK_SOUND);
 	}
 	// ==================================================
 	/**

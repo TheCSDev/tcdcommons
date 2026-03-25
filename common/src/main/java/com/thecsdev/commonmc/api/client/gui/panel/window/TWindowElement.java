@@ -262,12 +262,12 @@ public abstract class TWindowElement extends TElement
 
 			//initialize maximize button
 			this.btn_maximize.setBounds(bb.width - 40, 0, 20, 15);
-			this.btn_maximize.eClicked.register(__ -> TWindowElement.this.maximized.toggle());
+			this.btn_maximize.eClicked.addListener(__ -> TWindowElement.this.maximized.toggle());
 			addRel(btn_maximize);
 
 			//initialize close button
 			this.btn_close.setBounds(bb.width - 20, 0, 20, 15);
-			this.btn_close.eClicked.register(__ -> TWindowElement.this.close());
+			this.btn_close.eClicked.addListener(__ -> TWindowElement.this.close());
 			addRel(this.btn_close);
 		}
 		// ==================================================

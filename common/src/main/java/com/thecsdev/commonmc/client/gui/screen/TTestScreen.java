@@ -55,7 +55,7 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus
 		final var btn1 = new TButtonWidget();
 		btn1.getLabel().setText(Component.literal("Test file chooser"));
 		btn1.setBounds(10, 10, 150, 20);
-		btn1.eClicked.register(__ -> {
+		btn1.eClicked.addListener(__ -> {
 			final var screen = new TFileChooserScreen.Builder(TFileChooserScreen.Mode.CREATE_FILE)
 					.setLastScreen(getAsScreen())
 					.addPathFilter(TFileChooserScreen.PathFilter.ALL)

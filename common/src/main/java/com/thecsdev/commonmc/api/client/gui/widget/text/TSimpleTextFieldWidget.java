@@ -43,7 +43,7 @@ public final class TSimpleTextFieldWidget extends TClickableWidget
 	public TSimpleTextFieldWidget()
 	{
 		//click sounds are not appropriate here
-		super.eClicked.unregister(ONCLICK_SOUND);
+		super.eClicked.removeListener(ONCLICK_SOUND);
 
 		//initialize labels
 		this.lbl_text.hoverableProperty().set(false, TSimpleTextFieldWidget.class);

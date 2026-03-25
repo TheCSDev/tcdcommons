@@ -8,6 +8,10 @@
 	[
 		"MixinNativeImage",
 		"MixinClientboundAwardStatsPacket",
-		"MixinGui"
+		"MixinGui",
+		"MixinMinecraft",
+		"MixinClientPacketListener",
+		"MixinClientLevel",
+		"MixinScreen"
 	]
 }

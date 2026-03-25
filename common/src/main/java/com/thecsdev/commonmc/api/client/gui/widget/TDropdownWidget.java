@@ -167,7 +167,7 @@ public @Virtual class TDropdownWidget<E extends TDropdownWidget.Entry> extends T
 				entryMaxW = Math.max(lbl.fontProperty().get().width(lbl.textProperty().get()), entryMaxW);
 
 				//set entry button on-click logic
-				btn.eClicked.register(__ -> {
+				btn.eClicked.addListener(__ -> {
 					//first close this dropdown by removing it
 					TDropdownElement.this.remove();
 					//then set new selected entry value

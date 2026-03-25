@@ -297,8 +297,8 @@ public @Virtual class TContextMenu extends TElement
 			btn.getLabel().setText(text);
 			btn.getLabel().textAlignmentProperty().set(CompassDirection.WEST, Builder.class);
 			btn.setBounds(0, 0, this.client.font.width(text) + (TButtonWidget.LBL_PAD_X * 2), 15);
-			btn.eClicked.register(onClick); //on-click goes first, as is may rely on btn#getClient()
-			btn.eClicked.register(          //then remove, which also clears the screen/client property value
+			btn.eClicked.addListener(onClick); //on-click goes first, as is may rely on btn#getClient()
+			btn.eClicked.addListener(          //then remove, which also clears the screen/client property value
 					__ -> btn.getParentMenu().rootContextMenuProperty().get().remove());
 			this.entries.add(btn);
 			return this;
@@ -319,7 +319,7 @@ public @Virtual class TContextMenu extends TElement
 			btn.getLabel().setText(text);
 			btn.getLabel().textAlignmentProperty().set(CompassDirection.WEST, Builder.class);
 			btn.setBounds(0, 0, this.client.font.width(text) + (TButtonWidget.LBL_PAD_X * 2), 15);
-			btn.eClicked.register(__ -> {
+			btn.eClicked.addListener(__ -> {
 				//add the context menu
 				final var menu = Objects.requireNonNull(menuBuilder.apply(btn), "Context menu Supplier returned 'null'");
 				btn.getParentMenu().add(menu);

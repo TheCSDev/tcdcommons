@@ -1,7 +1,7 @@
 package com.thecsdev.commonmc.api.client.hooks;
 
+import com.thecsdev.commonmc.api.client.events.ClientEvent;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorButton;
-import dev.architectury.event.events.client.ClientGuiEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.components.Button;
@@ -30,7 +30,7 @@ public final class GuiHooks
 	static
 	{
 		//vanilla button modder
-		ClientGuiEvent.INIT_POST.register((screen, access) ->
+		ClientEvent.SCREEN_INIT.addListener((screen, accessor) ->
 		{
 			//obtain mods for the given
 			final @Nullable var mods = VANILLA_BUTTON_MODS.get(screen.getClass());
@@ -38,9 +38,10 @@ public final class GuiHooks
 
 			//iterate all renderable elements and find button instances,
 			//then mod them if necessary
-			access.getRenderables().stream()
+			accessor.getRenderables().stream()
 				.filter(el -> el instanceof Button)
-				.forEach(el -> {
+				.forEach(el ->
+				{
 					//obtain button and its info
 					final var btn    = (Button)el;
 					final var btnTxt = btn.getMessage();
