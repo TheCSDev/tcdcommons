@@ -26,7 +26,7 @@ public final class TItemUtils
 	 * {@link ApiStatus.Internal} method that keeps track of {@link Item}s and their
 	 * corresponding {@link CreativeModeTab}s.
 	 * <p>
-	 * Automatically called by {@link CreativeModeTabEvent#REBUILD_CONTENTS_POST}.
+	 * Automatically called by {@link CreativeModeTabEvent#REBUILD_CONTENTS}.
 	 * <p>
 	 * <b>Do not call this yourself!
 	 */

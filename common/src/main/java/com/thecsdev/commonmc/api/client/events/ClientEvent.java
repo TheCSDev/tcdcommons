@@ -25,28 +25,28 @@ public interface ClientEvent
 	// ==================================================
 	/**
 	 * <b>Trigger:</b> Whenever a {@link LocalPlayer} joins a level.<br>
-	 * <b>Thread:</b> Main &lt;- Scheduled from network thread
+	 * <b>Thread:</b> Main (client) &lt;- Scheduled from network thread
 	 * @see ClientPacketListener#handleLogin(ClientboundLoginPacket)
 	 */
 	Event<LocalPlayerJoin> PLAYER_JOIN = Events.createLoop();
 
 	/**
 	 * <b>Trigger:</b> Whenever a {@link LocalPlayer} leaves a level.<br>
-	 * <b>Thread:</b> Main
+	 * <b>Thread:</b> Main (client)
 	 * @see Minecraft#clearClientLevel(Screen)
 	 */
 	Event<LocalPlayerQuit> PLAYER_QUIT = Events.createLoop();
 	// --------------------------------------------------
 	/**
 	 * <b>Trigger:</b> Whenever a {@link ClientLevel} is initialized.<br>
-	 * <b>Thread:</b> Main
+	 * <b>Thread:</b> Main (client)
 	 * @see ClientLevel#ClientLevel(ClientPacketListener, ClientLevel.ClientLevelData, ResourceKey, Holder, int, int, LevelRenderer, boolean, long, int)
 	 */
 	Event<LevelInit> LEVEL_INIT = Events.createLoop();
 	// --------------------------------------------------
 	/**
 	 * <b>Trigger:</b> Whenever a {@link Screen} is initialized.<br>
-	 * <b>Thread:</b> Main / Render
+	 * <b>Thread:</b> Render (client)
 	 * @see Screen#init(int, int)
 	 */
 	Event<ScreenInit> SCREEN_INIT = Events.createLoop();
