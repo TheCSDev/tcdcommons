@@ -26,7 +26,6 @@
 		"java":         "${properties["fabric.json.depends.java"]}",
 		"minecraft":    "${properties["fabric.json.depends.minecraft"]}",
 		"fabricloader": "${properties["fabric.json.depends.fabricloader"]}",
-		"fabric-api":   "${properties["fabric.json.depends.fabric-api"]}",
-		"architectury": "${properties["fabric.json.depends.architectury"]}"
+		"fabric-api":   "${properties["fabric.json.depends.fabric-api"]}"
 	}
 }
