@@ -1,0 +1,17 @@
+{
+	"package": "com.thecsdev.commonmc.client.mixin.events",
+	"required": true,
+	"minVersion": "0.8",
+	"compatibilityLevel": "JAVA_25",
+	"injectors": { "defaultRequire": 1 },
+	"client":
+	[
+		"MixinNativeImage",
+		"MixinClientboundAwardStatsPacket",
+		"MixinGui",
+		"MixinMinecraft",
+		"MixinClientPacketListener",
+		"MixinClientLevel",
+		"MixinScreen"
+	]
+}
