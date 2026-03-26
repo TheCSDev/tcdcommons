@@ -6,6 +6,7 @@
 	"injectors": { "defaultRequire": 1 },
 	"mixins":
 	[
-		"MixinCreativeModeTabs"
+		"MixinCreativeModeTabs",
+		"MixinCommands"
 	]
 }

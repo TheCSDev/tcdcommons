@@ -1,5 +1,7 @@
 package com.thecsdev.commonmc.api.client.gui;
 
+import com.thecsdev.common.event.Event;
+import com.thecsdev.common.event.Events;
 import com.thecsdev.common.math.Bounds2i;
 import com.thecsdev.common.math.UDim;
 import com.thecsdev.common.math.UDim2;
@@ -20,8 +22,6 @@ import com.thecsdev.commonmc.api.client.gui.util.SceneGraphPath;
 import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorTElement;
-import dev.architectury.event.Event;
-import dev.architectury.event.EventFactory;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.fabricmc.api.EnvType;
@@ -43,6 +43,7 @@ import static com.thecsdev.commonmc.api.client.gui.TElement.TElementPropertyAcce
  * Represents a GUI element in {@link TCDCommons}'s GUI system.
  */
 @Environment(EnvType.CLIENT)
+@SuppressWarnings("ReferenceToMixin")
 @Reflected(AccessorTElement.class)
 public @Virtual class TElement extends Node<TElement> implements INodeBounded<TElement, Bounds2i>, INodeRenderable<TElement, TGuiGraphics>
 {
@@ -68,7 +69,7 @@ public @Virtual class TElement extends Node<TElement> implements INodeBounded<TE
 	 * <p>
 	 * The {@link Consumer} provides an instance of {@code this} for convenience.
 	 */
-	public final Event<Consumer<TElement>> eInitialized = EventFactory.createLoop();
+	public final Event<Consumer<TElement>> eInitialized = Events.createLoop();
 	// ==================================================
 	public TElement()
 	{
@@ -576,7 +577,7 @@ public @Virtual class TElement extends Node<TElement> implements INodeBounded<TE
 	 * For performance optimization reasons, this is invoked if this
 	 * element is contained within its parent's {@link #getBounds()}.
 	 * <p>
-	 * Note that this is regardles of what {@link #isVisible()} returns.
+	 * Note that this is regardless of what {@link #isVisible()} returns.
 	 * The only requirements are the element being "within parent bounds"
 	 * and the parent having ticked.
 	 */

@@ -1,9 +1,9 @@
 package com.thecsdev.commonmc.client;
 
 import com.thecsdev.commonmc.TCDCommons;
+import com.thecsdev.commonmc.api.client.events.ClientEvent;
 import com.thecsdev.commonmc.api.client.registry.TClientRegistries;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorLocalPlayer;
-import dev.architectury.event.events.client.ClientPlayerEvent;
 import net.minecraft.client.multiplayer.SessionSearchTrees;
 import net.minecraft.world.item.CreativeModeTabs;
 
@@ -22,7 +22,7 @@ public class TCDCommonsClient extends TCDCommons
 		TClientRegistries.bootstrap();
 
 		//regroup items into creative mode tabs when joining worlds
-		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(localPlayer ->
+		ClientEvent.PLAYER_JOIN.addListener(localPlayer ->
 		{
 			// ----------
 			//do not do this if this feature is disabled

@@ -133,7 +133,7 @@ public final class TTextDialogScreen extends TScreenPlus implements ILastScreenP
 					(bb_panel.width / 2) - 20, 15);
 			btn_done.getLabel().setText(translatable("gui.done"));
 			btn_done.getLabel().textScaleProperty().set(0.8, WindowElement.class);
-			btn_done.eClicked.register(__ -> TTextDialogScreen.this.close());
+			btn_done.eClicked.addListener(__ -> TTextDialogScreen.this.close());
 			body.add(btn_done);
 
 			//the 'Copy to clipboard' button
@@ -141,7 +141,7 @@ public final class TTextDialogScreen extends TScreenPlus implements ILastScreenP
 			final var btn_copy = new TButtonWidget.Paintable(0x22FFFFFF, 0x55FFFFFF);
 			btn_copy.setBounds(bb_done.x - 20, bb_done.y, 15, 15);
 			btn_copy.getLabel().setText(gui(TSprites.gui_icon_clipboard()));
-			btn_copy.eClicked.register(btn -> Objects.requireNonNull(btn.getClient(), "Missing 'client' instance")
+			btn_copy.eClicked.addListener(btn -> Objects.requireNonNull(btn.getClient(), "Missing 'client' instance")
 					.keyboardHandler.setClipboard(el_label.getText().getString()));
 			btn_copy.tooltipProperty().set(__ -> TTooltip.of(translatable("chat.copy")), WindowElement.class);
 			body.add(btn_copy);

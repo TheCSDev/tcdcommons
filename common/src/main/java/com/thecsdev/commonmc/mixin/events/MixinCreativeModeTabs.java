@@ -25,6 +25,6 @@ public abstract class MixinCreativeModeTabs
 
 		//rebuild the internal map and invoke the event
 		TItemUtils.rebuildI2TMap();
-		CreativeModeTabEvent.REBUILD_CONTENTS_POST.invoker().invoke(enabledFeatures, operatorEnabled, lookup);
+		CreativeModeTabEvent.REBUILD_CONTENTS.invoker().invoke(enabledFeatures, operatorEnabled, lookup);
 	}
 }

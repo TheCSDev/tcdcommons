@@ -25,12 +25,5 @@ versionRange = "${properties["neo.toml.dependencies.minecraft"]}"
 ordering     = "NONE"
 side         = "BOTH"
 
-[[dependencies.${properties["mod.id"]}]]
-modId        = "architectury"
-type         = "required"
-versionRange = "${properties["neo.toml.dependencies.architectury"]}"
-ordering     = "AFTER"
-side         = "BOTH"
-
 # Mixin declarations are dynamically inserted below:
 ${properties["mixins"]}

@@ -5,11 +5,10 @@ import com.thecsdev.common.properties.DoubleProperty;
 import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.TCDCommonsConfig;
+import com.thecsdev.commonmc.api.client.events.ClientEvent;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.world.sandbox.SandboxLevel;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
-import dev.architectury.event.events.client.ClientPlayerEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -163,9 +162,9 @@ public @Virtual class TEntityElement extends TElement
 		private EntityProvider() {}
 		static {
 			//clear cache when world-related events happen
-			ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(__ -> CACHE.clear());
-			ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(__ -> CACHE.clear());
-			ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(__ -> CACHE.clear());
+			ClientEvent.PLAYER_JOIN.addListener(__ -> CACHE.clear());
+			ClientEvent.PLAYER_QUIT.addListener(__ -> CACHE.clear());
+			ClientEvent.LEVEL_INIT.addListener(__ -> CACHE.clear());
 		}
 		// ==================================================
 		/**

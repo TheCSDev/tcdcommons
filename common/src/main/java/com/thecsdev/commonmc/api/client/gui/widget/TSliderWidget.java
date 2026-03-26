@@ -40,7 +40,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 	public @SuppressWarnings("unchecked") TSliderWidget()
 	{
 		//original click sound mechanism doesn't work properly here
-		super.eClicked.unregister(ONCLICK_SOUND); //so we remove it
+		super.eClicked.removeListener(ONCLICK_SOUND); //so we remove it
 		pressedProperty().addChangeListener((p, o, n) -> {
 			if(!n) playGuiButtonClickSound(); //this one works better here
 		});
