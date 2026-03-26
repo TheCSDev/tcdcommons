@@ -1,0 +1,12 @@
+{
+	"package": "com.thecsdev.commonmc.mixin.events",
+	"required": true,
+	"minVersion": "0.8",
+	"compatibilityLevel": "JAVA_25",
+	"injectors": { "defaultRequire": 1 },
+	"mixins":
+	[
+		"MixinCreativeModeTabs",
+		"MixinCommands"
+	]
+}
