@@ -1,8 +1,10 @@
 package com.thecsdev.commonmc.client.gui.screen;
 
 import com.thecsdev.common.math.UDim2;
+import com.thecsdev.commonmc.api.client.gui.label.TStretchedTextElement;
 import com.thecsdev.commonmc.api.client.gui.misc.TFillColorElement;
 import com.thecsdev.commonmc.api.client.gui.panel.TPanelElement;
+import com.thecsdev.commonmc.api.client.gui.screen.ILastScreenProvider;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreen;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreenPlus;
 import com.thecsdev.commonmc.api.client.gui.screen.promise.TFileChooserScreen;
@@ -12,12 +14,15 @@ import com.thecsdev.commonmc.api.client.gui.widget.stats.TBlockStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TEntityStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TItemStatsWidget;
 import com.thecsdev.commonmc.api.stats.RandomStatsProvider;
+import com.thecsdev.commonmc.resource.TComponent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Collectors;
 
@@ -32,8 +37,14 @@ import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.COLOR_OUT
  * @apiNote This conveniently also serves as an internal debug screen.
  */
 @Environment(EnvType.CLIENT)
-public final @ApiStatus.Internal class TTestScreen extends TScreenPlus
+public final @ApiStatus.Internal class TTestScreen extends TScreenPlus implements ILastScreenProvider
 {
+	// ==================================================
+	private final @Nullable Screen lastScreen;
+	// ==================================================
+	public TTestScreen(@Nullable Screen lastScreen) { this.lastScreen = lastScreen; }
+	// --------------------------------------------------
+	public final @Override @Nullable Screen getLastScreen() { return lastScreen; }
 	// ==================================================
 	protected final @Override void initCallback()
 	{
@@ -74,6 +85,14 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus
 			getClient().setScreen(screen.getAsScreen());
 		});
 		panel.add(btn1);
+
+		//test stretched text
+		final var lbl_bg = new TFillColorElement(0xFFDDDDDD, 0xFF000000);
+		lbl_bg.setBounds(10, 40, 20, 20);
+		panel.add(lbl_bg);
+		final var lbl_head = new TStretchedTextElement(TComponent.head("Steve"));
+		lbl_head.setBounds(lbl_bg.getBounds().add(1, 1, -2, -2));
+		lbl_bg.add(lbl_head);
 
 		//test statistics
 		initEnityStats(panel);

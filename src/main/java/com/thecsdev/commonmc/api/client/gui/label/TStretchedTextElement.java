@@ -1,6 +1,7 @@
 package com.thecsdev.commonmc.api.client.gui.label;
 
 import com.thecsdev.common.math.Point2d;
+import com.thecsdev.common.properties.BooleanProperty;
 import com.thecsdev.common.properties.IntegerProperty;
 import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.commonmc.api.client.gui.TElement;
@@ -18,9 +19,10 @@ import org.jetbrains.annotations.NotNull;
 public final class TStretchedTextElement extends TElement
 {
 	// ==================================================
-	private final NotNullProperty<Component> text      = new NotNullProperty<>(Component.empty());
-	private final IntegerProperty            textColor = new IntegerProperty(0xFFFFFFFF);
-	private final NotNullProperty<Point2d>   scale     = new NotNullProperty<>(new Point2d(1, 1));
+	private final NotNullProperty<Component> text       = new NotNullProperty<>(Component.empty());
+	private final IntegerProperty            textColor  = new IntegerProperty(0xFFFFFFFF);
+	private final NotNullProperty<Point2d>   scale      = new NotNullProperty<>(new Point2d(1, 1));
+	private final BooleanProperty            dropShadow = new BooleanProperty(true);
 	// ==================================================
 	public TStretchedTextElement() {}
 	public TStretchedTextElement(@NotNull Component text) { this.text.getHandle().set(text); }
@@ -43,6 +45,12 @@ public final class TStretchedTextElement extends TElement
 	 * @apiNote Neither axis should have its scale value set to {@code 0}!
 	 */
 	public final @NotNull NotNullProperty<Point2d> textScaleProperty() { return this.scale; }
+
+	/**
+	 * A {@link BooleanProperty} for whether the text should have a 'shadow' when rendered.
+	 * @since 5.3.0
+	 */
+	public final BooleanProperty dropShadowProperty() { return this.dropShadow; }
 	// ==================================================
 	protected final @Override void initCallback() {}
 	// --------------------------------------------------
@@ -68,7 +76,7 @@ public final class TStretchedTextElement extends TElement
 		mat.scale((float) (((double) bb.width / (double) textW) * scale.x),
 				(float) (((double) bb.height / (double) textH) * scale.y));
 		//then render the text
-		pencil.getNative().text(font, text, 0, 0, this.textColor.getI());
+		pencil.getNative().text(font, text, 0, 0, this.textColor.getI(), this.dropShadow.getZ());
 		//and then pop the matrix stack
 		mat.popMatrix();
 	}
