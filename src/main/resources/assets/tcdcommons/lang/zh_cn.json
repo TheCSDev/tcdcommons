@@ -9,6 +9,7 @@
 	"tcdcommons.config.server": "服务端属性",
 	"tcdcommons.config.property_value": "Value",
 
+	"tcdcommons.stat_type.minecraft.custom": "General",
 	"tcdcommons.stat_type.minecraft.killed": "击杀",
 	"tcdcommons.stat_type.minecraft.killed_by": "被击杀",
 	"tcdcommons.stat_type.morestats.damaged": "造成伤害",

@@ -9,6 +9,7 @@
 	"tcdcommons.config.server": "Server properties",
 	"tcdcommons.config.property_value": "Value",
 
+	"tcdcommons.stat_type.minecraft.custom": "General",
 	"tcdcommons.stat_type.minecraft.killed": "Killed",
 	"tcdcommons.stat_type.minecraft.killed_by": "Died to",
 	"tcdcommons.stat_type.morestats.damaged": "Damage dealt",

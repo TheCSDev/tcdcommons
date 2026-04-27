@@ -23,10 +23,18 @@ public final class NeoForgeModInfo extends ModInfo
 	// ==================================================
 	public NeoForgeModInfo(@NotNull String modid) throws NullPointerException, NoSuchElementException
 	{
+		//initialize super
 		super(modid);
-		final var info = getFMLModInfo(modid);
-		final var lang = Language.getInstance();
-		this.name      = lang.has(modid) ? translatable(modid) : literal(info.getDisplayName());
+		//preparations
+		final var info        = getFMLModInfo(modid);
+		final var lang        = Language.getInstance();
+		final var modMenuName = "modmenu.nameTranslation." + modid;
+		//initialize field values
+		this.name = lang.has(modMenuName) ?
+				translatable(modMenuName) :
+				lang.has(modid) ?
+						translatable(modid) :
+						literal(info.getDisplayName());
 		this.version   = info.getVersion().toString();
 	}
 	// ==================================================

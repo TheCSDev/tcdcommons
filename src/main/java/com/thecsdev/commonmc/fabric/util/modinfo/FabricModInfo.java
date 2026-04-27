@@ -23,11 +23,19 @@ public final class FabricModInfo extends ModInfo
 	// ==================================================
 	public FabricModInfo(@NotNull String modid) throws NullPointerException, NoSuchElementException
 	{
+		//initialize super
 		super(modid);
-		final var info = FabricLoader.getInstance().getModContainer(modid).orElseThrow();
-		final var meta = info.getMetadata();
-		final var lang = Language.getInstance();
-		this.name      = lang.has(modid) ? translatable(modid) : literal(meta.getName());
+		//preparations
+		final var info        = FabricLoader.getInstance().getModContainer(modid).orElseThrow();
+		final var meta        = info.getMetadata();
+		final var lang        = Language.getInstance();
+		final var modMenuName = "modmenu.nameTranslation." + modid;
+		//initialize field values
+		this.name = lang.has(modMenuName) ?
+				translatable(modMenuName) :
+				lang.has(modid) ?
+						translatable(modid) :
+						literal(meta.getName());
 		this.version   = meta.getVersion().getFriendlyString();
 	}
 	// ==================================================
