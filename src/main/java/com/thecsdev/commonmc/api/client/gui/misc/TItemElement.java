@@ -9,22 +9,29 @@ import net.fabricmc.api.Environment;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * {@link TElement} that renders a given {@link ItemStack} on the screen,
  * like how the game does it in the inventory screen.
+ * <p>
+ * {@link Deprecated}. Please use {@link TItemStackElement} instead.
  */
 @Environment(EnvType.CLIENT)
+@Deprecated(since = "5.3.0", forRemoval = true)
 public @Virtual class TItemElement extends TElement
 {
 	// ==================================================
 	private final NotNullProperty<ItemStack> itemStack = new NotNullProperty<>(Items.AIR.getDefaultInstance());
 	// ==================================================
-	public TItemElement() {
-		super();
+	public TItemElement() { this(Items.AIR.getDefaultInstance()); }
+	public TItemElement(@Nullable ItemStack itemStack)
+	{
 		//this element should not be focusable or hoverable
 		focusableProperty().set(false, TItemElement.class);
 		hoverableProperty().set(false, TItemElement.class);
+		//initialize properties
+		this.itemStack.set(itemStack, TItemElement.class);
 	}
 	// ==================================================
 	/**

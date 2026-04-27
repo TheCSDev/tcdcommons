@@ -616,8 +616,8 @@ public abstract class TGuiGraphics
 		renderEntityInInventoryFollowsMouse(
 				x, y, x + width, y + height,
 				(int) (computeEntitySize(entity, width, height) * scale),
-				followsCursor ? getMouseX() : (x + width),
-				followsCursor ? getMouseY() : (y + height),
+				followsCursor ? getMouseX() : (x + width + ((float) width / 7)),
+				followsCursor ? getMouseY() : (y + height + ((float) height / 10)),
 				entity);
 	}
 

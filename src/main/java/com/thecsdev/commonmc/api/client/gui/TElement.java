@@ -43,7 +43,6 @@ import static com.thecsdev.commonmc.api.client.gui.TElement.TElementPropertyAcce
  * Represents a GUI element in {@link TCDCommons}'s GUI system.
  */
 @Environment(EnvType.CLIENT)
-@SuppressWarnings("ReferenceToMixin")
 @Reflected(AccessorTElement.class)
 public @Virtual class TElement extends Node<TElement> implements INodeBounded<TElement, Bounds2i>, INodeRenderable<TElement, TGuiGraphics>
 {
@@ -78,14 +77,14 @@ public @Virtual class TElement extends Node<TElement> implements INodeBounded<TE
 		this.screen.setOwner(TElementPropertyAccessor.class, TElement.class);
 
 		//handle changes
-		parentProperty().addChangeListener((p, o, n) -> {
+		parentProperty().addChangeListener((_, o, n) -> {
 			//update the screen property when the parent changes
 			setScreenValue(this, (TScreen) findParent(ps -> ps instanceof TScreen).orElse(null));
 			//invalidate content bounds of past and new parents
 			if(o != null) o.contentBounds = null;
 			if(n != null) n.contentBounds = null;
 		});
-		this.screen.addChangeListener((p, o, n) -> {
+		this.screen.addChangeListener((_, o, n) -> {
 			//update children's screen values
 			for(final var child : this) setScreenValue(child, n);
 			//remove focus/hover from old screen if left over
@@ -97,14 +96,14 @@ public @Virtual class TElement extends Node<TElement> implements INodeBounded<TE
 					o.focusedElementProperty().set(null, TScreen.class);
 			}
 		});
-		boundsProperty().addChangeListener((p, o, n) -> {
+		boundsProperty().addChangeListener((_, _, _) -> {
 			//invalidate this element's content bounds
 			this.contentBounds = null; //important too
 			//invalidate parent content bounds when this element's bounds change
 			final @Nullable var pe = getParent();
 			if(pe != null) pe.contentBounds = null;
 		});
-		this.tooltip.addChangeListener((p, o, n) -> invalidateTooltipCache());
+		this.tooltip.addChangeListener((_, _, _) -> invalidateTooltipCache());
 	}
 	// ==================================================
 	public final @NotNull @Override TElement getSelf() { return this; }
@@ -671,7 +670,7 @@ public @Virtual class TElement extends Node<TElement> implements INodeBounded<TE
 	 */
 	private static final boolean overridesInitCallback(final Class<? extends TElement> clazz) {
 		//for optimization, results are cached in a map
-		return OVERRIDES_INIT.computeIfAbsent(clazz, __ -> isMethodOverridden(clazz, "initCallback", void.class));
+		return OVERRIDES_INIT.computeIfAbsent(clazz, _ -> isMethodOverridden(clazz, "initCallback", void.class));
 	}
 	// ==================================================
 	/**
