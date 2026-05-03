@@ -26,7 +26,7 @@
 	"tcdcommons.gui.filechooser.quick_access.mount_points": "Тоташу нокталары",
 	"tcdcommons.gui.filechooser.ctxmenu.select": "Сайлау",
 	"tcdcommons.gui.filechooser.ctxmenu.open": "Ачу",
-	"tcdcommons.gui.filechooser.ctxmenu.open_with": "Ачу ысулы:",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with": "Ачу рәвеше:",
 	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "Бәйләнгән кушымта",
 	"tcdcommons.gui.filechooser.action.file_name": "Файл исеме",
 	"tcdcommons.gui.filechooser.action.file_type": "Файл төре",
