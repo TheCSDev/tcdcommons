@@ -20,8 +20,8 @@
 	"tcdcommons.gui.dropdown.default_label": "Вариантны сайлау...",
 
 	"tcdcommons.gui.filechooser.mode.explore": "Файл юлкүрсәткече",
-	"tcdcommons.gui.filechooser.mode.choose_file": "Файлны сайлау",
-	"tcdcommons.gui.filechooser.mode.create_file": "Файлны ясау",
+	"tcdcommons.gui.filechooser.mode.choose_file": "Файлны сайлагыз",
+	"tcdcommons.gui.filechooser.mode.create_file": "Файлны ясагыз",
 	"tcdcommons.gui.filechooser.quick_access": "Тиз юл",
 	"tcdcommons.gui.filechooser.quick_access.mount_points": "Тоташу нокталары",
 	"tcdcommons.gui.filechooser.ctxmenu.select": "Сайлау",
