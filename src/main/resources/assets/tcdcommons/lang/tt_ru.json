@@ -1,0 +1,37 @@
+{
+	"modmenu.summaryTranslation.tcdcommons": "TheCSDev'ның Minecraft модлары өчен шәхси китапханә.",
+
+	"tcdcommons.config.common": "Клиент/сервер үзлекләре",
+	"tcdcommons.config.client": "Клиент үзлекләре",
+	"tcdcommons.config.client.update_item_groups_on_join": "Кушылганда предмет төркемнәрен яңарту",
+	"tcdcommons.config.client.update_item_groups_on_join.tooltip": "Эшчәнлек функциясе. Инвентарь ачылганда ваниль уены предмет төркемнәрен яңарта, шул сәбәптән зур мод җыелмаларында тоткарлый. Тоткарлау уенда булмау өчен, экраннарны йөкләнгән вакытта бу функция шундый гамәлне эшли.",
+	"tcdcommons.config.server": "Сервер үзлекләре",
+	"tcdcommons.config.property_value": "Кыйммәт",
+
+	"tcdcommons.stat_type.minecraft.killed": "Үтерү саны",
+	"tcdcommons.stat_type.minecraft.killed_by": "Үлү саны",
+	"tcdcommons.stat_type.morestats.damaged": "Зыян китерелгән",
+	"tcdcommons.stat_type.morestats.damaged_by": "Зыян алынган",
+	"tcdcommons.stat_type.morestats.totem_popped_by": "Тотем кулланган",
+
+	"tcdcommons.gui.screen.text_dialog.default_title": "Диалог",
+	"tcdcommons.gui.screen.text_dialog.error_title": "Нәрсәдер ялгыш китте",
+
+	"tcdcommons.gui.dropdown.default_label": "Вариантны сайлау...",
+
+	"tcdcommons.gui.filechooser.mode.explore": "Файл юлкүрсәткече",
+	"tcdcommons.gui.filechooser.mode.choose_file": "Файл сайлагыз",
+	"tcdcommons.gui.filechooser.mode.create_file": "Файл ясагыз",
+	"tcdcommons.gui.filechooser.quick_access": "Тиз юл",
+	"tcdcommons.gui.filechooser.quick_access.mount_points": "Тоташу нокталары",
+	"tcdcommons.gui.filechooser.ctxmenu.select": "Сайлау",
+	"tcdcommons.gui.filechooser.ctxmenu.open": "Ачу",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with": "Ачу рәвеше:",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "Бәйләнгән кушымта",
+	"tcdcommons.gui.filechooser.action.file_name": "Файл исеме",
+	"tcdcommons.gui.filechooser.action.file_type": "Файл төре",
+
+	"tcdcommons.misc.loading": "Йөкләү...",
+	"tcdcommons.misc.something_went_wrong": "Нәрсәдер ялгыш китте",
+	"tcdcommons.misc.coming_soon": "Тиздән"
+}
