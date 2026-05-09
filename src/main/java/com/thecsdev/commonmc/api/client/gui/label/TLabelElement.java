@@ -56,12 +56,12 @@ public final class TLabelElement extends TElement
 	}
 	// ==================================================
 	/**
-	 * An {@link NotNullProperty} for this {@link TLabelElement}'s text.
+	 * A {@link NotNullProperty} for this {@link TLabelElement}'s text.
 	 */
 	public final NotNullProperty<Component> textProperty() { return this.text; }
 
 	/**
-	 * An {@link NotNullProperty} for this {@link TLabelElement}'s {@link Font}.
+	 * A {@link NotNullProperty} for this {@link TLabelElement}'s {@link Font}.
 	 */
 	public final NotNullProperty<Font> fontProperty() { return this.font; }
 
@@ -82,7 +82,7 @@ public final class TLabelElement extends TElement
 	public final BooleanProperty wrapTextProperty() { return this.wrapText; }
 
 	/**
-	 * An {@link NotNullProperty} for the horizontal and vertical alignment of text.
+	 * A {@link NotNullProperty} for the horizontal and vertical alignment of text.
 	 */
 	public final NotNullProperty<CompassDirection> textAlignmentProperty() { return this.textAlignment; }
 
