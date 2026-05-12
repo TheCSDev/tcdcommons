@@ -1,6 +1,7 @@
 package com.thecsdev.commonmc.api.client.gui.render;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.thecsdev.commonmc.resource.TSprites;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -68,6 +69,21 @@ final class TGuiGraphicsDefault extends TGuiGraphics
 	public final @Override void drawCheckbox(int x, int y, int width, int height, int color, boolean enabled, boolean highlighted, boolean checked) {
 		if(!enabled) drawGuiSprite(SPRITE_CHECKBOXES[0], x, y, width, height, color);
 		else         drawGuiSprite(SPRITE_CHECKBOXES[checked ? (highlighted ? 3 : 2) : (highlighted ? 1 : 0)], x, y, width, height, color);
+	}
+
+	private static final @ApiStatus.Internal Identifier[] SPRITE_TOGGLEBTNS = new Identifier[] {
+			TSprites.gui_widget_togglebtn(),
+			TSprites.gui_widget_togglebtnDisabled(),
+			TSprites.gui_widget_togglebtnHighlighted(),
+			TSprites.gui_widget_togglebtnToggled(),
+			TSprites.gui_widget_togglebtnToggledDisabled(),
+			TSprites.gui_widget_togglebtnToggledHighlighted()
+	};
+
+	public final @Override void drawToggleButton(int x, int y, int width, int height, int color, boolean enabled, boolean highlighted, boolean toggled) {
+		if(!enabled)         drawGuiSprite(SPRITE_TOGGLEBTNS[toggled ? 4 : 1], x, y, width, height, color);
+		else if(highlighted) drawGuiSprite(SPRITE_TOGGLEBTNS[toggled ? 5 : 2], x, y, width, height, color);
+		else                 drawGuiSprite(SPRITE_TOGGLEBTNS[toggled ? 3 : 0], x, y, width, height, color);
 	}
 	// ==================================================
 }

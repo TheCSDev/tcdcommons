@@ -10,6 +10,7 @@ import com.thecsdev.commonmc.api.client.gui.screen.TScreenPlus;
 import com.thecsdev.commonmc.api.client.gui.screen.promise.TFileChooserScreen;
 import com.thecsdev.commonmc.api.client.gui.widget.TButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.TScrollBarWidget;
+import com.thecsdev.commonmc.api.client.gui.widget.TToggleButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TBlockStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TEntityStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TItemStatsWidget;
@@ -93,6 +94,18 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus implement
 		final var lbl_head = new TStretchedTextElement(TComponent.head("Steve"));
 		lbl_head.setBounds(lbl_bg.getBounds().add(1, 1, -2, -2));
 		lbl_bg.add(lbl_head);
+
+		//test toggle buttons
+		final var btn_tog1 = new TToggleButtonWidget();
+		btn_tog1.setBounds(10, 70, 100, 20);
+		btn_tog1.enabledProperty().set(false, TTestScreen.class);
+		panel.add(btn_tog1);
+
+		final var btn_tog2 = new TToggleButtonWidget();
+		btn_tog2.setBounds(120, 70, 100, 20);
+		btn_tog2.toggledProperty().addChangeListener((_, _, n) ->
+				btn_tog1.toggledProperty().set(n, TTestScreen.class));
+		panel.add(btn_tog2);
 
 		//test statistics
 		initEnityStats(panel);

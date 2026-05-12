@@ -44,7 +44,7 @@ public @Virtual class TClickableWidget extends TElement
 	 * remove this handler via {@link Event#removeListener(Object)}.
 	 * @see #eClicked
 	 */
-	protected static final Consumer<TClickableWidget> ONCLICK_SOUND = (__) -> playGuiButtonClickSound();
+	protected static final Consumer<TClickableWidget> ONCLICK_SOUND = _ -> playGuiButtonClickSound();
 	// ==================================================
 	public TClickableWidget() {
 		super();

@@ -25,6 +25,13 @@ public class TSprites
 	public static final Identifier gui_widget_dropdownCollapsed() { return fromNamespaceAndPath(MOD_ID, "widget/dropdown_collapsed"); }
 	public static final Identifier gui_widget_dropdownExpanded() { return fromNamespaceAndPath(MOD_ID, "widget/dropdown_expanded"); }
 	// --------------------------------------------------
+	public static final Identifier gui_widget_togglebtn() { return fromNamespaceAndPath(MOD_ID, "widget/togglebtn"); }
+	public static final Identifier gui_widget_togglebtnDisabled() { return fromNamespaceAndPath(MOD_ID, "widget/togglebtn_disabled"); }
+	public static final Identifier gui_widget_togglebtnHighlighted() { return fromNamespaceAndPath(MOD_ID, "widget/togglebtn_highlighted"); }
+	public static final Identifier gui_widget_togglebtnToggled() { return fromNamespaceAndPath(MOD_ID, "widget/togglebtn_toggled"); }
+	public static final Identifier gui_widget_togglebtnToggledDisabled() { return fromNamespaceAndPath(MOD_ID, "widget/togglebtn_toggled_disabled"); }
+	public static final Identifier gui_widget_togglebtnToggledHighlighted() { return fromNamespaceAndPath(MOD_ID, "widget/togglebtn_toggled_highlighted"); }
+	// --------------------------------------------------
 	public static final Identifier gui_popup_ctxmenu() { return fromNamespaceAndPath(MOD_ID, "popup/ctxmenu"); }
 	public static final Identifier gui_popup_ctxmenuHighlighted() { return fromNamespaceAndPath(MOD_ID, "popup/ctxmenu_highlighted"); }
 	public static final Identifier gui_popup_shadow() { return fromNamespaceAndPath(MOD_ID, "popup/shadow"); }

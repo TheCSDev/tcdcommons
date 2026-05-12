@@ -551,6 +551,19 @@ public abstract class TGuiGraphics
 	 * @param checked Is the checkbox checked?
 	 */
 	public abstract void drawCheckbox(int x, int y, int width, int height, int color, boolean enabled, boolean highlighted, boolean checked);
+
+	/**
+	 * Draws a togglable button.
+	 * @param x The X coordinate.
+	 * @param y The Y coordinate.
+	 * @param width The width.
+	 * @param height The height.
+	 * @param color The texture color. It is recommended to use white (aka -1).
+	 * @param enabled Is the checkbox enabled and clickable?
+	 * @param highlighted Is the checkbox hovered or selected?
+	 * @param toggled Is the button toggled?
+	 */
+	public abstract void drawToggleButton(int x, int y, int width, int height, int color, boolean enabled, boolean highlighted, boolean toggled);
 	// ==================================================
 	/**
 	 * Renders an item.
