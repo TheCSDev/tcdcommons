@@ -1,5 +1,5 @@
 {
-	"modmenu.summaryTranslation.tcdcommons": "TheCSDev'ның Minecraft модлары өчен шәхси китапханә.",
+	"modmenu.descriptionTranslation.tcdcommons": "TheCSDev'ның Minecraft модлары өчен шәхси китапханә.",
 
 	"tcdcommons.config.common": "Клиент/сервер үзлекләре",
 	"tcdcommons.config.client": "Клиент үзлекләре",
@@ -8,6 +8,7 @@
 	"tcdcommons.config.server": "Сервер үзлекләре",
 	"tcdcommons.config.property_value": "Кыйммәт",
 
+	"tcdcommons.stat_type.minecraft.custom": "General",
 	"tcdcommons.stat_type.minecraft.killed": "Үтерү саны",
 	"tcdcommons.stat_type.minecraft.killed_by": "Үлү саны",
 	"tcdcommons.stat_type.morestats.damaged": "Зыян китерелгән",
