@@ -63,7 +63,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	/**
 	 * Returns the {@link #target} {@link TScreen} for this {@link TScreenWrapper}.
 	 */
-	public final T getTargetTScreen() { return this.target; }
+	public final @NotNull T getTargetTScreen() { return this.target; }
 
 	/**
 	 * Returns the {@link Minecraft} client instance that last opened
@@ -85,14 +85,14 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	}
 	// ==================================================
 	public final @Override void added() {
-		getClient().schedule(() -> {
-			if(getClient().screen == this) this.target.openCallback();
+		this.minecraft.schedule(() -> {
+			if(this.minecraft.screen == this) this.target.openCallback();
 		});
 	}
 	// --------------------------------------------------
 	protected final @Override void init() {
-		getClient().schedule(() -> {
-			if(getClient().screen != this) return;
+		this.minecraft.schedule(() -> {
+			if(this.minecraft.screen != this) return;
 			//begin measuring initialization time
 			final var ns = nanoTime();
 			//trigger (re/)initialization by updating the bounds
@@ -107,11 +107,20 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	}
 	// --------------------------------------------------
 	public final @Override void removed() {
-		getClient().schedule(() -> {
-			if(getClient().screen != this) {
-				this.target.closeCallback();
-				this.target.clear(); //cleanup tasks for if closed
-			}
+		this.minecraft.schedule(() -> {
+			//do nothing in case something reopened this screen by the time this method got called
+			if(this.minecraft.screen == this) return;
+
+			//invoke the corresponding callback method
+			this.target.closeCallback();
+
+			//FIXME - Hacky workaround for allowing "last/previous screens" to be rendered in the background.
+			//        Problem is that this workaround enables a route thru which #clear() is never called.
+			//if this screen is not the "last/previous screen" of another currently opened screen,
+			//clear all children to trigger any cleanup logic they may hold
+			final @Nullable var lsp = ILastScreenProvider.getCurrent(this.minecraft);
+			if(lsp == null || lsp.getLastScreen() != this)
+				this.target.clear(); //trigger any cleanup tasks - has chance to not be called
 		});
 	}
 	// ==================================================

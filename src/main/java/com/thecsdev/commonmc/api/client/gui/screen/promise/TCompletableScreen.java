@@ -60,9 +60,9 @@ public abstract class TCompletableScreen<R> extends TScreen implements ILastScre
 	// --------------------------------------------------
 	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil)
 	{
-		if(getLastScreen() == null) return;
+		if(this.lastScreen == null) return;
 		//the last screen is to be visually rendered below this screen
-		getLastScreen().extractRenderState(pencil.getNative(), pencil.getMouseX(), pencil.getMouseY(), pencil.getDeltaTicks());
+		this.lastScreen.extractRenderState(pencil.getNative(), pencil.getMouseX(), pencil.getMouseY(), pencil.getDeltaTicks());
 		//followed by a white plane background so it's easier to tell screens apart
 		final var bb = getBounds();
 		pencil.fillColor(bb.x, bb.y, bb.width, bb.height, 0x22FFFFFF);

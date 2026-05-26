@@ -13,7 +13,6 @@ import com.thecsdev.commonmc.api.client.gui.misc.TFillColorElement;
 import com.thecsdev.commonmc.api.client.gui.panel.TPanelElement;
 import com.thecsdev.commonmc.api.client.gui.panel.window.TWindowElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
-import com.thecsdev.commonmc.api.client.gui.screen.ILastScreenProvider;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreen;
 import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
 import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
@@ -63,7 +62,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * through their directories and choose the desired files.
  */
 @Environment(EnvType.CLIENT)
-public final class TFileChooserScreen extends TCompletableScreen<List<Path>> implements ILastScreenProvider
+public final class TFileChooserScreen extends TCompletableScreen<List<Path>>
 {
 	// ================================================== ==================================================
 	//                                 TFileChooserScreen IMPLEMENTATION
@@ -481,21 +480,21 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>> imp
 			btn_back.setBounds(0, 0, 20, 15);
 			btn_back.getLabel().setText(Component.literal("<"));
 			btn_back.getLabel().textScaleProperty().set(0.8, NavigationPanel.class);
-			btn_back.eClicked.addListener(__ -> this.controller.navigateBack());
+			btn_back.eClicked.addListener(_ -> this.controller.navigateBack());
 			addRel(btn_back);
 
 			final var btn_fwd = new TButtonWidget.Paintable(0x66888888, 0, 0xFFFFFFFF);
 			btn_fwd.setBounds(20, 0, 20, 15);
 			btn_fwd.getLabel().setText(Component.literal(">"));
 			btn_fwd.getLabel().textScaleProperty().set(0.8, NavigationPanel.class);
-			btn_fwd.eClicked.addListener(__ -> this.controller.navigateForward());
+			btn_fwd.eClicked.addListener(_ -> this.controller.navigateForward());
 			addRel(btn_fwd);
 
 			final var btn_refresh = new TButtonWidget.Paintable(0x66888888, 0, 0xFFFFFFFF);
 			btn_refresh.setBounds(40, 0, 20, 15);
 			btn_refresh.getLabel().setText(Component.literal("o"));
 			btn_refresh.getLabel().textScaleProperty().set(0.85, NavigationPanel.class);
-			btn_refresh.eClicked.addListener(__ -> TFileChooserScreen.this.refresh());
+			btn_refresh.eClicked.addListener(_ -> TFileChooserScreen.this.refresh());
 			addRel(btn_refresh);
 
 			//the label that shows the current directory path
@@ -795,12 +794,12 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>> imp
 			this.btn_cancel.getLabel().textAlignmentProperty().set(CompassDirection.CENTER, ActionPanel.class);
 			this.btn_cancel.getLabel().textScaleProperty().set(0.8, ActionPanel.class);
 			this.btn_accept.getLabel().setText(Component.literal("✓"));
-			this.btn_cancel.tooltipProperty().set(__ -> TTooltip.of(Component.translatable("gui.cancel")), ActionPanel.class);
+			this.btn_cancel.tooltipProperty().set(_ -> TTooltip.of(Component.translatable("gui.cancel")), ActionPanel.class);
 
 			this.btn_accept.getLabel().textAlignmentProperty().set(CompassDirection.CENTER, ActionPanel.class);
 			this.btn_accept.getLabel().textScaleProperty().set(0.8, ActionPanel.class);
 			this.btn_accept.visibleProperty().set(this.controller.getMode() != Mode.EXPLORE, ActionPanel.class);
-			this.btn_accept.tooltipProperty().set(__ -> TTooltip.of(Component.translatable("gui.done")), ActionPanel.class);
+			this.btn_accept.tooltipProperty().set(_ -> TTooltip.of(Component.translatable("gui.done")), ActionPanel.class);
 
 			//barebones minimal filename input filtering
 			this.in_filename.textProperty().addFilter(n -> //note: #trim()-ing is done in btn_accept
@@ -810,15 +809,15 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>> imp
 
 			//initialize file filter dropdown entries, and its value change listener
 			this.dd_filefilter.getEntries().addAll(this.controller.getFilters());
-			this.dd_filefilter.selectedEntryProperty().addChangeListener((p, o, n) ->
+			this.dd_filefilter.selectedEntryProperty().addChangeListener((_, _, n) ->
 					this.controller.setPathFilter(n));
 
 			//the cancel button closes the dialog with CANCEL result
-			this.btn_cancel.eClicked.addListener(__ -> TFileChooserScreen.this.close());
+			this.btn_cancel.eClicked.addListener(_ -> TFileChooserScreen.this.close());
 
 			//the accept button closes the dialog with ACCEPT result.
 			//behavior varies based on the dialog's Mode
-			this.btn_accept.eClicked.addListener(__ -> submitForm());
+			this.btn_accept.eClicked.addListener(_ -> submitForm());
 		}
 		// ==================================================
 		protected final @Override void initCallback()
@@ -947,7 +946,7 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>> imp
 					if(fee.attributes.isRegularFile()) {
 						builder.addButton(
 								air().append(" ").append(TLanguage.gui_fileChooser_ctxmenu_select()),
-								__ -> fee.doubleClickCallback());
+								_ -> fee.doubleClickCallback());
 						builder.addSeparator();
 					}
 					break;
@@ -957,13 +956,13 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>> imp
 			//file "Open"/"Open with"
 			builder.addButton(
 					air().append(" ").append(TLanguage.gui_fileChooser_ctxmenu_open()),
-					__ -> fee.openInAppCallback());
+					_ -> fee.openInAppCallback());
 			builder.addContextMenu(
 					gui(TSprites.gui_icon_fsFolder()).append(" ").append(TLanguage.gui_fileChooser_ctxmenu_openWith()),
-					__ -> new TContextMenu.Builder(fee.getClient())
+					_ -> new TContextMenu.Builder(fee.getClient())
 							.addButton(
 									gui(TSprites.gui_icon_fsFile()).append(" ").append(TLanguage.gui_fileChooser_ctxmenu_openWith_assocApp()),
-									btn -> Util.getPlatform().openUri(fee.path.toUri()))
+									_ -> Util.getPlatform().openUri(fee.path.toUri()))
 							.build());
 
 			//build and return

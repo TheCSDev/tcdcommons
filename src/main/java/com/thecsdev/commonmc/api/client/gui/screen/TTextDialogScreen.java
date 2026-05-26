@@ -1,7 +1,6 @@
 package com.thecsdev.commonmc.api.client.gui.screen;
 
 import com.thecsdev.common.math.UDim2;
-import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.common.util.enumerations.CompassDirection;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.ctxmenu.TContextMenu;
@@ -69,22 +68,22 @@ public final class TTextDialogScreen extends TScreenPlus implements ILastScreenP
 	// ==================================================
 	public final @Override @Nullable Screen getLastScreen() { return this.lastScreen; }
 	// --------------------------------------------------
-	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil) {
-		//the following is the background that is to be rendered:
-		if(this.lastScreen != null) {
-			//the last screen is to be visually rendered below this screen
-			this.lastScreen.extractRenderState(pencil.getNative(), pencil.getMouseX(), pencil.getMouseY(), pencil.getDeltaTicks());
-			//followed by a white plane background so it's easier to tell screens apart
-			final var bb = getBounds();
-			pencil.fillColor(bb.x, bb.y, bb.width, bb.height, 0x22FFFFFF);
-		}
-	}
-	// --------------------------------------------------
-	protected final @Override void initCallback() {
+	protected final @Override void initCallback()
+	{
 		//create and add the window element
 		final var wnd = new WindowElement();
 		add(wnd);
 		wnd.setBounds(new UDim2(0.25, 0, 0.25, 0), new UDim2(0.5, 0, 0.5, 0));
+	}
+	// --------------------------------------------------
+	public final @Override void renderCallback(@NotNull TGuiGraphics pencil)
+	{
+		if(this.lastScreen == null) return;
+		//the last screen is to be visually rendered below this screen
+		this.lastScreen.extractRenderState(pencil.getNative(), pencil.getMouseX(), pencil.getMouseY(), pencil.getDeltaTicks());
+		//followed by a white plane background so it's easier to tell screens apart
+		final var bb = getBounds();
+		pencil.fillColor(bb.x, bb.y, bb.width, bb.height, 0x22FFFFFF);
 	}
 	// ================================================== ==================================================
 	//                                      WindowElement IMPLEMENTATION

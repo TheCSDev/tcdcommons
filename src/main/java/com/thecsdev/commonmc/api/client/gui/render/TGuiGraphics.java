@@ -722,6 +722,12 @@ public abstract class TGuiGraphics
 		// ---------- SCREEN RENDERING
 		renderTElement(screen, screen);
 
+		//do not render tooltip and cursor if the screen isn't open.
+		//this prevents annoyances from 'last/previous screens' when
+		//a screen is rendering its 'last/previous screen'.
+		if(this.client.screen != screen.getAsScreen())
+			return;
+
 		// ---------- TOOLTIP RENDERING
 		final @Nullable var focus = screen.focusedElementProperty().get();
 		final @Nullable var hover = screen.hoveredElementProperty().get();

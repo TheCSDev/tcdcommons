@@ -107,7 +107,8 @@ public abstract class Node<N extends Node<N>> implements INode<N>
 	 * as a child to this {@link Node}.
 	 * @param child The now new child.
 	 */
-	@SuppressWarnings("unused")
+	@Deprecated
+	@SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
 	protected @Virtual void childAddedCallback(@NotNull N child) {}
 
 	/**
@@ -115,7 +116,8 @@ public abstract class Node<N extends Node<N>> implements INode<N>
 	 * from this {@link Node}.
 	 * @param pastChild The now "ex" child.
 	 */
-	@SuppressWarnings("unused")
+	@Deprecated
+	@SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
 	protected @Virtual void childRemovedCallback(@NotNull N pastChild) {}
 	// ==================================================
 	/**
