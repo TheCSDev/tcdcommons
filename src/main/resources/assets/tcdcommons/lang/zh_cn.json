@@ -35,5 +35,8 @@
 
 	"tcdcommons.misc.loading": "加载中……",
 	"tcdcommons.misc.something_went_wrong": "出现错误",
-	"tcdcommons.misc.coming_soon": "即将到来"
+	"tcdcommons.misc.coming_soon": "即将到来",
+	"tcdcommons.misc.preview": "Preview",
+	"tcdcommons.misc.from": "From",
+	"tcdcommons.misc.to": "To"
 }

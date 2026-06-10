@@ -35,5 +35,8 @@
 
 	"tcdcommons.misc.loading": "Loading...",
 	"tcdcommons.misc.something_went_wrong": "Something went wrong",
-	"tcdcommons.misc.coming_soon": "Coming soon"
+	"tcdcommons.misc.coming_soon": "Coming soon",
+	"tcdcommons.misc.preview": "Preview",
+	"tcdcommons.misc.from": "From",
+	"tcdcommons.misc.to": "To"
 }
