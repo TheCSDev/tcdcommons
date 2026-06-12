@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -26,9 +27,10 @@ public @Virtual class TBlockStateElement extends TElement
 	private final NotNullProperty<BlockState> blockState = new NotNullProperty<>(Blocks.AIR.defaultBlockState());
 	private final BooleanProperty             renderItem = new BooleanProperty(true);
 	// --------------------------------------------------
-	private @NotNull ItemStack          _asStack; //for rendering
-	private @NotNull TextureAtlasSprite _sprite;  //for rendering
-	private          boolean            _isAir;   //for rendering
+	private @NotNull ItemStack          _asStack;    //for rendering
+	private @NotNull TextureAtlasSprite _sprite;     //for rendering
+	private          boolean            _isAirBlock; //for rendering
+	private          boolean            _isItemAir;  //for rendering
 	// ==================================================
 	public TBlockStateElement() { this(Blocks.AIR.defaultBlockState()); }
 	public TBlockStateElement(@Nullable BlockState blockState)
@@ -49,12 +51,13 @@ public @Virtual class TBlockStateElement extends TElement
 	 */
 	private final void refresh()
 	{
-		final var bs  = this.blockState.get();
-		final var bl  = bs.getBlock();
-		this._asStack = bl.asItem().getDefaultInstance();
-		this._sprite  = Minecraft.getInstance().getModelManager()
+		final var bs     = this.blockState.get();
+		final var bl     = bs.getBlock();
+		this._asStack    = bl.asItem().getDefaultInstance();
+		this._sprite     = Minecraft.getInstance().getModelManager()
 				.getBlockStateModelSet().get(bs).particleMaterial().sprite();
-		this._isAir   = isAir(bl);
+		this._isAirBlock = isAir(bl);
+		this._isItemAir = (bl.asItem() == Items.AIR);
 	}
 	// ==================================================
 	/**
@@ -74,7 +77,7 @@ public @Virtual class TBlockStateElement extends TElement
 	public final @Override void renderCallback(@NotNull TGuiGraphics pencil)
 	{
 		final var bb = getBounds();
-		if(this.renderItem.getZ() || this._isAir) {
+		if((this.renderItem.getZ() && !this._isItemAir) || this._isAirBlock) {
 			pencil.renderItem(this._asStack, bb.x, bb.y, bb.width, bb.height);
 		} else {
 			pencil.getNative().blitSprite(RenderPipelines.GUI_TEXTURED, this._sprite, bb.x, bb.y, bb.width, bb.height);
