@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>TCDCommons API | Language documentation</title>
+
+		<style>
+			section {
+				padding: 1em;
+				margin-bottom: 2em;
+				background-color: #EEEEEE;
+			}
+			section p { margin-top: 0; }
+			code { background: #CCCCCC; }
+		</style>
+	</head>
+
+	<body>
+		<center><h3>Mod description for 'Mod Menu'</h3></center>
+		<center><p>Name and descriptions for this mod, that show up in <a href="https://modrinth.com/project/mOgUt4GM" target="_blank">Mod Menu</a>.</p></center>
+		<section>
+			<div>
+				<p><b>modmenu.nameTranslation.tcdcommons</b></p>
+				The display name of the mod within the 'Mod Menu' interface.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>modmenu.summaryTranslation.tcdcommons</b></p>
+				The summary description of the mod within the 'Mod Menu' interface.
+			</div>
+			<hr>
+		</section>
+
+		<center><h3>Configurations/Settings related to this mod</h3></center>
+		<center><p>Language texts used when presenting the user with a GUI interface to configure this mod.</p></center>
+		<section>
+			<div>
+				<p><b>tcdcommons.config.common</b></p>
+				Configuration section for common client and server properties.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.config.client</b></p>
+				Configuration section for client-side properties.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.config.client.update_item_groups_on_join</b></p>
+				Name of the "Update item groups on join" configuration property.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.config.client.update_item_groups_on_join.tooltip</b></p>
+				Explanation for how "Update item groups on join" works.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.config.server</b></p>
+				Configuration section for server-side properties.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.config.property_value</b></p>
+				Generic word "Value" that shows up in configuration GUIs to indicate the value of a given property.
+			</div>
+			<hr>
+		</section>
+
+		<center><h3>Stat types</h3></center>
+		<center><p>
+			A "stat type" refers to a "type" of statistic the game tracks for a given player. Examples include "Times used", "Times mined",
+			"Times crafted", etc. Some stat types are related to items, some to entities, and some to something else. Each stat type
+			is related to a certain aspect of the game.
+		</p></center>
+		<section>
+			<div>
+				<p><b>tcdcommons.stat_type.minecraft.custom</b></p>
+				Name of the <code>minecraft:custom</code> stat type.<br>
+				This stat type refers to "General" statistics (ex. "Distance walked", "Time since last death", etc.). Internally, the
+				game calls it "custom" in its code, but we players call it "General" in font-end GUIs.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.stat_type.minecraft.killed</b></p>
+				Name of the <code>minecraft:killed</code> stat type.<br>
+				This stat type is for tracking how many of a given entity a player killed.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.stat_type.minecraft.killed_by</b></p>
+				Name of the <code>minecraft:killed_by</code> stat type.<br>
+				This stat type is for tracking how many times a player got killed by a given entity.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.stat_type.morestats.damaged</b></p>
+				Name of the <code>morestats:damaged</code> stat type.<br>
+				This stat type is for tracking how much damage a player dealt to a given entity.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.stat_type.morestats.damaged_by</b></p>
+				Name of the <code>morestats:damaged_by</code> stat type.<br>
+				This stat type is for tracking how much damage a given entity dealt to a player.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.stat_type.morestats.totem_popped_by</b></p>
+				Name of the <code>morestats:totem_popped_by</code> stat type.<br>
+				This stat type is for tracking how many times a given entity caused a player to use their totem of undying.
+			</div>
+			<hr>
+		</section>
+
+		<center><h3>GUI textual dialog</h3></center>
+		<center><p>
+			This API mod offers mod developers a GUI textual dialog they could use to display messages on screen in dialog form.
+			This "template" dialog has some default texts associated with it.
+		</p></center>
+		<section>
+			<div>
+				<p><b>tcdcommons.gui.screen.text_dialog.default_title</b></p>
+				Default title for textual dialogs. This text is used as dialog title only if a mod developer does not assign a
+				name themselves.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.screen.text_dialog.error_title</b></p>
+				This text is used as title of textual dialogs that display error information on screen. For example you could
+				have a textual dialog appear with title "Something went wrong" and then the contents of the dialog explain
+				what exactly went wrong.
+			</div>
+			<hr>
+		</section>
+
+		<center><h3>GUI dropdown widget</h3></center>
+		<center><p>
+			This API mod offers a GUI dropdown widget that other mod developers could use to then display dropdowns that allow
+			users to select an option from a list of options.
+		</p></center>
+		<section>
+			<div>
+				<p><b>tcdcommons.gui.dropdown.default_label</b></p>
+				Default placeholder text for when a dropdown widget does not have an option selected yet.
+				Here is what that (sort of) looks like in practice:
+				<select>
+					<option value="item0">Select an option...</option>
+					<option value="item1">Option 1</option>
+					<option value="item2">Option 2</option>
+					<option value="item3">Option 3</option>
+				</select><br>
+				That "Select an option..." is the placeholder text this translation key is for.
+			</div>
+			<hr>
+		</section>
+
+		<center><h3>GUI File chooser / File explorer</h3></center>
+		<center><p>
+			This API mod offers mod developers a GUI file explorer they could use to have the user select/open/create files
+			on their machine. Think of it like an in-game implementation of <code>explorer.exe</code>.<br>
+			Why have an in-game file explorer instead of using one provided by OS? Because Java and Minecraft are very limited
+			and interacting with OS would require writing native code for each existing OS out there (a hell to deal with),
+			meaning, mod instantly becomes incompatible with every other operating system.
+		</p></center>
+		<section>
+			<div>
+				<p><b>tcdcommons.gui.filechooser.mode.explore</b></p>
+				The text that appears in the title-bar (top left side of the in-game file explorer dialog), when the file explorer
+				is in "explore" mode.<br>
+				In this mode, the file explorer is just that. It lets the user interact with their files without prompting them
+				to select or create one.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.filechooser.mode.choose_file</b></p>
+				The text that appears in the title-bar (top left side of the in-game file explorer dialog), when the file explorer
+				is in "choose a file" mode.<br>
+				In this mode, the file explorer prompts the user to choose an existing file from their device. Usually done when
+				opening/loading files from disk.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.filechooser.mode.create_file</b></p>
+				The text that appears in the title-bar (top left side of the in-game file explorer dialog), when the file explorer
+				is in "create a file" mode.<br>
+				In this mode, the file explorer prompts the user to choose where a new file will be created and what said file's name
+				will be. Usually done when saving files to disk.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.filechooser.quick_access</b></p>
+				On the left side of the file explorer, the "Quick access" section that contains useful shortcuts to quickly navigate
+				to specific directories.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.filechooser.quick_access.mount_points</b></p>
+				Below the "Quick access" section, there's another section of shortcuts, this time featuring "mount points" aka
+				external storage disks (like <code>D:/</code>, <code>E:/</code>, <code>F:/</code>, <code>G:/</code>, etc.).
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.filechooser.ctxmenu.select</b></p>
+				When the user right-clicks a file, a context menu appears. This is the "Select" option that may appear
+				in that context menu.<br>
+				It selects a given file.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.filechooser.ctxmenu.open</b></p>
+				When the user right-clicks a file, a context menu appears. This is the "Open" option that may appear
+				in that context menu.<br>
+				It opens a given file.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.filechooser.ctxmenu.open_with</b></p>
+				When the user right-clicks a file, a context menu appears. This is the "Open in" option that may appear
+				in that context menu.<br>
+				It brings up another context menu prompting the user to select where they wish to open a given file.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app</b></p>
+				When the user right-clicks a file and then clicks on "Open in", this option may appear.<br>
+				When clicked, the file is opened with the default installed program that handles files of that type.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.filechooser.action.file_name</b></p>
+				File name field label or column header.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.gui.filechooser.action.file_type</b></p>
+				File type field label or column header.
+			</div>
+			<hr>
+		</section>
+
+		<center><h3>Miscellaneous</h3></center>
+		<center><p>Miscellaneous texts, usually simple generic words and short phrases that could be used anywhere in any context.</p></center>
+		<section>
+			<div>
+				<p><b>tcdcommons.misc.loading</b></p>
+				Generic loading indicator.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.misc.something_went_wrong</b></p>
+				Generic "Something went wrong" label.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.misc.coming_soon</b></p>
+				Generic "Coming soon" label.
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.misc.preview</b></p>
+				Generic word "Preview".
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.misc.from</b></p>
+				Generic word "For".
+			</div>
+			<hr>
+	
+			<div>
+				<p><b>tcdcommons.misc.to</b></p>
+				Generic word "To".
+			</div>
+			<hr>
+		</section>
+	</body>
+</html>
