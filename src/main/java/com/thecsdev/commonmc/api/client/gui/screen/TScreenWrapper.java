@@ -86,13 +86,13 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	// ==================================================
 	public final @Override void added() {
 		this.minecraft.schedule(() -> {
-			if(this.minecraft.screen == this) this.target.openCallback();
+			if(this.minecraft.gui.screen() == this) this.target.openCallback();
 		});
 	}
 	// --------------------------------------------------
 	protected final @Override void init() {
 		this.minecraft.schedule(() -> {
-			if(this.minecraft.screen != this) return;
+			if(this.minecraft.gui.screen() != this) return;
 			//begin measuring initialization time
 			final var ns = nanoTime();
 			//trigger (re/)initialization by updating the bounds
@@ -109,7 +109,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	public final @Override void removed() {
 		this.minecraft.schedule(() -> {
 			//do nothing in case something reopened this screen by the time this method got called
-			if(this.minecraft.screen == this) return;
+			if(this.minecraft.gui.screen() == this) return;
 
 			//invoke the corresponding callback method
 			this.target.closeCallback();

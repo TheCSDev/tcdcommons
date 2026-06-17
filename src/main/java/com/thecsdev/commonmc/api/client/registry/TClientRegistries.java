@@ -1,6 +1,7 @@
 package com.thecsdev.commonmc.api.client.registry;
 
 import com.thecsdev.commonmc.TCDCommons;
+import io.netty.util.internal.UnstableApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
@@ -33,6 +34,8 @@ public final class TClientRegistries
 	/**
 	 * {@link Screen}s that are to be rendered on the game's HUD (heads-up display).
 	 */
+	@UnstableApi
+	@ApiStatus.Experimental
 	public static final Registry<Screen> HUD_SCREEN;
 	// ==================================================
 	public static final void bootstrap() { /*invokes <clinit>*/ }

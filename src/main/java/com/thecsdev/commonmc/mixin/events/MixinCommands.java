@@ -19,8 +19,8 @@ public abstract class MixinCommands
 	private @Final @Shadow CommandDispatcher<CommandSourceStack> dispatcher;
 	// ==================================================
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;setConsumer(Lcom/mojang/brigadier/ResultConsumer;)V"))
-	private void onInit(Commands.CommandSelection sel, CommandBuildContext ctx, CallbackInfo ci) {
-		CommandEvent.INIT_COMMANDS.invoker().invoke(dispatcher, ctx, sel);
+	private void onInit(Commands.CommandSelection commandSelection, CommandBuildContext context, CallbackInfo ci) {
+		CommandEvent.INIT_COMMANDS.invoker().invoke(dispatcher, context, commandSelection);
 	}
 	// ==================================================
 }

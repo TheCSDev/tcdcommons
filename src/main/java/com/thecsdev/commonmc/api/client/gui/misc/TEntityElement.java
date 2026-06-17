@@ -14,6 +14,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +36,7 @@ public @Virtual class TEntityElement extends TElement
 	// ================================================== ==================================================
 	//                                     TEntityElement IMPLEMENTATION
 	// ================================================== ==================================================
-	private final NotNullProperty<EntityType<?>> entityType    = new NotNullProperty<>(EntityType.MARKER);
+	private final NotNullProperty<EntityType<?>> entityType    = new NotNullProperty<>(EntityTypes.MARKER);
 	private final BooleanProperty                followsCursor = new BooleanProperty(true);
 	private final DoubleProperty                 entityScale   = new DoubleProperty(1d);
 	// --------------------------------------------------
@@ -51,8 +52,8 @@ public @Virtual class TEntityElement extends TElement
 		focusableProperty().set(false, TEntityElement.class);
 		hoverableProperty().set(false, TEntityElement.class);
 		//automatic display data refreshing when relevant properties update
-		boundsProperty().addChangeListener((p, o, n) -> { if(!o.hasSameSize(n)) refresh(); });
-		this.entityType.addChangeListener((p, o, n) -> refresh());
+		boundsProperty().addChangeListener((_, o, n) -> { if(!o.hasSameSize(n)) refresh(); });
+		this.entityType.addChangeListener((_, _, _) -> refresh());
 		//the initial display data refresh
 		refresh();
 	}
@@ -157,14 +158,16 @@ public @Virtual class TEntityElement extends TElement
 	public static final @ApiStatus.Internal class EntityProvider
 	{
 		// ==================================================
+		private static int NEXT_ID = 1048576;
+		// --------------------------------------------------
 		private static final Map<EntityType<?>, Object> CACHE = new HashMap<>();
 		// ==================================================
 		private EntityProvider() {}
 		static {
 			//clear cache when world-related events happen
-			ClientEvent.PLAYER_JOIN.addListener(__ -> CACHE.clear());
-			ClientEvent.PLAYER_QUIT.addListener(__ -> CACHE.clear());
-			ClientEvent.LEVEL_INIT.addListener(__ -> CACHE.clear());
+			ClientEvent.PLAYER_JOIN.addListener(_ -> CACHE.clear());
+			ClientEvent.PLAYER_QUIT.addListener(_ -> CACHE.clear());
+			ClientEvent.LEVEL_INIT.addListener(_ -> CACHE.clear());
 		}
 		// ==================================================
 		/**
@@ -192,7 +195,7 @@ public @Virtual class TEntityElement extends TElement
 			//create the entity if not done so before
 			final var client = Minecraft.getInstance();
 
-			if(entityType == EntityType.PLAYER) try {
+			if(entityType == EntityTypes.PLAYER) try {
 				final var player = Objects.requireNonNull(client.player, "Missing 'Minecraft#player' instance");
 				CACHE.put(entityType, player);
 				return (E) player;
@@ -206,14 +209,27 @@ public @Virtual class TEntityElement extends TElement
 				Level level = client.level;
 				if(level == null) level = SandboxLevel.INSTANCE;
 
-				final var entity = entityType.create(level, MOB_SUMMONED);
-				CACHE.put(entityType, Objects.requireNonNull(entity, "'EntityType#create(...)' returned 'null' for " + entityType));
+				final var entity = Objects.requireNonNull(
+						entityType.create(level, MOB_SUMMONED),
+						"'EntityType#create(...)' returned 'null' for " + entityType);
+				entity.setId(nextEntityId());
+				CACHE.put(entityType, entity);
 				return entity;
 			} catch (Exception e) {
 				final var error = new RuntimeException("Failed to create 'Entity' instance of type " + entityType, e);
 				CACHE.put(entityType, error);
 				throw error;
 			}
+		}
+		// --------------------------------------------------
+		/**
+		 * Generate next ID integer for a created {@link Entity} instance.
+		 * @see Entity#setId(int)
+		 */
+		private static final int nextEntityId() {
+			NEXT_ID++;                               //increment next id
+			if(NEXT_ID < 1048576) NEXT_ID = 1048576; //counteract overflows (values '< 1' are prohibited)
+			return NEXT_ID;                          //return next id
 		}
 		// ==================================================
 	}

@@ -8,7 +8,6 @@ import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreen;
 import com.thecsdev.commonmc.api.client.gui.screen.TScreenWrapper;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorGuiGraphicsExtractor;
-import com.thecsdev.commonmc.client.mixin.hooks.AccessorGuiRenderer;
 import com.thecsdev.commonmc.resource.TSprites;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -16,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
@@ -32,7 +30,6 @@ import org.joml.Vector3f;
 
 import java.util.Objects;
 
-import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.getGuiRenderer;
 import static net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
 
 /**
@@ -59,10 +56,9 @@ public abstract class TGuiGraphics
 		return new TGuiGraphicsDefault(drawContext, mouseX, mouseY, deltaTicks);
 	}
 	// ==================================================
-	private final GuiGraphicsExtractor           drawContext;
-	private final Minecraft                      client;
-	private final Matrix3x2fStack                matrices;
-	private final MultiBufferSource.BufferSource bufferSource;
+	private final GuiGraphicsExtractor drawContext;
+	private final Minecraft            client;
+	private final Matrix3x2fStack      matrices;
 	// --------------------------------------------------
 	private final int   mouseX, mouseY;
 	private final float deltaTicks;
@@ -76,7 +72,6 @@ public abstract class TGuiGraphics
 		this.drawContext       = drawContext;
 		this.client            = aDrawContext.getClient();
 		this.matrices          = aDrawContext.getMatrices();
-		this.bufferSource      = ((AccessorGuiRenderer)(Object)getGuiRenderer(aDrawContext.getClient())).getVertexConsumers();
 		this.mouseX            = mouseX;
 		this.mouseY            = mouseY;
 		this.deltaTicks        = deltaTicks;
@@ -97,12 +92,6 @@ public abstract class TGuiGraphics
 	 */
 	@ApiStatus.Experimental
 	public final Minecraft getNativeClient() { return this.client; }
-
-	/**
-	 * Returns the game-{@link GuiRenderer}'s {@link MultiBufferSource.BufferSource}.
-	 */
-	@ApiStatus.Experimental
-	public final MultiBufferSource.BufferSource getNativeBufferSource() { return this.bufferSource; }
 
 	/**
 	 * Returns the native {@link GuiRenderer}'s {@link Matrix3x2fStack}.
@@ -725,7 +714,7 @@ public abstract class TGuiGraphics
 		//do not render tooltip and cursor if the screen isn't open.
 		//this prevents annoyances from 'last/previous screens' when
 		//a screen is rendering its 'last/previous screen'.
-		if(this.client.screen != screen.getAsScreen())
+		if(this.client.gui.screen() != screen.getAsScreen())
 			return;
 
 		// ---------- TOOLTIP RENDERING

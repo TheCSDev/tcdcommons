@@ -13,6 +13,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,14 +38,14 @@ public final class TEntityStatsWidget extends TStatsWidget
 	// ==================================================
 	private final ObjectProperty<EntityStats> stats = new ObjectProperty<>();
 	// --------------------------------------------------
-	private final TEntityElement el_entity = new TEntityElement(EntityType.MARKER);
+	private final TEntityElement el_entity = new TEntityElement(EntityTypes.MARKER);
 	// ==================================================
 	public TEntityStatsWidget() { this(null); }
 	public TEntityStatsWidget(@NotNull EntityType<?> subject, @NotNull IStatsProvider provider) { this(new EntityStats(subject, provider)); }
 	public TEntityStatsWidget(@Nullable EntityStats stats)
 	{
 		//initialize properties
-		this.stats.addChangeListener((p, o, n) -> refresh());
+		this.stats.addChangeListener((_, _, _) -> refresh());
 		this.stats.getHandle().set(stats);
 		//initialize elements
 		this.el_entity.entityScaleProperty().set(0.7d, TEntityStatsWidget.class);

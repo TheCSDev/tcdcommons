@@ -1,10 +1,14 @@
 package com.thecsdev.commonmc.api.client.gui.misc;
 
+import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.common.util.annotations.Virtual;
 import com.thecsdev.commonmc.api.client.gui.TElement;
+import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -12,8 +16,30 @@ import org.jetbrains.annotations.Nullable;
  * like how the game does it in the inventory screen.
  */
 @Environment(EnvType.CLIENT)
-public @Virtual class TItemStackElement extends TItemElement
+public @Virtual class TItemStackElement extends TElement
 {
-	public TItemStackElement() { super(); }
-	public TItemStackElement(@Nullable ItemStack itemStack) { super(itemStack); }
+	// ==================================================
+	private final NotNullProperty<ItemStack> itemStack = new NotNullProperty<>(Items.AIR.getDefaultInstance());
+	// ==================================================
+	public TItemStackElement() { this(Items.AIR.getDefaultInstance()); }
+	public TItemStackElement(@Nullable ItemStack itemStack)
+	{
+		//this element should not be focusable or hoverable
+		focusableProperty().set(false, TItemStackElement.class);
+		hoverableProperty().set(false, TItemStackElement.class);
+		//initialize properties
+		this.itemStack.set(itemStack, TItemStackElement.class);
+	}
+	// ==================================================
+	/**
+	 * Returns the {@link NotNullProperty} holding the {@link ItemStack}
+	 * that is to be rendered by this {@link TItemStackElement}.
+	 */
+	public final NotNullProperty<ItemStack> itemStackProperty() { return this.itemStack; }
+	// ==================================================
+	public @Virtual @Override void renderCallback(@NotNull TGuiGraphics pencil) {
+		final var bb = getBounds();
+		pencil.renderItem(this.itemStack.get(), bb.x, bb.y, bb.width, bb.height);
+	}
+	// ==================================================
 }

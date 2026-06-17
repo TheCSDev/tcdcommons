@@ -15,17 +15,17 @@ public abstract class MixinClientboundAwardStatsPacket
 {
 	// ==================================================
 	@Inject(method = "handle*", at = @At("RETURN"), require = 1, remap = true)
-	private void onHandle(ClientGamePacketListener clientPlayPacketListener, CallbackInfo callbackInfo)
+	private void onHandle(ClientGamePacketListener listener, CallbackInfo callbackInfo)
 	{
 		//execute handlers for this packet, but on the client's thread
 		final var client = Minecraft.getInstance();
 		client.execute(() ->
 		{
 			//invoke callback method for screens
-			if(client.screen instanceof IStatsListener isl)
+			if(client.gui.screen() instanceof IStatsListener isl)
 				isl.statsReceivedCallback();
 			//or invoke callback method for t-screens
-			else if(client.screen instanceof TScreenWrapper<?> tsw &&
+			else if(client.gui.screen() instanceof TScreenWrapper<?> tsw &&
 					tsw.getTargetTScreen() instanceof IStatsListener isl)
 				isl.statsReceivedCallback();
 		});

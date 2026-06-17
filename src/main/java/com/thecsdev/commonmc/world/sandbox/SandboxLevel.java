@@ -1,14 +1,16 @@
 package com.thecsdev.commonmc.world.sandbox;
 
 import com.thecsdev.common.util.annotations.Virtual;
-import net.minecraft.core.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ExplosionParticleInfo;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.TickRateManager;
@@ -75,7 +77,7 @@ public @Virtual class SandboxLevel extends Level
 			0,										// minimum Y
 			32,										// height
 			32,										// logicalHeight
-			BlockTags.INFINIBURN_OVERWORLD,			// infiniburn
+			HolderSet.empty(),						// infiniburn
 			1.0F,									// ambientLight
 			new DimensionType.MonsterSettings(UniformInt.of(0, 7), 0),
 			DimensionType.Skybox.OVERWORLD,
@@ -94,7 +96,7 @@ public @Virtual class SandboxLevel extends Level
 		public void onTrackingEnd(Entity object) {}
 		public void onSectionChange(Entity object) {}
 	});
-	protected @NotNull ClockManager                          clockManager    = __ -> 0;
+	protected @NotNull ClockManager                          clockManager    = _ -> 0;
 	protected @NotNull List<EnderDragonPart>                 dragonParts     = new ArrayList<>();
 	protected @NotNull TickRateManager                       tickRateManager = new TickRateManager();
 	protected @NotNull Scoreboard                            scoreboard      = new Scoreboard();

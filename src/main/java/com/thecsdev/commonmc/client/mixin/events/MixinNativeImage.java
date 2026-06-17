@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 /**
  * This {@link Mixin}'s sole purpose is to put image byte data loading up to
  * LWJGL's digression, rather than having the game enforce PNG. And on another note,
- * the game even fails to validate PNG properly most the time anyways, so this
+ * the game even fails to validate PNG properly most the time anyway, so this
  * is kind of more of a bug fix in a way.
  */
 @Mixin(value = NativeImage.class)

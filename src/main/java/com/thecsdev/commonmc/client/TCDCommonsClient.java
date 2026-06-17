@@ -58,7 +58,7 @@ public class TCDCommonsClient extends TCDCommons
 			try { Thread.sleep(1000); } catch (Exception _) {}
 			//open the testing screen on the game's main thread
 			final var client = Minecraft.getInstance();
-			client.execute(() -> client.setScreen(new TTestScreen(client.screen).getAsScreen()));
+			client.execute(() -> client.gui.setScreen(new TTestScreen(client.gui.screen()).getAsScreen()));
 		}, TUtils.getVirtualThreadPerTaskExecutor()));
 		*/
 	}

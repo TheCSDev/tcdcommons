@@ -11,6 +11,7 @@ import com.thecsdev.commonmc.client.mixin.hooks.AccessorTElement;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -124,13 +125,13 @@ public abstract class TScreen extends TElement
 	/**
 	 * Returns {@code true} if this {@link TScreen} is currently opened by
 	 * a {@link Minecraft} client instance.
-	 * @see Minecraft#screen
+	 * @see Gui#screen()
 	 */
 	@Contract(pure = true)
 	public final boolean isOpen() {
 		final           var screen = getAsScreen();
 		final @Nullable var client = screen.getClient();
-		return client.screen == screen;
+		return client.gui.screen() == screen;
 	}
 
 	/**
@@ -162,7 +163,7 @@ public abstract class TScreen extends TElement
 	// --------------------------------------------------
 	/**
 	 * Callback method that is invoked whenever this {@link TScreen} is opened
-	 * via {@link Minecraft#setScreen(Screen)}.<br>
+	 * via {@link Gui#setScreen(Screen)}.<br>
 	 * This takes place before {@link #initCallback()} is invoked.
 	 * @see Screen#added()
 	 */
@@ -170,7 +171,7 @@ public abstract class TScreen extends TElement
 
 	/**
 	 * Callback method that is invoked whenever this {@link TScreen} is closed
-	 * via {@link Minecraft#setScreen(Screen)}.<br>
+	 * via {@link Gui#setScreen(Screen)}.<br>
 	 * This takes place after {@link #close()} is invoked.
 	 * @see Screen#removed()
 	 */
@@ -178,14 +179,14 @@ public abstract class TScreen extends TElement
 	// --------------------------------------------------
 	/**
 	 * Callback method that is invoked whenever this {@link TScreen} is closing.
-	 * By default, this sets {@link Minecraft#screen} to {@code null}, but you
+	 * By default, this sets {@link Gui#screen()} to {@code null}, but you
 	 * may override this to set another {@link Screen} instance if necessary.
-	 * @apiNote This method <b>must</b> use {@link Minecraft#setScreen(Screen)}.
+	 * @apiNote This method <b>must</b> use {@link Gui#setScreen(Screen)}.
 	 */
 	public @Virtual void close() {
 		//set screen to last screen if available, else to null
 		final @Nullable var client = getClient();
-		if(isOpen()) client.setScreen(getLastScreen(this));
+		if(isOpen()) client.gui.setScreen(getLastScreen(this));
 	}
 	// ==================================================
 }

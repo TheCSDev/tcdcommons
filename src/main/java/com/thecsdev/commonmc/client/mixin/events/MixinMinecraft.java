@@ -19,7 +19,7 @@ public abstract class MixinMinecraft
 	// ==================================================
 	public @Shadow @Nullable LocalPlayer player;
 	// ==================================================
-	@Inject(method = "clearClientLevel", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/gui/Gui;onDisconnected()V"))
+	@Inject(method = "clearClientLevel", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/gui/Hud;onDisconnected()V"))
 	private final void onLocalPlayerQuit(Screen screen, CallbackInfo ci) {
 		final var lp = Objects.requireNonNull(player, "Missing 'LocalPlayer' instance");
 		((Minecraft)(Object)this).execute(() -> ClientEvent.PLAYER_QUIT.invoker().invoke(lp));
