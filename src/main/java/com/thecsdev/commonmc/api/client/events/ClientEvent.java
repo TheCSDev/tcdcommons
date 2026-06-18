@@ -10,10 +10,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
-import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -40,7 +37,6 @@ public interface ClientEvent
 	/**
 	 * <b>Trigger:</b> Whenever a {@link ClientLevel} is initialized.<br>
 	 * <b>Thread:</b> Main (client)
-	 * @see ClientLevel#ClientLevel(ClientPacketListener, ClientLevel.ClientLevelData, ResourceKey, Holder, int, int, LevelRenderer, boolean, long, int)
 	 */
 	Event<LevelInit> LEVEL_INIT = Events.createLoop();
 	// --------------------------------------------------
