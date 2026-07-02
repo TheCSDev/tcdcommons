@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 /**
  * Mixins for the game's HUD (heads-up display).
@@ -26,7 +25,13 @@ public abstract class MixinGui
 	// ==================================================
 	private @Final @Shadow Minecraft minecraft;
 	// ==================================================
-	@Inject(method = "extractRenderState", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(
+			method = "extractRenderState",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/gui/Hud;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V",
+					shift = At.Shift.AFTER)
+	)
 	private void onPostRender(
 			DeltaTracker deltaTracker,
 			boolean shouldRenderLevel,
@@ -49,13 +54,12 @@ public abstract class MixinGui
 			//iterate hud screens and render them
 			for(final var hudScreen : TClientRegistries.HUD_SCREEN)
 				try {
-					//do not render the current screen
-					if(hudScreen == currentScreen) continue;
+					//do not render current screen or screens of different clients
+					if(hudScreen == currentScreen || ((AccessorScreen)hudScreen).getMinecraft() != this.minecraft)
+						continue;
 					//(re/)initialize screens whenever necessary
-					if(((AccessorScreen)hudScreen).getMinecraft() != this.minecraft ||
-							hudScreen.width != windowW || hudScreen.height != windowH) {
+					if(hudScreen.width != windowW || hudScreen.height != windowH)
 						hudScreen.init(windowW, windowH);
-					}
 					//render the screen onto the in-game-hud
 					hudScreen.extractRenderState(graphics, mouseX, mouseY, deltaTracker.getGameTimeDeltaPartialTick(false));
 					//note: ticking screens is not done here, to avoid weird visual bugs

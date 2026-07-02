@@ -59,6 +59,12 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 		super(Component.empty());
 		this.target = Objects.requireNonNull(target);
 	}
+	// --------------------------------------------------
+	public @Override String toString() {
+		final var bb = this.target.getBounds();
+		return String.format("%s[x=%d,y=%d,width=%d,height=%d]",
+				super.toString(), bb.x, bb.y, bb.width, bb.height);
+	}
 	// ==================================================
 	/**
 	 * Returns the {@link #target} {@link TScreen} for this {@link TScreenWrapper}.
@@ -92,7 +98,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	// --------------------------------------------------
 	protected final @Override void init() {
 		this.minecraft.schedule(() -> {
-			if(this.minecraft.gui.screen() != this) return;
+			//if(this.minecraft.gui.screen() != this) return; -- line dropped; breaks hud-screens
 			//begin measuring initialization time
 			final var ns = nanoTime();
 			//trigger (re/)initialization by updating the bounds

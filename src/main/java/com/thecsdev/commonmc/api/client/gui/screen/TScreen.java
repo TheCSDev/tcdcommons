@@ -50,14 +50,14 @@ public abstract class TScreen extends TElement
 		this.dragged.addFilter(el -> (el != null && el.screenProperty().get() != this) ? null : el, TScreen.class);
 
 		//invalidate tooltip caches for hovered/focused elements as they change
-		this.hovered.addChangeListener((p, o, n) -> {
+		this.hovered.addChangeListener((_, o, n) -> {
 			if(o != null) ((AccessorTElement)(Object)o)._hoverLostCallback();
 			if(n != null) {
 				n.invalidateTooltipCache();
 				((AccessorTElement)(Object)n)._hoverGainedCallback();
 			}
 		});
-		this.focused.addChangeListener((p, o, n) -> {
+		this.focused.addChangeListener((_, o, n) -> {
 			if(o != null) ((AccessorTElement)(Object)o)._focusLostCallback();
 			if(n != null) {
 				n.invalidateTooltipCache();
@@ -65,7 +65,7 @@ public abstract class TScreen extends TElement
 				TGuiUtils.scrollToElement(n); //scroll to element AFTER notifying it
 			}
 		});
-		this.dragged.addChangeListener((p, o, n) -> {
+		this.dragged.addChangeListener((_, o, n) -> {
 			if(o != null) ((AccessorTElement)(Object)o)._dragEndCallback();
 			if(n != null) ((AccessorTElement)(Object)n)._dragStartCallback();
 		});
@@ -75,7 +75,7 @@ public abstract class TScreen extends TElement
 				bb -> (bb.x != 0 || bb.y != 0) ? new Bounds2i(0, 0, bb.width, bb.height) : bb,
 				TScreen.class);
 		//handle stuff on resize
-		boundsProperty().addChangeListener((p, o, n) -> {
+		boundsProperty().addChangeListener((_, _, _) -> {
 			//clear hovered and focused elements on resize, as they are no longer valid
 			this.hovered.set(null, TScreen.class); //clear and init is what makes it invalid
 			this.focused.set(null, TScreen.class); //clear and init is what makes it invalid

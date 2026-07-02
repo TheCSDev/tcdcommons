@@ -1,7 +1,6 @@
 package com.thecsdev.commonmc.api.client.registry;
 
 import com.thecsdev.commonmc.TCDCommons;
-import io.netty.util.internal.UnstableApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
@@ -10,7 +9,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import static com.mojang.serialization.Lifecycle.stable;
 import static com.thecsdev.commonmc.TCDCommons.MOD_ID;
@@ -34,8 +35,6 @@ public final class TClientRegistries
 	/**
 	 * {@link Screen}s that are to be rendered on the game's HUD (heads-up display).
 	 */
-	@UnstableApi
-	@ApiStatus.Experimental
 	public static final Registry<Screen> HUD_SCREEN;
 	// ==================================================
 	public static final void bootstrap() { /*invokes <clinit>*/ }
@@ -44,8 +43,14 @@ public final class TClientRegistries
 		HUD_SCREEN = new MappedRegistry<>(createRegistryKey(id("hud_screen")), stable());
 	}
 	// --------------------------------------------------
-	private static final @ApiStatus.Internal Identifier id(@NotNull String id) {
-		return fromNamespaceAndPath(MOD_ID, id);
+	/**
+	 * Creates an {@link Identifier} instance that uses this mod's
+	 * ID as the namespace.
+	 * @param path The {@link Identifier#getPath()} value.
+	 */
+	@Contract("_ -> new")
+	private static final @ApiStatus.Internal @NonNull Identifier id(@NotNull String path) {
+		return fromNamespaceAndPath(MOD_ID, path);
 	}
 	// ==================================================
 }
