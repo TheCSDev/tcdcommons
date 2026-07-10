@@ -6,6 +6,7 @@ import com.thecsdev.common.util.enumerations.CompassDirection;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.misc.TEntityElement;
 import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
+import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.util.EntityStats;
 import net.fabricmc.api.EnvType;
@@ -33,7 +34,7 @@ public final class TEntityStatsWidget extends TStatsWidget
 		final var mstw  = (TEntityStatsWidget) el;
 		final var stats = mstw.stats.get();
 		Objects.requireNonNull(stats, "Stats value is missing while constructing tooltip.");
-		return TTooltip.of(stats);
+		return TTooltip.of(stats, TGuiUtils.isCtrlDown());
 	};
 	// ==================================================
 	private final ObjectProperty<EntityStats> stats = new ObjectProperty<>();

@@ -5,6 +5,7 @@ import com.thecsdev.common.properties.ObjectProperty;
 import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import com.thecsdev.commonmc.api.client.gui.tooltip.TTooltip;
+import com.thecsdev.commonmc.api.client.gui.util.TGuiUtils;
 import com.thecsdev.commonmc.api.stats.EmptyStatsProvider;
 import com.thecsdev.commonmc.api.stats.IStatsProvider;
 import com.thecsdev.commonmc.api.stats.util.ItemStats;
@@ -31,7 +32,7 @@ public final class TItemStatsWidget extends TStatsWidget
 		final var isw   = (TItemStatsWidget) el;
 		final var stats = isw.stats.get();
 		Objects.requireNonNull(stats, "Stats value is missing while constructing tooltip.");
-		return TTooltip.of(stats);
+		return TTooltip.of(stats, TGuiUtils.isCtrlDown());
 	};
 	// ==================================================
 	private final ObjectProperty<ItemStats> stats = new ObjectProperty<>();

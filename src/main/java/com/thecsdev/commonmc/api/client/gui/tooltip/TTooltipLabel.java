@@ -30,7 +30,7 @@ sealed @ApiStatus.Internal class TTooltipLabel extends TTooltip
 	TTooltipLabel(Component text)
 	{
 		//reinit whenever text property changes
-		textProperty().addChangeListener((p, o, n) -> clearAndInit());
+		textProperty().addChangeListener((_, _, _) -> clearAndInit());
 		//initialize properties
 		this.label.wrapTextProperty().set(true, TTooltipLabel.class);
 		this.label.parentProperty()  .set(this, TTooltipLabel.class);
