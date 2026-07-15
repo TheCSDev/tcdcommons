@@ -1,0 +1,42 @@
+{
+	"modmenu.nameTranslation.tcdcommons": "TCDCommons API",
+	"modmenu.summaryTranslation.tcdcommons": "TheCSDev 的個人 Minecraft 模組開發庫。",
+
+	"tcdcommons.config.common": "用戶端／伺服器端屬性",
+	"tcdcommons.config.client": "用戶端屬性",
+	"tcdcommons.config.client.update_item_groups_on_join": "加入遊戲時更新物品組",
+	"tcdcommons.config.client.update_item_groups_on_join.tooltip": "效能最佳化功能。原版遊戲在開啟物品欄時更新物品組，這在大型模組包中會導致延遲。此功能在載入畫面期間執行該操作，使遊戲內不再因此發生卡頓。",
+	"tcdcommons.config.server": "伺服器端屬性",
+	"tcdcommons.config.property_value": "值",
+
+	"tcdcommons.stat_type.minecraft.custom": "一般",
+	"tcdcommons.stat_type.minecraft.killed": "擊殺",
+	"tcdcommons.stat_type.minecraft.killed_by": "被擊殺",
+	"tcdcommons.stat_type.morestats.damaged": "造成傷害",
+	"tcdcommons.stat_type.morestats.damaged_by": "受到傷害",
+	"tcdcommons.stat_type.morestats.totem_popped_by": "觸發不死圖騰",
+
+	"tcdcommons.gui.screen.text_dialog.default_title": "對話框",
+	"tcdcommons.gui.screen.text_dialog.error_title": "發生錯誤",
+
+	"tcdcommons.gui.dropdown.default_label": "選擇一個選項……",
+
+	"tcdcommons.gui.filechooser.mode.explore": "檔案瀏覽器",
+	"tcdcommons.gui.filechooser.mode.choose_file": "選取檔案",
+	"tcdcommons.gui.filechooser.mode.create_file": "建立檔案",
+	"tcdcommons.gui.filechooser.quick_access": "快速存取",
+	"tcdcommons.gui.filechooser.quick_access.mount_points": "裝置和磁碟機",
+	"tcdcommons.gui.filechooser.ctxmenu.select": "選取",
+	"tcdcommons.gui.filechooser.ctxmenu.open": "開啟",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with": "開啟方式",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "關聯應用程式",
+	"tcdcommons.gui.filechooser.action.file_name": "檔案名稱",
+	"tcdcommons.gui.filechooser.action.file_type": "檔案類型",
+
+	"tcdcommons.misc.loading": "載入中……",
+	"tcdcommons.misc.something_went_wrong": "發生錯誤",
+	"tcdcommons.misc.coming_soon": "即將推出",
+	"tcdcommons.misc.preview": "預覽",
+	"tcdcommons.misc.from": "從",
+	"tcdcommons.misc.to": "到"
+}
