@@ -1,0 +1,42 @@
+{
+	"modmenu.nameTranslation.tcdcommons": "TCDCommons API",
+	"modmenu.summaryTranslation.tcdcommons": "TheCSDev's Persönliche Minecraft-Modding-Bibliothek.",
+
+	"tcdcommons.config.common": "Klient/Server Eigenschaften",
+	"tcdcommons.config.client": "Klient Eigenschaften",
+	"tcdcommons.config.client.update_item_groups_on_join": "Artikelgruppen beim Betritt aktualisieren",
+	"tcdcommons.config.client.update_item_groups_on_join.tooltip": "Leistungs-Funktion. Das Basisspiel aktualisiert beim Öffnen des Inventars die Item-Gruppen, was bei größeren Modpacks zur einer Verzögerungsspitze führen kann. Diese Funktion führt den Vorgang während des Ladebildschirms aus, damit es im Spiel nicht zum Verzögern auftretet.",
+	"tcdcommons.config.server": "Server Eigenschaften",
+	"tcdcommons.config.property_value": "Wert",
+
+	"tcdcommons.stat_type.minecraft.custom": "Allgemein",
+	"tcdcommons.stat_type.minecraft.killed": "Getötet",
+	"tcdcommons.stat_type.minecraft.killed_by": "Getötet an",
+	"tcdcommons.stat_type.morestats.damaged": "Schaden verursacht",
+	"tcdcommons.stat_type.morestats.damaged_by": "Schaden erlitten",
+	"tcdcommons.stat_type.morestats.totem_popped_by": "Totems Ausgelöst von",
+
+	"tcdcommons.gui.screen.text_dialog.default_title": "Dialog",
+	"tcdcommons.gui.screen.text_dialog.error_title": "Etwas ist schiefaufgelaufen",
+
+	"tcdcommons.gui.dropdown.default_label": "Wähle eine Option...",
+
+	"tcdcommons.gui.filechooser.mode.explore": "Datei-Explorer",
+	"tcdcommons.gui.filechooser.mode.choose_file": "Datei auswählen",
+	"tcdcommons.gui.filechooser.mode.create_file": "Datei erstellen",
+	"tcdcommons.gui.filechooser.quick_access": "Schnellzugriff",
+	"tcdcommons.gui.filechooser.quick_access.mount_points": "Einhängepunkte",
+	"tcdcommons.gui.filechooser.ctxmenu.select": "Auswählen",
+	"tcdcommons.gui.filechooser.ctxmenu.open": "Öffnen",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with": "Öffnen mit",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "Zugehörige Anwendung",
+	"tcdcommons.gui.filechooser.action.file_name": "Dateiname",
+	"tcdcommons.gui.filechooser.action.file_type": "Dateityp",
+
+	"tcdcommons.misc.loading": "Wird Geladen...",
+	"tcdcommons.misc.something_went_wrong": "Etwas ist schiefaufgelaufen",
+	"tcdcommons.misc.coming_soon": "Bald verfügbar",
+	"tcdcommons.misc.preview": "Vorschau",
+	"tcdcommons.misc.from": "Von",
+	"tcdcommons.misc.to": "Zu"
+}
