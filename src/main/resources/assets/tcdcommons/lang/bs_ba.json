@@ -1,0 +1,42 @@
+{
+	"modmenu.nameTranslation.tcdcommons": "TCDCommons API",
+	"modmenu.summaryTranslation.tcdcommons": "TheCSDev-ova lična biblioteka za modovanje Minecraft-a.",
+
+	"tcdcommons.config.common": "Klijent/server postavke",
+	"tcdcommons.config.client": "Klijent postavke",
+	"tcdcommons.config.client.update_item_groups_on_join": "Ažuriraj grupe predmeta pri pridruživanju",
+	"tcdcommons.config.client.update_item_groups_on_join.tooltip": "Funkcija za poboljšanje performanse. Vanilla igra ažurira grupe predmeta prilikom otvaranja inventara, što uzrokuje lag kod velikih modpack-ova. Ova funkcija izvršava tu radnju tokom ekrana učitavanja, tako da se lag ne pojavljuje tokom igre.",
+	"tcdcommons.config.server": "Server postavke",
+	"tcdcommons.config.property_value": "Vrijednost",
+
+	"tcdcommons.stat_type.minecraft.custom": "Uopšteno",
+	"tcdcommons.stat_type.minecraft.killed": "Ubijeno",
+	"tcdcommons.stat_type.minecraft.killed_by": "Ubilo te",
+	"tcdcommons.stat_type.morestats.damaged": "Nanesena šteta",
+	"tcdcommons.stat_type.morestats.damaged_by": "Primljena šteta",
+	"tcdcommons.stat_type.morestats.totem_popped_by": "Potrošeni totemi zbog",
+
+	"tcdcommons.gui.screen.text_dialog.default_title": "Dijalog",
+	"tcdcommons.gui.screen.text_dialog.error_title": "Nešto je pošlo po zlu",
+
+	"tcdcommons.gui.dropdown.default_label": "Izaberi opciju...",
+
+	"tcdcommons.gui.filechooser.mode.explore": "Pregled datoteka",
+	"tcdcommons.gui.filechooser.mode.choose_file": "Izaberi datoteku",
+	"tcdcommons.gui.filechooser.mode.create_file": "Kreiraj datoteku",
+	"tcdcommons.gui.filechooser.quick_access": "Brzi pristup",
+	"tcdcommons.gui.filechooser.quick_access.mount_points": "Tačke montiranja",
+	"tcdcommons.gui.filechooser.ctxmenu.select": "Izaberi",
+	"tcdcommons.gui.filechooser.ctxmenu.open": "Otvori",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with": "Otvori pomoću",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "Povezana aplikacija",
+	"tcdcommons.gui.filechooser.action.file_name": "Naziv datoteke",
+	"tcdcommons.gui.filechooser.action.file_type": "Vrsta datoteke",
+
+	"tcdcommons.misc.loading": "Učitavanje...",
+	"tcdcommons.misc.something_went_wrong": "Nešto je pošlo po zlu",
+	"tcdcommons.misc.coming_soon": "Dolazi uskoro",
+	"tcdcommons.misc.preview": "Pregled",
+	"tcdcommons.misc.from": "Od",
+	"tcdcommons.misc.to": "Do"
+}
