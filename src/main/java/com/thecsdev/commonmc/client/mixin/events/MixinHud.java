@@ -18,7 +18,7 @@ public abstract class MixinHud
 	// ==================================================
 	private @Final @Shadow Minecraft minecraft;
 	// ==================================================
-	@Inject(method = "extractHotbarAndDecorations", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "extractHotbarAndDecorations", at = @At("HEAD"), cancellable = true, require = 0)
 	private final void onExtractHotbarAndDecorations(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci)
 	{
 		//cancel hotbar rendering if a currently opened t-screen does not allow this
