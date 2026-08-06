@@ -16,7 +16,7 @@ public abstract class MixinCreativeModeTabs
 	@Inject(method = "tryRebuildTabContents", at = @At("RETURN"))
 	private static void onRebuildTabContents(
 			FeatureFlagSet enabledFeatures,
-			boolean operatorEnabled,
+			boolean hasPermissions,
 			HolderLookup.Provider lookup,
 			CallbackInfoReturnable<Boolean> callback)
 	{
@@ -25,6 +25,6 @@ public abstract class MixinCreativeModeTabs
 
 		//rebuild the internal map and invoke the event
 		TItemUtils.rebuildI2TMap();
-		CreativeModeTabEvent.REBUILD_CONTENTS.invoker().invoke(enabledFeatures, operatorEnabled, lookup);
+		CreativeModeTabEvent.REBUILD_CONTENTS.invoker().invoke(enabledFeatures, hasPermissions, lookup);
 	}
 }

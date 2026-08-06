@@ -1,0 +1,42 @@
+{
+	"modmenu.nameTranslation.tcdcommons" : "TCDCommons API",
+	"modmenu.summaryTranslation.tcdcommons" : "Персональная библиотека для моддинга Minecraft от TheCSDev.",
+
+	"tcdcommons.config.common" : "Настройки клиента и сервера",
+	"tcdcommons.config.client" : "Настройки клиента",
+	"tcdcommons.config.client.update_item_groups_on_join" : "Обновлять группы предметов при входе",
+	"tcdcommons.config.client.update_item_groups_on_join.tooltip" : "Функция оптимизации быстродействия. Ванильная версия игры обновляет группы предметов при открытии инвентаря, что вызывает скачки задержки в крупных сборках модов. Эта функция выполняет данную операцию во время отображения экранов загрузки, что позволяет избежать просадок производительности в игровом процессе.",
+	"tcdcommons.config.server" : "Настройки сервера",
+	"tcdcommons.config.property_value" : "Значение",
+
+	"tcdcommons.stat_type.minecraft.custom" : "Общие",
+	"tcdcommons.stat_type.minecraft.killed" : "Убийств",
+	"tcdcommons.stat_type.minecraft.killed_by" : "Погиб от",
+	"tcdcommons.stat_type.morestats.damaged" : "Нанесённый урон",
+	"tcdcommons.stat_type.morestats.damaged_by" : "Полученный урон",
+	"tcdcommons.stat_type.morestats.totem_popped_by" : "Использовано тотемов бессмертия от",
+
+	"tcdcommons.gui.screen.text_dialog.default_title" : "Диалог",
+	"tcdcommons.gui.screen.text_dialog.error_title" : "Произошла ошибка",
+
+	"tcdcommons.gui.dropdown.default_label" : "Выберите вариант...",
+
+	"tcdcommons.gui.filechooser.mode.explore" : "Проводник",
+	"tcdcommons.gui.filechooser.mode.choose_file" : "Выбор файла",
+	"tcdcommons.gui.filechooser.mode.create_file" : "Создание файла",
+	"tcdcommons.gui.filechooser.quick_access" : "Быстрый доступ",
+	"tcdcommons.gui.filechooser.quick_access.mount_points" : "Точки монтирования",
+	"tcdcommons.gui.filechooser.ctxmenu.select" : "Выбрать",
+	"tcdcommons.gui.filechooser.ctxmenu.open" : "Открыть",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with" : "Открыть с помощью",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app" : "Ассоциированное приложение",
+	"tcdcommons.gui.filechooser.action.file_name" : "Имя файла",
+	"tcdcommons.gui.filechooser.action.file_type" : "Тип файла",
+
+	"tcdcommons.misc.loading" : "Загрузка...",
+	"tcdcommons.misc.something_went_wrong" : "Что-то пошло не так",
+	"tcdcommons.misc.coming_soon" : "Ожидается в будущем",
+	"tcdcommons.misc.preview" : "Предпросмотр",
+	"tcdcommons.misc.from" : "От",
+	"tcdcommons.misc.to" : "До"
+}

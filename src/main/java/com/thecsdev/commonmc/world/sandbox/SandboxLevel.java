@@ -122,7 +122,7 @@ public @Virtual class SandboxLevel extends Level
 	public @Virtual @Override void playSeededSound(@Nullable Entity source, Entity entity, Holder<SoundEvent> sound, SoundSource category, float volume, float pitch, long speed) {}
 	public @Virtual @Override void explode(@Nullable Entity entity, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator behavior, double x, double y, double z, float power, boolean createFire, ExplosionInteraction explosionSourceType, ParticleOptions smallParticle, ParticleOptions largeParticle, WeightedList<ExplosionParticleInfo> blockParticles, Holder<SoundEvent> soundEvent) {}
 	public @Virtual @Override String gatherChunkSourceStats() {
-        return "Chunks[C] W: " + getChunkSource().gatherStats() + " E: " + this.entityManager.gatherStats();
+		return "Chunks[C] W: " + getChunkSource().gatherStats() + " E: " + this.entityManager.gatherStats();
 	}
 	public @Virtual @Override void setRespawnData(LevelData.RespawnData spawnPoint) {}
 	public @Virtual @Override LevelData.RespawnData getRespawnData() { return getLevelData().getRespawnData(); }

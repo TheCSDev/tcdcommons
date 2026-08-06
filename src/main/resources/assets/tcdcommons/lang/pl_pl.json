@@ -1,0 +1,42 @@
+{
+	"modmenu.nameTranslation.tcdcommons": "TCDCommons API",
+	"modmenu.summaryTranslation.tcdcommons": "Personalna biblioteka TheCSDev do tworzenia modów do Minecrafta.",
+
+	"tcdcommons.config.common": "Ustawienia klienta/serwera",
+	"tcdcommons.config.client": "Ustawienia klienta",
+	"tcdcommons.config.client.update_item_groups_on_join": "Aktualizuj grupy przedmiotów po dołączeniu",
+	"tcdcommons.config.client.update_item_groups_on_join.tooltip": "Funkcja poprawiająca wydajność. Domyślna gra aktualizuje grupy przedmiotów podczas otwierania ekwipunku, co powoduje chwilowe przycięcie na dużych paczkach modów. Ta funkcja wykonuje tą operację podczas ekranu ładowania, dzięki czemu przycięcie nie występuje podczas rozgrywki.",
+	"tcdcommons.config.server": "Ustawienia Serwera",
+	"tcdcommons.config.property_value": "Wartość",
+
+	"tcdcommons.stat_type.minecraft.custom": "Ogólne",
+	"tcdcommons.stat_type.minecraft.killed": "Zabito",
+	"tcdcommons.stat_type.minecraft.killed_by": "Zabity przez",
+	"tcdcommons.stat_type.morestats.damaged": "Obrażenia zadane",
+	"tcdcommons.stat_type.morestats.damaged_by": "Obrażenia otrzymane",
+	"tcdcommons.stat_type.morestats.totem_popped_by": "Zużyte totemy przez",
+
+	"tcdcommons.gui.screen.text_dialog.default_title": "Dialog",
+	"tcdcommons.gui.screen.text_dialog.error_title": "Coś poszło nie tak",
+
+	"tcdcommons.gui.dropdown.default_label": "Wybierz opcję...",
+
+	"tcdcommons.gui.filechooser.mode.explore": "Eksplorator plików",
+	"tcdcommons.gui.filechooser.mode.choose_file": "Wybierz plik",
+	"tcdcommons.gui.filechooser.mode.create_file": "Utwórz plik",
+	"tcdcommons.gui.filechooser.quick_access": "Szybki dostęp",
+	"tcdcommons.gui.filechooser.quick_access.mount_points": "Punkty montowania",
+	"tcdcommons.gui.filechooser.ctxmenu.select": "Wybierz",
+	"tcdcommons.gui.filechooser.ctxmenu.open": "Otwórz",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with": "Otwórz w",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "Powiązanej aplikacji",
+	"tcdcommons.gui.filechooser.action.file_name": "Nazwa pliku",
+	"tcdcommons.gui.filechooser.action.file_type": "Typ pliku",
+
+	"tcdcommons.misc.loading": "Ładowanie...",
+	"tcdcommons.misc.something_went_wrong": "Coś poszło nie tak",
+	"tcdcommons.misc.coming_soon": "Wkrótce",
+	"tcdcommons.misc.preview": "Podgląd",
+	"tcdcommons.misc.from": "Od",
+	"tcdcommons.misc.to": "Do"
+}

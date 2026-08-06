@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_SHIFT;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * {@link TCDCommons} API's GUI-related utility methods.
@@ -92,7 +91,16 @@ public final class TGuiUtils
 	}
 
 	/**
-	 * Returns {@code true} is the left or right shift key is currently held down
+	 * Returns {@code true} is either the left or right control key is currently held down
+	 * for the current game window.
+	 * @see #isKeyDown(int)
+	 */
+	public static final boolean isCtrlDown() {
+		return isKeyDown(GLFW_KEY_LEFT_CONTROL) || isKeyDown(GLFW_KEY_RIGHT_CONTROL);
+	}
+
+	/**
+	 * Returns {@code true} is either the left or right shift key is currently held down
 	 * for the current game window.
 	 * @see #isKeyDown(int)
 	 */

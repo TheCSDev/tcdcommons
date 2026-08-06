@@ -9,7 +9,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import static com.mojang.serialization.Lifecycle.stable;
 import static com.thecsdev.commonmc.TCDCommons.MOD_ID;
@@ -41,8 +43,14 @@ public final class TClientRegistries
 		HUD_SCREEN = new MappedRegistry<>(createRegistryKey(id("hud_screen")), stable());
 	}
 	// --------------------------------------------------
-	private static final @ApiStatus.Internal Identifier id(@NotNull String id) {
-		return fromNamespaceAndPath(MOD_ID, id);
+	/**
+	 * Creates an {@link Identifier} instance that uses this mod's
+	 * ID as the namespace.
+	 * @param path The {@link Identifier#getPath()} value.
+	 */
+	@Contract("_ -> new")
+	private static final @ApiStatus.Internal @NonNull Identifier id(@NotNull String path) {
+		return fromNamespaceAndPath(MOD_ID, path);
 	}
 	// ==================================================
 }

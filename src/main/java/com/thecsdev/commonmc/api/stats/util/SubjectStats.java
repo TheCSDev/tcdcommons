@@ -27,8 +27,8 @@ public sealed abstract class SubjectStats<S> permits CustomStat, ItemStats, Bloc
 {
 	// ==================================================
 	private final @NotNull IStatsProvider statsProvider;
-	private final @NotNull  S                subject;
-	private final @NotNull  Identifier subjectID;
+	private final @NotNull S              subject;
+	private final @NotNull Identifier     subjectID;
 	// ==================================================
 	/**
 	 * @throws NullPointerException If an argument is {@code null}.
@@ -118,7 +118,11 @@ public sealed abstract class SubjectStats<S> permits CustomStat, ItemStats, Bloc
 	 * Returns {@code true} if all {@link StatType}s for the given
 	 * {@link #getSubject()} have the value {@code 0}.
 	 */
-	public @Virtual boolean isEmpty() { return getValues().values().stream().noneMatch(val -> val != 0); }
+	public @Virtual boolean isEmpty() {
+		for(final int value : getValues().values())
+			if(value != 0) return false;
+		return true;
+	}
 	// --------------------------------------------------
 	/**
 	 * Returns {@code true} if this {@link #getSubject()} matches a given search query.

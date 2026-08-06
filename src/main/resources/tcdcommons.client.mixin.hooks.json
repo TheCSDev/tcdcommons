@@ -4,10 +4,10 @@
 	"minVersion": "0.8",
 	"compatibilityLevel": "JAVA_25",
 	"injectors": { "defaultRequire": 1 },
-	"client": [
+	"client":
+	[
 		"AccessorGuiGraphicsExtractor",
 		"AccessorGameRenderer",
-		"AccessorGuiRenderer",
 		"AccessorNativeImage",
 		"AccessorScreen",
 		"AccessorTElement",

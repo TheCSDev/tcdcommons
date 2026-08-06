@@ -51,7 +51,19 @@ public @Virtual class TTooltip extends TElement
 	 * @throws NullPointerException If the argument is {@code null}.
 	 */
 	public static final TTooltip of(@NotNull SubjectStats<?> stats) throws NullPointerException {
-		return new TTooltipSubjectStats(stats);
+		return of(stats, false);
+	}
+
+	/**
+	 * A tooltip that shows the player statistics for a given {@link SubjectStats}.
+	 * @param stats The {@link SubjectStats} whose statistics are to be shown.
+	 * @param showItemDescription Whether to include texts from <a href="https://modrinth.com/project/UaizcMKP">Item Descriptions</a> where possible.
+	 * @throws NullPointerException If the argument is {@code null}.
+	 */
+	public static final TTooltip of(
+			@NotNull SubjectStats<?> stats, boolean showItemDescription)
+			throws NullPointerException {
+		return new TTooltipSubjectStats(stats, showItemDescription);
 	}
 	// ==================================================
 }

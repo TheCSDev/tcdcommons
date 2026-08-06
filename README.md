@@ -38,14 +38,14 @@ TCDCommons is a Minecraft modding API library that features its own GUI system a
 ## Dependencies
 
 This mod depends on some other mods that first need to be installed before this mod can be installed. Those dependencies are as follows:
-- 🏗 [Architectury API](https://github.com/architectury/architectury-api) - Allows this mod to run on `Fabric` and `NeoForge`
+- 🧵 [Fabric API](https://github.com/FabricMC/fabric-api) (Fabric only) - Loads this mod's assets and resources.
 
 ## Building
 
 Follow these steps to build the project from source.
 
 ### Prerequisites
-* **Java 21**: Ensure you have the Java Development Kit (JDK) 21 installed.
+* **Java 25**: Ensure you have the Java Development Kit (JDK) installed.
 * **Git**: Required to clone this repository.
 
 ### Instructions

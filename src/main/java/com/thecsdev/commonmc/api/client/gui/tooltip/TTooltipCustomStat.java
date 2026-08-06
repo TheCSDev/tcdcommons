@@ -3,6 +3,7 @@ package com.thecsdev.commonmc.api.client.gui.tooltip;
 import com.thecsdev.commonmc.api.stats.util.CustomStat;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -33,10 +34,16 @@ final @ApiStatus.Internal class TTooltipCustomStat extends TTooltipLabel
 			//start constructing the tooltip text
 			final var tt = literal("");
 			tt.append(literal("").append(stat.getSubjectDisplayName()).withStyle(YELLOW)).append("\n");
-			tt.append(literal("K: " + stat.getSubjectID()).withStyle(GRAY)).append("\n");
-			tt.append(literal("V: " + stat.getSubject()).withStyle(GRAY));
-			tt.append("\n\n");
 
+			//add advanced tooltips
+			if(Minecraft.getInstance().options.advancedItemTooltips) {
+				tt.append(literal("K: " + stat.getSubjectID()).withStyle(DARK_GRAY)).append("\n");
+				tt.append(literal("V: " + stat.getSubject()).withStyle(DARK_GRAY));
+				tt.append("\n");
+			}
+
+			//add stat value
+			tt.append("\n");
 			tt.append(literal(stat.getValueF()).withStyle(GOLD));
 			if(FLAG_DEV_ENV) tt.append(literal(" (" + stat.getValue() + ")").withStyle(GRAY));
 

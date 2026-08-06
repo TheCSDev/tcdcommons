@@ -25,7 +25,7 @@ public abstract class MixinGui
 	// ==================================================
 	private @Final @Shadow Minecraft minecraft;
 	// ==================================================
-	@Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true, require = 0)
 	private void onPreRender(GuiGraphicsExtractor pencil, DeltaTracker tickCounter, CallbackInfo ci)
 	{
 		//cancel HUD rendering if a currently opened t-screen does not allow this
