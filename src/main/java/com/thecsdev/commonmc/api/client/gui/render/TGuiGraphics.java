@@ -714,7 +714,7 @@ public abstract class TGuiGraphics
 		//do not render tooltip and cursor if the screen isn't open.
 		//this prevents annoyances from 'last/previous screens' when
 		//a screen is rendering its 'last/previous screen'.
-		if(this.client.gui.screen() != screen.getAsScreen())
+		if(this.client.screen != screen.getAsScreen())
 			return;
 
 		// ---------- TOOLTIP RENDERING

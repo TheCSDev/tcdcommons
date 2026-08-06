@@ -1,16 +1,14 @@
 package com.thecsdev.commonmc.world.sandbox;
 
 import com.thecsdev.common.util.annotations.Virtual;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.*;
 import net.minecraft.core.particles.ExplosionParticleInfo;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.TickRateManager;
@@ -77,7 +75,7 @@ public @Virtual class SandboxLevel extends Level
 			0,										// minimum Y
 			32,										// height
 			32,										// logicalHeight
-			HolderSet.empty(),						// infiniburn
+			BlockTags.INFINIBURN_OVERWORLD,			// infiniburn
 			1.0F,									// ambientLight
 			new DimensionType.MonsterSettings(UniformInt.of(0, 7), 0),
 			DimensionType.Skybox.OVERWORLD,
@@ -96,7 +94,7 @@ public @Virtual class SandboxLevel extends Level
 		public void onTrackingEnd(Entity object) {}
 		public void onSectionChange(Entity object) {}
 	});
-	protected @NotNull ClockManager                          clockManager    = _ -> 0;
+	protected @NotNull ClockManager                          clockManager    = __ -> 0;
 	protected @NotNull List<EnderDragonPart>                 dragonParts     = new ArrayList<>();
 	protected @NotNull TickRateManager                       tickRateManager = new TickRateManager();
 	protected @NotNull Scoreboard                            scoreboard      = new Scoreboard();
@@ -124,7 +122,7 @@ public @Virtual class SandboxLevel extends Level
 	public @Virtual @Override void playSeededSound(@Nullable Entity source, Entity entity, Holder<SoundEvent> sound, SoundSource category, float volume, float pitch, long speed) {}
 	public @Virtual @Override void explode(@Nullable Entity entity, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator behavior, double x, double y, double z, float power, boolean createFire, ExplosionInteraction explosionSourceType, ParticleOptions smallParticle, ParticleOptions largeParticle, WeightedList<ExplosionParticleInfo> blockParticles, Holder<SoundEvent> soundEvent) {}
 	public @Virtual @Override String gatherChunkSourceStats() {
-        return "Chunks[C] W: " + getChunkSource().gatherStats() + " E: " + this.entityManager.gatherStats();
+		return "Chunks[C] W: " + getChunkSource().gatherStats() + " E: " + this.entityManager.gatherStats();
 	}
 	public @Virtual @Override void setRespawnData(LevelData.RespawnData spawnPoint) {}
 	public @Virtual @Override LevelData.RespawnData getRespawnData() { return getLevelData().getRespawnData(); }

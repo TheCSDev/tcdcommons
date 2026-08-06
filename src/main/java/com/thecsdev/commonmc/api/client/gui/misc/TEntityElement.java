@@ -14,7 +14,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +35,7 @@ public @Virtual class TEntityElement extends TElement
 	// ================================================== ==================================================
 	//                                     TEntityElement IMPLEMENTATION
 	// ================================================== ==================================================
-	private final NotNullProperty<EntityType<?>> entityType    = new NotNullProperty<>(EntityTypes.MARKER);
+	private final NotNullProperty<EntityType<?>> entityType    = new NotNullProperty<>(EntityType.MARKER);
 	private final BooleanProperty                followsCursor = new BooleanProperty(true);
 	private final DoubleProperty                 entityScale   = new DoubleProperty(1d);
 	// --------------------------------------------------
@@ -195,7 +194,7 @@ public @Virtual class TEntityElement extends TElement
 			//create the entity if not done so before
 			final var client = Minecraft.getInstance();
 
-			if(entityType == EntityTypes.PLAYER) try {
+			if(entityType == EntityType.PLAYER) try {
 				final var player = Objects.requireNonNull(client.player, "Missing 'Minecraft#player' instance");
 				CACHE.put(entityType, player);
 				return (E) player;

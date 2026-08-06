@@ -83,7 +83,7 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus implement
 					LOGGER.error("File chooser completed exceptionally: ", throwable);
 				return null;
 			});
-			getClient().gui.setScreen(screen.getAsScreen());
+			getClient().setScreen(screen.getAsScreen());
 		});
 		panel.add(btn1);
 

@@ -3,7 +3,6 @@ package com.thecsdev.commonmc.api.client.gui.screen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
  * This is generally used to open the previous screen when closing
  * the current one.
  *
- * @see Gui#setScreen(Screen)
+ * @see Minecraft#setScreen(Screen)
  * @see TScreen#close()
  */
 @Environment(EnvType.CLIENT)
@@ -60,14 +59,14 @@ public interface ILastScreenProvider
 	 * {@link ILastScreenProvider}.
 	 *
 	 * @param client The {@link Minecraft} client.
-	 * @return Any {@link ILastScreenProvider} associated with the current {@link Gui#screen()}, if any.
+	 * @return Any {@link ILastScreenProvider} associated with the current {@link Minecraft#screen}, if any.
 	 * @throws NullPointerException If the argument is {@code null}.
 	 */
 	public static @Nullable ILastScreenProvider getCurrent(
 			@NotNull Minecraft client) throws NullPointerException {
-		if(client.gui.screen() instanceof ILastScreenProvider lsp)
+		if(client.screen instanceof ILastScreenProvider lsp)
 			return lsp;
-		else if(client.gui.screen() instanceof TScreenWrapper<?> tsw && tsw.getTargetTScreen() instanceof ILastScreenProvider lsp)
+		else if(client.screen instanceof TScreenWrapper<?> tsw && tsw.getTargetTScreen() instanceof ILastScreenProvider lsp)
 			return lsp;
 		return null;
 	}

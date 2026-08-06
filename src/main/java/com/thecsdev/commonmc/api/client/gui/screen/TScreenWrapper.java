@@ -92,7 +92,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	// ==================================================
 	public final @Override void added() {
 		this.minecraft.schedule(() -> {
-			if(this.minecraft.gui.screen() == this) this.target.openCallback();
+			if(this.minecraft.screen == this) this.target.openCallback();
 		});
 	}
 	// --------------------------------------------------
@@ -115,7 +115,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	public final @Override void removed() {
 		this.minecraft.schedule(() -> {
 			//do nothing in case something reopened this screen by the time this method got called
-			if(this.minecraft.gui.screen() == this) return;
+			if(this.minecraft.screen == this) return;
 
 			//invoke the corresponding callback method
 			this.target.closeCallback();

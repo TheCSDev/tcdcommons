@@ -1,6 +1,6 @@
 package com.thecsdev.commonmc.client.mixin.events;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import com.thecsdev.commonmc.api.client.gui.screen.TScreenWrapper;
 import com.thecsdev.commonmc.api.client.registry.TClientRegistries;
 import com.thecsdev.commonmc.client.mixin.hooks.AccessorScreen;
 import net.minecraft.CrashReport;
@@ -25,25 +25,22 @@ public abstract class MixinGui
 	// ==================================================
 	private @Final @Shadow Minecraft minecraft;
 	// ==================================================
-	@Inject(
-			method = "extractRenderState",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/client/gui/Hud;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V",
-					shift = At.Shift.AFTER)
-	)
-	private void onPostRender(
-			DeltaTracker deltaTracker,
-			boolean shouldRenderLevel,
-			boolean resourcesLoaded,
-			CallbackInfo ci,
-			@Local(name = "graphics") GuiGraphicsExtractor graphics)
+	@Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true, require = 0)
+	private void onPreRender(GuiGraphicsExtractor pencil, DeltaTracker tickCounter, CallbackInfo ci)
+	{
+		//cancel HUD rendering if a currently opened t-screen does not allow this
+		if(this.minecraft.screen instanceof TScreenWrapper<?> tsw && !tsw.isAllowingInGameHud())
+			ci.cancel();
+	}
+	// --------------------------------------------------
+	@Inject(method = "extractRenderState", at = @At("RETURN"))
+	private void onPostRender(GuiGraphicsExtractor pencil, DeltaTracker tickCounter, CallbackInfo ci)
 	{
 		//render in-game-hud screens
 		if(TClientRegistries.HUD_SCREEN.size() > 0)
 		{
 			//prepare variables for rendering
-			final var currentScreen = minecraft.gui.screen();
+			final var currentScreen = minecraft.screen;
 			final var clientWindow  = minecraft.getWindow();
 			final var mouse         = minecraft.mouseHandler;
 			final int windowW       = clientWindow.getGuiScaledWidth();
@@ -54,14 +51,15 @@ public abstract class MixinGui
 			//iterate hud screens and render them
 			for(final var hudScreen : TClientRegistries.HUD_SCREEN)
 				try {
-					//do not render current screen or screens of different clients
-					if(hudScreen == currentScreen || ((AccessorScreen)hudScreen).getMinecraft() != this.minecraft)
-						continue;
+					//do not render the current screen
+					if(hudScreen == currentScreen) continue;
 					//(re/)initialize screens whenever necessary
-					if(hudScreen.width != windowW || hudScreen.height != windowH)
+					if(((AccessorScreen)hudScreen).getMinecraft() != this.minecraft ||
+							hudScreen.width != windowW || hudScreen.height != windowH) {
 						hudScreen.init(windowW, windowH);
+					}
 					//render the screen onto the in-game-hud
-					hudScreen.extractRenderState(graphics, mouseX, mouseY, deltaTracker.getGameTimeDeltaPartialTick(false));
+					hudScreen.extractRenderState(pencil, mouseX, mouseY, tickCounter.getGameTimeDeltaPartialTick(false));
 					//note: ticking screens is not done here, to avoid weird visual bugs
 				} catch(Exception exc) {
 					//hold modded screens accountable for any exceptions they throw
