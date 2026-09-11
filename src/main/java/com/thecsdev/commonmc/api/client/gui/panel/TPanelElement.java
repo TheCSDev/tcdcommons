@@ -11,7 +11,8 @@ import com.thecsdev.commonmc.api.client.gui.util.TInputContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+
+import static org.lwjgl.sdl.SDLScancode.*;
 
 /**
  * A panel element primarily featuring functionality like scrolling.
@@ -38,7 +39,7 @@ public @Virtual class TPanelElement extends TElement
 
 		//clamp01 the scroll amount
 		this.scrollAmount.addFilter(Point2d::clamp01, TPanelElement.class);
-		this.scrollAmount.addChangeListener((p, o, n) -> {
+		this.scrollAmount.addChangeListener((_, _, _) -> {
 			final var ccb = getContentBounds();
 			final var ncb = computeContentBoundsFromScrollAmount();
 			moveChildren(ncb.x - ccb.x, ncb.y - ccb.y);
@@ -117,11 +118,11 @@ public @Virtual class TPanelElement extends TElement
 				final int s = this.scrollSensitivity.getI();
 				int dX = 0, dY = 0;
 				//noinspection DataFlowIssue
-				switch(context.getKeyCode()) {
-					case GLFW.GLFW_KEY_UP:    dY += s; break;
-					case GLFW.GLFW_KEY_DOWN:  dY -= s; break;
-					case GLFW.GLFW_KEY_LEFT:  dX += s; break;
-					case GLFW.GLFW_KEY_RIGHT: dX -= s; break;
+				switch(context.getScanCode()) {
+					case SDL_SCANCODE_UP:    dY += s; break;
+					case SDL_SCANCODE_DOWN:  dY -= s; break;
+					case SDL_SCANCODE_LEFT:  dX += s; break;
+					case SDL_SCANCODE_RIGHT: dX -= s; break;
 					default: break;
 				}
 				if(dX != 0 || dY != 0) { scroll(dX, dY); return true; }
@@ -141,8 +142,7 @@ public @Virtual class TPanelElement extends TElement
 	 */
 	private final Bounds2i computeContentBoundsFromScrollAmount()
 	{
-		//Point2d - constructor: new Point2d(double x, double y) - fields: .x .y (doubles)
-		//Bounds2i fields: .x .y .width .height .endX .endY (integers)
+		//prerequisites
 		final Bounds2i bb  = getBounds(); //current rectangle of this element (viewport)
 		final Bounds2i cbb = getContentBounds(); //current rectangle encapsulating all children bounding boxes
 		final Point2d  sa  = this.scrollAmount.get();
@@ -183,11 +183,10 @@ public @Virtual class TPanelElement extends TElement
 	 */
 	private final Point2d computeScrollAmountFromContentBounds()
 	{
-		//Point2d - constructor: new Point2d(double x, double y) - fields: .x .y (doubles)
-		//Bounds2i fields: .x .y .width .height .endX .endY (integers)
+		//prerequisites
 		final Bounds2i bb  = getBounds(); //rectangle of this element (viewport)
 		final Bounds2i cbb = getContentBounds(); //rectangle encapsulating all children bounding boxes
-		final int      sp  = this.scrollPadding.getI(); // NEW: Scroll Padding
+		final int      sp  = this.scrollPadding.getI(); //scroll padding
 
 		// 1. Calculate the effective maximum scrollable distance (delta)
 		// The scrollable range is reduced by 2 * sp.
@@ -201,26 +200,13 @@ public @Virtual class TPanelElement extends TElement
 		final double offsetX = (bb.x + sp) - cbb.x;
 		final double offsetY = (bb.y + sp) - cbb.y;
 
-		double scrollAmountX;
-		if (maxScrollX > 0) {
-		   // sa = Offset / MaxScroll.
-		   scrollAmountX = offsetX / maxScrollX;
-		} else {
-		   // Content fits or is smaller than viewport, so scroll is 0.
-		   scrollAmountX = 0.0;
-		}
-
-		double scrollAmountY;
-		if (maxScrollY > 0) {
-		   scrollAmountY = offsetY / maxScrollY;
-		} else {
-		   scrollAmountY = 0.0;
-		}
+		double scrollAmountX = (maxScrollX > 0) ? (offsetX / maxScrollX) : 0.0;
+		double scrollAmountY = (maxScrollY > 0) ? (offsetY / maxScrollY) : 0.0;
 
 		// The scroll amount should be between 0 and 1.
 		// We ensure this using Math.min/max, just in case of floating point inaccuracies or external manipulation.
-		final double clampedX = Math.max(0.0, Math.min(1.0, scrollAmountX));
-		final double clampedY = Math.max(0.0, Math.min(1.0, scrollAmountY));
+		final double clampedX = Math.clamp(scrollAmountX, 0.0, 1.0);
+		final double clampedY = Math.clamp(scrollAmountY, 0.0, 1.0);
 
 		return new Point2d(clampedX, clampedY);
 	}

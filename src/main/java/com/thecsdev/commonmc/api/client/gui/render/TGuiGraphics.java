@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
@@ -159,7 +159,7 @@ public abstract class TGuiGraphics
 	 * @param color The sprite's ARGB color.
 	 */
 	public @Virtual void drawMissingNo(int x, int y, int width, int height, int color) {
-		drawGuiSprite(TextureManager.INTENTIONAL_MISSING_TEXTURE, x, y, width, height, color);
+		drawGuiSprite(MissingTextureAtlasSprite.getLocation(), x, y, width, height, color);
 	}
 
 	/**

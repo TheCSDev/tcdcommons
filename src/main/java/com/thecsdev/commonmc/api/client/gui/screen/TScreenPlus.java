@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.sdl.SDLScancode.*;
 
 /**
  * Same as {@link TScreen}, but with some extra features such as arrow-key
@@ -42,11 +42,11 @@ public abstract class TScreenPlus extends TScreen
 		if(context.getInputType() == TInputContext.InputType.KEY_PRESS)
 		{
 			//obtain the direction based on the pressed key-code
-			final CompassDirection direction = switch(context.getKeyCode()) {
-				case GLFW_KEY_UP    -> CompassDirection.NORTH;
-				case GLFW_KEY_DOWN  -> CompassDirection.SOUTH;
-				case GLFW_KEY_LEFT  -> CompassDirection.WEST;
-				case GLFW_KEY_RIGHT -> CompassDirection.EAST;
+			final CompassDirection direction = switch(context.getScanCode()) {
+				case SDL_SCANCODE_UP    -> CompassDirection.NORTH;
+				case SDL_SCANCODE_DOWN  -> CompassDirection.SOUTH;
+				case SDL_SCANCODE_LEFT  -> CompassDirection.WEST;
+				case SDL_SCANCODE_RIGHT -> CompassDirection.EAST;
 				case null, default  -> null;
 			};
 			if(direction == null) return false;
@@ -144,8 +144,8 @@ public abstract class TScreenPlus extends TScreen
 			//multiplying the cross-axis by a weight (e.g., 4) makes the cursor strongly
 			//prefer jumping in a straight line rather than making wild diagonal jumps.
 			long distSq = switch(direction) {
-				case NORTH, SOUTH -> (dX * dX * 4) + (dY * dY); // Penalize X variance
-				case EAST, WEST   -> (dX * dX) + (dY * dY * 4); // Penalize Y variance
+				case NORTH, SOUTH -> (dX * dX * 4) + (dY * dY); //penalize X variance
+				case EAST, WEST   -> (dX * dX) + (dY * dY * 4); //penalize Y variance
 				default           -> (dX * dX) + (dY * dY);
 			};
 

@@ -28,7 +28,7 @@ import static com.thecsdev.commonmc.TCDCommons.LOGGER;
 import static com.thecsdev.commonmc.TCDCommonsConfig.FLAG_DEV_ENV;
 import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.isShiftDown;
 import static java.lang.System.nanoTime;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.sdl.SDLScancode.*;
 
 /**
  * The {@link TScreenWrapper} serves as an adapter for the {@link TScreen}
@@ -142,11 +142,11 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	// ==================================================
 	public final @Override boolean keyPressed(@NotNull KeyEvent e) {
 		if(super.keyPressed(e)) return true;
-		else return sendInput(TInputContext.ofKeyPress(e.key(), e.scancode(), e.modifiers()));
+		else return sendInput(TInputContext.ofKeyPress(e.keycode(), e.input(), e.modifiers()));
 	}
 	public final @Override boolean keyReleased(@NotNull KeyEvent e) {
 		if(super.keyReleased(e)) return true;
-		else return sendInput(TInputContext.ofKeyRelease(e.key(), e.scancode(), e.modifiers()));
+		else return sendInput(TInputContext.ofKeyRelease(e.keycode(), e.input(), e.modifiers()));
 	}
 	public final @Override boolean charTyped(@NotNull CharacterEvent e) {
 		if(super.charTyped(e)) return true;
@@ -183,6 +183,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	//FIXME - Extremely high priority. I urgently need a "set in stone" input handling contract.
 	//        I keep finding myself needing to tweak input handling. I need standardization.
 	@ApiStatus.Internal
+	@SuppressWarnings("DataFlowIssue")
 	final boolean sendInput(TInputContext context)
 	{
 		//calculate hovered element for mouse-related inputs
@@ -276,8 +277,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 		if(context.getInputType() == TInputContext.InputType.KEY_PRESS)
 		{
 			//handle tab-navigation
-			//noinspection DataFlowIssue
-			if(context.getKeyCode() == GLFW_KEY_TAB)
+			if(context.getScanCode() == SDL_SCANCODE_TAB)
 			{
 				//prepare for navigation
 				final var          forward = !isShiftDown();
@@ -298,14 +298,14 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 				return true;
 			}
 			//handle context menu key
-			else if(context.getKeyCode() == GLFW_KEY_MENU) {
+			else if(context.getScanCode() == SDL_SCANCODE_MENU) {
 				//attempt to show the context menu of the focused element
 				final @Nullable var focused = this.target.focused.get();
 				if(focused != null && focused.showContextMenu() != null)
 					return true; //return ONLY IF successful, no returning false!
 			}
 			//handle closing on escape
-			else if(context.getKeyCode() == GLFW_KEY_ESCAPE) { onClose(); return true; }
+			else if(context.getScanCode() == SDL_SCANCODE_ESCAPE) { onClose(); return true; }
 		}
 
 		//additional mouse-press logic

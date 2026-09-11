@@ -1,6 +1,6 @@
 package com.thecsdev.commonmc.resource;
 
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -27,7 +27,7 @@ public final class TComponent
 	private TComponent() {}
 	// ==================================================
 	public static final MutableComponent air() { return literal("").append(object(new AtlasSprite(AtlasIds.GUI, Identifier.fromNamespaceAndPath(MOD_ID, "air")))); }
-	public static final MutableComponent missingNo() { return literal("").append(object(new AtlasSprite(AtlasSprite.DEFAULT_ATLAS, TextureManager.INTENTIONAL_MISSING_TEXTURE))); }
+	public static final MutableComponent missingNo() { return literal("").append(object(new AtlasSprite(AtlasSprite.DEFAULT_ATLAS, MissingTextureAtlasSprite.getLocation()))); }
 	// --------------------------------------------------
 	public static final MutableComponent head(@NotNull UUID uuid) { return literal("").append(object(new PlayerSprite(ResolvableProfile.createUnresolved(uuid), true))); }
 	public static final MutableComponent head(@NotNull String username) { return literal("").append(object(new PlayerSprite(ResolvableProfile.createUnresolved(username), true))); }

@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.playGuiButtonClickSound;
 import static com.thecsdev.commonmc.api.client.gui.util.TInputContext.InputType.*;
 import static java.lang.Math.*;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.sdl.SDLScancode.*;
 
 /**
  * A GUI slider that lets a user select a value by moving a handle along a track.
@@ -41,7 +41,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 	{
 		//original click sound mechanism doesn't work properly here
 		super.eClicked.removeListener(ONCLICK_SOUND); //so we remove it
-		pressedProperty().addChangeListener((p, o, n) -> {
+		pressedProperty().addChangeListener((_, _, n) -> {
 			if(!n) playGuiButtonClickSound(); //this one works better here
 		});
 
@@ -49,7 +49,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 		this.value.addFilter(Point2d::clamp01, TSliderWidget.class);
 		//updates to the value need to be reflected on the knob bounds
 		//(set value to handle to avoid stack overflow from cyclic dependency)
-		this.value.addChangeListener((p, o, n) -> this.knobBounds.getHandle().set(computeKnobFromValue()));
+		this.value.addChangeListener((_, _, _) -> this.knobBounds.getHandle().set(computeKnobFromValue()));
 
 		//control the knob's bounds, such that it never leaves this slider
 		this.knobBounds.addFilter(hbb -> {
@@ -59,7 +59,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 			return new Bounds2i(clamp(hbb.x, sbb.x, sbb.endX - kbbW), clamp(hbb.y, sbb.y, sbb.endY - kbbH), kbbW, kbbH);
 		}, TSliderWidget.class);
 		//when the knob bounds update during click and drag, update the value of the slider
-		this.knobBounds.addChangeListener((p, o, n) -> {
+		this.knobBounds.addChangeListener((_, o, n) -> {
 			//do not handle if not pressed or if resized
 			if(!pressedProperty().getZ() || !o.hasSameSize(n)) return;
 			//else set value
@@ -67,7 +67,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 		});
 
 		//size changes also update the knob bounds size
-		final IChangeListener<?> cl_rkbq = (p, o, n) -> refreshKnobQuietly();
+		final IChangeListener<?> cl_rkbq = (_, _, _) -> refreshKnobQuietly();
 		boundsProperty().addChangeListener((IChangeListener<Bounds2i>) cl_rkbq);
 		this.knobSize   .addChangeListener((IChangeListener<UDim2>)    cl_rkbq);
 		refreshKnobQuietly();
@@ -87,8 +87,8 @@ public @Virtual class TSliderWidget extends TButtonWidget
 		final var siz = this.knobSize.get();
 		this.knobBounds.getHandle().set(new Bounds2i(
 				kbb.x, kbb.y,
-				min(max(siz.x.computeI(sbb.width), 10), sbb.width),
-				min(max(siz.y.computeI(sbb.height), 10), sbb.height)
+				Math.clamp(siz.x.computeI(sbb.width), 10, sbb.width),
+				Math.clamp(siz.y.computeI(sbb.height), 10, sbb.height)
 		));
 		this.knobBounds.getHandle().set(computeKnobFromValue());
 	}
@@ -200,11 +200,11 @@ public @Virtual class TSliderWidget extends TButtonWidget
 		{
 			final double sensitivity = 0.05;
 			double dX = 0, dY = 0;
-			switch(context.getKeyCode()) {
-				case GLFW_KEY_LEFT:  dX -= sensitivity; break;
-				case GLFW_KEY_RIGHT: dX += sensitivity; break;
-				case GLFW_KEY_UP:    dY -= sensitivity; break;
-				case GLFW_KEY_DOWN:  dY += sensitivity; break;
+			switch(context.getScanCode()) {
+				case SDL_SCANCODE_LEFT:  dX -= sensitivity; break;
+				case SDL_SCANCODE_RIGHT: dX += sensitivity; break;
+				case SDL_SCANCODE_UP:    dY -= sensitivity; break;
+				case SDL_SCANCODE_DOWN:  dY += sensitivity; break;
 				default: break;
 			}
 			if(dX != 0 || dY != 0) {

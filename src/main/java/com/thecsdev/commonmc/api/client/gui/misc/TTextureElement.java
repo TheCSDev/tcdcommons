@@ -8,12 +8,12 @@ import com.thecsdev.commonmc.api.client.gui.TElement;
 import com.thecsdev.commonmc.api.client.gui.render.TGuiGraphics;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED;
-import static net.minecraft.client.renderer.texture.TextureManager.INTENTIONAL_MISSING_TEXTURE;
 
 /**
  * A {@link TElement} whose sole purpose is to render a sprite/texture.
@@ -25,7 +25,7 @@ public @Virtual class TTextureElement extends TElement
 	//                                    TTextureElement IMPLEMENTATION
 	// ================================================== ==================================================
 	private final NotNullProperty<RenderPipeline>   renderPipeline = new NotNullProperty<>(GUI_TEXTURED);
-	private final NotNullProperty<Identifier>       texture        = new NotNullProperty<>(INTENTIONAL_MISSING_TEXTURE);
+	private final NotNullProperty<Identifier>       texture        = new NotNullProperty<>(MissingTextureAtlasSprite.getLocation());
 	private final NotNullProperty<Mode>             mode           = new NotNullProperty<>(Mode.TEXTURE);
 	private final IntegerProperty                   color          = new IntegerProperty(0xFFFFFFFF);
 	// ==================================================
