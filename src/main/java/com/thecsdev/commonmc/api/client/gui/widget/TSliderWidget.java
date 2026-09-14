@@ -87,8 +87,8 @@ public @Virtual class TSliderWidget extends TButtonWidget
 		final var siz = this.knobSize.get();
 		this.knobBounds.getHandle().set(new Bounds2i(
 				kbb.x, kbb.y,
-				Math.clamp(siz.x.computeI(sbb.width), 10, sbb.width),
-				Math.clamp(siz.y.computeI(sbb.height), 10, sbb.height)
+				min(max(siz.x.computeI(sbb.width), 10), sbb.width),
+				min(max(siz.y.computeI(sbb.height), 10), sbb.height)
 		));
 		this.knobBounds.getHandle().set(computeKnobFromValue());
 	}

@@ -1,6 +1,6 @@
 package com.thecsdev.commonmc.api.client.gui.misc;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import com.thecsdev.common.properties.IntegerProperty;
 import com.thecsdev.common.properties.NotNullProperty;
 import com.thecsdev.common.util.annotations.Virtual;

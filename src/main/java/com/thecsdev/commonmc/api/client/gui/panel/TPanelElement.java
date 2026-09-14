@@ -205,8 +205,8 @@ public @Virtual class TPanelElement extends TElement
 
 		// The scroll amount should be between 0 and 1.
 		// We ensure this using Math.min/max, just in case of floating point inaccuracies or external manipulation.
-		final double clampedX = Math.clamp(scrollAmountX, 0.0, 1.0);
-		final double clampedY = Math.clamp(scrollAmountY, 0.0, 1.0);
+		final double clampedX = Math.max(0.0, Math.min(1.0, scrollAmountX));
+		final double clampedY = Math.max(0.0, Math.min(1.0, scrollAmountY));
 
 		return new Point2d(clampedX, clampedY);
 	}
