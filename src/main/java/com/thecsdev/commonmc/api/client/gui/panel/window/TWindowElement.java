@@ -22,6 +22,8 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static org.lwjgl.sdl.SDLMouse.SDL_BUTTON_LEFT;
+
 /**
  * {@link TElement} implementation that has the visual appearance to that of a "window",
  * featuring a title-bar that has a title label and control buttons like [X].
@@ -140,11 +142,11 @@ public abstract class TWindowElement extends TElement
 		return switch(context.getInputType())
 		{
 			//LMB mouse press returns true, so drag input can be handled
-			case MOUSE_PRESS -> context.getMouseButton() == 0;
+			case MOUSE_PRESS -> context.getMouseButton() == SDL_BUTTON_LEFT;
 			//mouse release stops the drag, so clear the drag values
 			case MOUSE_RELEASE -> {
 				//FIXME - Releasing another button causes this to yield false. This is an issue in the input system.
-				if(context.getMouseButton() != 0) yield false;
+				if(context.getMouseButton() != SDL_BUTTON_LEFT) yield false;
 				this.dragDeltaX = this.dragDeltaY = 0;
 				TGuiUtils.keepElementWithinBounds(this, getParent().getBounds());
 				yield true;

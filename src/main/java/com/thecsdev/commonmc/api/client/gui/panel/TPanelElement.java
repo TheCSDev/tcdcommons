@@ -12,6 +12,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
 
+import static org.lwjgl.sdl.SDLMouse.SDL_BUTTON_LEFT;
+import static org.lwjgl.sdl.SDLMouse.SDL_BUTTON_MIDDLE;
 import static org.lwjgl.sdl.SDLScancode.*;
 
 /**
@@ -85,7 +87,7 @@ public @Virtual class TPanelElement extends TElement
 		switch(context.getInputType())
 		{
 			//mouse press should result in focus, so we return true here
-			case MOUSE_PRESS: return (context.getMouseButton() == 0 || context.getMouseButton() == 2) && isFocusable();
+			case MOUSE_PRESS: return (context.getMouseButton() == SDL_BUTTON_LEFT || context.getMouseButton() == SDL_BUTTON_MIDDLE) && isFocusable();
 			//mouse scroll should result in scrolling
 			case MOUSE_SCROLL: {
 				final int ss    = this.scrollSensitivity.getI();

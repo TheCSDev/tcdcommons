@@ -28,6 +28,7 @@ import static com.thecsdev.commonmc.TCDCommons.LOGGER;
 import static com.thecsdev.commonmc.TCDCommonsConfig.FLAG_DEV_ENV;
 import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.isShiftDown;
 import static java.lang.System.nanoTime;
+import static org.lwjgl.sdl.SDLMouse.SDL_BUTTON_RIGHT;
 import static org.lwjgl.sdl.SDLScancode.*;
 
 /**
@@ -155,11 +156,11 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	// --------------------------------------------------
 	public final @Override boolean mouseClicked(@NotNull MouseButtonEvent e, boolean doubled) {
 		if(super.mouseClicked(e, doubled)) return true;
-		else return sendInput(TInputContext.ofMousePress(e.x(), e.y(), e.button()));
+		else return sendInput(TInputContext.ofMousePress(e.x(), e.y(), e.button(), e.modifiers()));
 	}
 	public final @Override boolean mouseReleased(@NotNull MouseButtonEvent e) {
 		if(super.mouseReleased(e)) return true;
-		else return sendInput(TInputContext.ofMouseRelease(e.x(), e.y(), e.button()));
+		else return sendInput(TInputContext.ofMouseRelease(e.x(), e.y(), e.button(), e.modifiers()));
 	}
 	public final @Override void mouseMoved(double mouseX, double mouseY) {
 		super.mouseMoved(mouseX, mouseY);
@@ -311,7 +312,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 		//additional mouse-press logic
 		else if(context.getInputType() == TInputContext.InputType.MOUSE_PRESS) {
 			//noinspection DataFlowIssue - handle right-clicking for opening context-menus
-			if(context.getMouseButton() == 1) {
+			if(context.getMouseButton() == SDL_BUTTON_RIGHT) {
 				//attempt to show the context menu of the hovered element
 				final @Nullable var hovered = this.target.hovered.get();
 				if(hovered != null && hovered.showContextMenu() != null)

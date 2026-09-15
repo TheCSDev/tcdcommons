@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.playGuiButtonClickSound;
 import static com.thecsdev.commonmc.api.client.gui.util.TInputContext.InputType.*;
 import static java.lang.Math.*;
+import static org.lwjgl.sdl.SDLMouse.SDL_BUTTON_LEFT;
 import static org.lwjgl.sdl.SDLScancode.*;
 
 /**
@@ -184,7 +185,7 @@ public @Virtual class TSliderWidget extends TButtonWidget
 
 		//handle click and dragging
 		//(must return true for both drag and mouse press)
-		if(context.getInputType() == MOUSE_DRAG && pressedProperty().getZ() && context.getMouseButton() == 0) {
+		if(context.getInputType() == MOUSE_DRAG && pressedProperty().getZ() && context.getMouseButton() == SDL_BUTTON_LEFT) {
 			//move knob to cursor position
 			final var kbb = this.knobBounds.get();
 			final int w2  = kbb.width / 2, h2 = kbb.height / 2;
