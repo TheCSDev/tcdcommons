@@ -299,7 +299,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 				return true;
 			}
 			//handle context menu key
-			else if(context.getScanCode() == SDL_SCANCODE_MENU) {
+			else if(context.getScanCode() == SDL_SCANCODE_APPLICATION) {
 				//attempt to show the context menu of the focused element
 				final @Nullable var focused = this.target.focused.get();
 				if(focused != null && focused.showContextMenu() != null)
