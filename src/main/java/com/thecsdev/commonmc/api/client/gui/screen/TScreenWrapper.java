@@ -13,7 +13,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -26,7 +25,7 @@ import java.util.Optional;
 
 import static com.thecsdev.commonmc.TCDCommons.LOGGER;
 import static com.thecsdev.commonmc.TCDCommonsConfig.FLAG_DEV_ENV;
-import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.isShiftDown;
+import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.*;
 import static java.lang.System.nanoTime;
 import static org.lwjgl.sdl.SDLMouse.SDL_BUTTON_RIGHT;
 import static org.lwjgl.sdl.SDLScancode.*;
@@ -143,16 +142,21 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	// ==================================================
 	public final @Override boolean keyPressed(@NotNull KeyEvent e) {
 		if(super.keyPressed(e)) return true;
-		else return sendInput(TInputContext.ofKeyPress(e.keycode(), e.input(), e.modifiers()));
+		else if(sendInput(TInputContext.ofKeyPress(e.keycode(), e.input(), e.modifiers()))) return true;
+		else {
+			//FIXME - REPLACE THIS BAND-AID CODE WITH PROPER SDL 'TYPING' HANDLING
+			final var typedChar = getCharFromSdlScancode(e.input(), isShiftDown(), isCapsLockOn(), isNumLockOn());
+			return typedChar != 0 && sendInput(TInputContext.ofCharType(typedChar, 0));
+		}
 	}
 	public final @Override boolean keyReleased(@NotNull KeyEvent e) {
 		if(super.keyReleased(e)) return true;
 		else return sendInput(TInputContext.ofKeyRelease(e.keycode(), e.input(), e.modifiers()));
 	}
-	public final @Override boolean charTyped(@NotNull CharacterEvent e) {
+	/*public final @Override boolean charTyped(@NotNull CharacterEvent e) { -- they changed something here
 		if(super.charTyped(e)) return true;
 		else return sendInput(TInputContext.ofCharType((char) e.codepoint(), 0));
-	}
+	}*/
 	// --------------------------------------------------
 	public final @Override boolean mouseClicked(@NotNull MouseButtonEvent e, boolean doubled) {
 		if(super.mouseClicked(e, doubled)) return true;
@@ -341,6 +345,95 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 
 		//return element that handled the input, or null if none handled it
 		return element;
+	}
+	// ==================================================
+	/**
+	 * Band-Aid method that helps {@link #keyPressed(KeyEvent)} emit "character typed" events.<br>
+	 * FIXME - Implement proper typing handling functionality.
+	 * @param sdlScanCode Pressed key SDL scan-code.
+	 * @param isShiftDown Is shift key down?
+	 * @param isCapsLockOn Is CapsLock turned on?
+	 * @param isNumLockOn Is NumLock turned on?
+	 * @return {@link Character} from SDL scan-code, or {@code 0} is character is not printable.
+	 * @implNote Supports English keyboard layout only, which is problematic.
+	 */
+	@Deprecated
+	@SuppressWarnings("DeprecatedIsStillUsed")
+	public static final char getCharFromSdlScancode(
+			int sdlScanCode,
+			boolean isShiftDown, boolean isCapsLockOn, boolean isNumLockOn)
+	{
+		//handle [A to Z] keys
+		if(sdlScanCode >= SDL_SCANCODE_A && sdlScanCode <= SDL_SCANCODE_Z) {
+			final var isUppercase = isShiftDown ^ isCapsLockOn;
+			final var baseChar    = (char) ('a' + (sdlScanCode - 4));
+			return isUppercase ? Character.toUpperCase(baseChar) : baseChar;
+		}
+
+		//handle number keys [1 to 0]
+		if(sdlScanCode >= SDL_SCANCODE_1 && sdlScanCode <= SDL_SCANCODE_0) {
+			if(isShiftDown) {
+				switch(sdlScanCode) {
+					case SDL_SCANCODE_1: return '!';
+					case SDL_SCANCODE_2: return '@';
+					case SDL_SCANCODE_3: return '#';
+					case SDL_SCANCODE_4: return '$';
+					case SDL_SCANCODE_5: return '%';
+					case SDL_SCANCODE_6: return '^';
+					case SDL_SCANCODE_7: return '&';
+					case SDL_SCANCODE_8: return '*';
+					case SDL_SCANCODE_9: return '(';
+					case SDL_SCANCODE_0: return ')';
+				}
+			} else {
+				if(sdlScanCode == SDL_SCANCODE_0) return '0';
+				return (char) ('1' + (sdlScanCode - SDL_SCANCODE_1));
+			}
+		}
+
+		//punctuation and miscellaneous keys
+		return switch(sdlScanCode)
+		{
+			//general punctuation keys
+			case SDL_SCANCODE_SPACE        -> ' ';
+			case SDL_SCANCODE_MINUS        -> isShiftDown ? '_' : '-';
+			case SDL_SCANCODE_EQUALS       -> isShiftDown ? '+' : '=';
+			case SDL_SCANCODE_LEFTBRACKET  -> isShiftDown ? '{' : '[';
+			case SDL_SCANCODE_RIGHTBRACKET -> isShiftDown ? '}' : ']';
+			case SDL_SCANCODE_BACKSLASH    -> isShiftDown ? '|' : '\\';
+			case SDL_SCANCODE_SEMICOLON    -> isShiftDown ? ':' : ';';
+			case SDL_SCANCODE_APOSTROPHE   -> isShiftDown ? '"' : '\'';
+			case SDL_SCANCODE_GRAVE        -> isShiftDown ? '~' : '`'; //the key below 'Esc'
+			case SDL_SCANCODE_COMMA        -> isShiftDown ? '<' : ',';
+			case SDL_SCANCODE_PERIOD       -> isShiftDown ? '>' : '.';
+			case SDL_SCANCODE_SLASH        -> isShiftDown ? '?' : '/';
+
+			//numpad keys
+			case SDL_SCANCODE_KP_DIVIDE    -> '/';
+			case SDL_SCANCODE_KP_MULTIPLY  -> '*';
+			case SDL_SCANCODE_KP_MINUS     -> '-';
+			case SDL_SCANCODE_KP_PLUS      -> '+';
+			case SDL_SCANCODE_KP_ENTER     -> '\n';
+			case SDL_SCANCODE_KP_1         -> isNumLockOn ? '1' : (char) 0;
+			case SDL_SCANCODE_KP_2         -> isNumLockOn ? '2' : (char) 0;
+			case SDL_SCANCODE_KP_3         -> isNumLockOn ? '3' : (char) 0;
+			case SDL_SCANCODE_KP_4         -> isNumLockOn ? '4' : (char) 0;
+			case SDL_SCANCODE_KP_5         -> isNumLockOn ? '5' : (char) 0;
+			case SDL_SCANCODE_KP_6         -> isNumLockOn ? '6' : (char) 0;
+			case SDL_SCANCODE_KP_7         -> isNumLockOn ? '7' : (char) 0;
+			case SDL_SCANCODE_KP_8         -> isNumLockOn ? '8' : (char) 0;
+			case SDL_SCANCODE_KP_9         -> isNumLockOn ? '9' : (char) 0;
+			case SDL_SCANCODE_KP_0         -> isNumLockOn ? '0' : (char) 0;
+			case SDL_SCANCODE_KP_PERIOD    -> isNumLockOn ? '.' : (char) 0;
+			case SDL_SCANCODE_KP_EQUALS    -> '=';
+
+			//control characters
+			//case SDL_SCANCODE_RETURN       -> '\n';
+			//case SDL_SCANCODE_BACKSPACE    -> '\b';
+			//case SDL_SCANCODE_TAB          -> '\t';
+
+			default -> 0; //non-printable keys (F1 to F12, delete, arrows, etc.)
+		};
 	}
 	// ==================================================
 }
