@@ -65,7 +65,7 @@ public final class TInputContext
 	}
 	// ==================================================
 	private final InputType inputType;
-	private final @Nullable Integer keyCode, scanCode, keyModifiers;
+	private final @Nullable Integer keyCode, scanCode, nodifiers;
 	private final @Nullable Character character;
 	private final @Nullable Double mouseX, mouseY;
 	private final @Nullable Integer mouseButton;
@@ -74,7 +74,7 @@ public final class TInputContext
 	// ==================================================
 	private TInputContext(
 			InputType inputType,
-			@Nullable Integer keyCode, @Nullable Integer scanCode, @Nullable Integer keyModifiers,
+			@Nullable Integer keyCode, @Nullable Integer scanCode, @Nullable Integer modifiers,
 			@Nullable Character character,
 			@Nullable Double mouseX, @Nullable Double mouseY, @Nullable Integer mouseButton,
 			@Nullable Double scrollX, @Nullable Double scrollY,
@@ -83,7 +83,7 @@ public final class TInputContext
 		this.inputType    = Objects.requireNonNull(inputType);
 		this.keyCode      = keyCode;
 		this.scanCode     = scanCode;
-		this.keyModifiers = keyModifiers;
+		this.nodifiers    = modifiers;
 		this.character    = character;
 		this.mouseX       = mouseX;
 		this.mouseY       = mouseY;
@@ -96,7 +96,7 @@ public final class TInputContext
 	// ==================================================
 	public final @Override int hashCode()
 	{
-		return Objects.hash(this.inputType, this.keyCode, this.scanCode, this.keyModifiers,
+		return Objects.hash(this.inputType, this.keyCode, this.scanCode, this.nodifiers,
 				this.character, this.mouseX, this.mouseY, this.mouseButton, this.scrollX,
 				this.scrollY, this.mouseDeltaX, this.mouseDeltaY);
 	}
@@ -107,7 +107,7 @@ public final class TInputContext
 			return Objects.equals(this.inputType, other.inputType) &&
 				Objects.equals(this.keyCode, other.keyCode) &&
 				Objects.equals(this.scanCode, other.scanCode) &&
-				Objects.equals(this.keyModifiers, other.keyModifiers) &&
+				Objects.equals(this.nodifiers, other.nodifiers) &&
 				Objects.equals(this.character, other.character) &&
 				Objects.equals(this.mouseX, other.mouseX) &&
 				Objects.equals(this.mouseY, other.mouseY) &&
@@ -154,8 +154,20 @@ public final class TInputContext
 	 * @param mouseY Mouse Y position.
 	 * @param button The pressed mouse button.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final TInputContext ofMousePress(double mouseX, double mouseY, int button) {
 		return new TInputContext(InputType.MOUSE_PRESS, null, null, null, null, mouseX, mouseY, button, null, null, null, null);
+	}
+
+	/**
+	 * Creates and returns a {@link TInputContext} for {@link InputType#MOUSE_PRESS}.
+	 * @param mouseX Mouse X position.
+	 * @param mouseY Mouse Y position.
+	 * @param button The pressed mouse button.
+	 * @param modifiers Mouse button modifiers.
+	 */
+	public static final TInputContext ofMousePress(double mouseX, double mouseY, int button, int modifiers) {
+		return new TInputContext(InputType.MOUSE_PRESS, null, null, modifiers, null, mouseX, mouseY, button, null, null, null, null);
 	}
 
 	/**
@@ -164,12 +176,24 @@ public final class TInputContext
 	 * @param mouseY Mouse Y position.
 	 * @param button The pressed mouse button.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final TInputContext ofMouseRelease(double mouseX, double mouseY, int button) {
 		return new TInputContext(InputType.MOUSE_RELEASE, null, null, null, null, mouseX, mouseY, button, null, null, null, null);
 	}
 
 	/**
 	 * Creates and returns a {@link TInputContext} for {@link InputType#MOUSE_RELEASE}.
+	 * @param mouseX Mouse X position.
+	 * @param mouseY Mouse Y position.
+	 * @param button The pressed mouse button.
+	 * @param modifiers Mouse button modifiers.
+	 */
+	public static final TInputContext ofMouseRelease(double mouseX, double mouseY, int button, int modifiers) {
+		return new TInputContext(InputType.MOUSE_RELEASE, null, null, modifiers, null, mouseX, mouseY, button, null, null, null, null);
+	}
+
+	/**
+	 * Creates and returns a {@link TInputContext} for {@link InputType#MOUSE_MOVE}.
 	 * @param mouseX Mouse X position.
 	 * @param mouseY Mouse Y position.
 	 */
@@ -218,11 +242,20 @@ public final class TInputContext
 	public final @Nullable Integer getScanCode() { return this.scanCode; }
 
 	/**
+	 * {@link Deprecated} because this method was renamed to {@link #getModifiers()}.
+	 * Please use {@link #getModifiers()} instead.
+	 */
+	@Deprecated(forRemoval = true)
+	public final @Nullable Integer getKeyModifiers() { return this.nodifiers; }
+
+	/**
 	 * @see InputType#KEY_PRESS
 	 * @see InputType#KEY_RELEASE
 	 * @see InputType#CHAR_TYPE
+	 * @see InputType#MOUSE_PRESS
+	 * @see InputType#MOUSE_RELEASE
 	 */
-	public final @Nullable Integer getKeyModifiers() { return this.keyModifiers; }
+	public final @Nullable Integer getModifiers() { return this.nodifiers; }
 
 	/**
 	 * @see InputType#CHAR_TYPE

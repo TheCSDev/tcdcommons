@@ -16,6 +16,7 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.TickRateManager;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.attribute.EnvironmentAttributeSystem;
+import net.minecraft.world.clock.ClockInstance;
 import net.minecraft.world.clock.ClockManager;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -23,7 +24,6 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.RecipeAccess;
 import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.ExplosionDamageCalculator;
@@ -31,7 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.FuelValues;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.chunk.ChunkSource;
@@ -96,13 +95,17 @@ public @Virtual class SandboxLevel extends Level
 		public void onTrackingEnd(Entity object) {}
 		public void onSectionChange(Entity object) {}
 	});
-	protected @NotNull ClockManager                          clockManager    = _ -> 0;
+	protected @NotNull ClockInstance                         clockInstance   = new ClockInstance() {
+		public final @Override long totalTicks() { return 0; }
+		public final @Override float partialTick() { return 0; }
+		public final @Override float rate() { return 0; }
+		public final @Override boolean isPaused() { return true; }
+	};
+	protected @NotNull ClockManager                          clockManager    = _ -> this.clockInstance;
 	protected @NotNull List<EnderDragonPart>                 dragonParts     = new ArrayList<>();
 	protected @NotNull TickRateManager                       tickRateManager = new TickRateManager();
 	protected @NotNull Scoreboard                            scoreboard      = new Scoreboard();
 	protected @NotNull RecipeAccess                          recipeAccess    = new SandboxLevelRecipes();
-	protected @NotNull PotionBrewing                         potionBrewing   = new PotionBrewing.Builder(FEATURES).build();
-	protected @NotNull FuelValues                            fuelValues      = new FuelValues.Builder(registryAccess(), FEATURES).build();
 	protected @NotNull ChunkSource                           chunkSource     = new SandboxLevelChunks(this);
 	protected @NotNull List<Player>                          players         = new ArrayList<>();
 	protected @NotNull WorldBorder                           worldBorder     = new WorldBorder();
@@ -138,8 +141,6 @@ public @Virtual class SandboxLevel extends Level
 	protected @Virtual @Override LevelEntityGetter<Entity> getEntities() { return this.entityManager.getEntityGetter(); }
 	public @Virtual @Override ClockManager clockManager() { return this.clockManager; }
 	public @Virtual @Override EnvironmentAttributeSystem environmentAttributes() { return ENV_ATTR_SYS; }
-	public @Virtual @Override PotionBrewing potionBrewing() { return this.potionBrewing; }
-	public @Virtual @Override FuelValues fuelValues() { return this.fuelValues; }
 	public @Virtual @Override ChunkSource getChunkSource() { return this.chunkSource; }
 	public @Virtual @Override void levelEvent(@Nullable Entity source, int eventId, BlockPos position, int data) {}
 	public @Virtual @Override void gameEvent(Holder<GameEvent> event, Vec3 emitterPosition, GameEvent.Context emitter) {}

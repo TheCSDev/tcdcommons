@@ -109,9 +109,13 @@ public final class DynamicRegistryAccess implements RegistryAccess
 			return (HolderGetter<S>) this.registry.createRegistrationLookup();
 		}
 		// --------------------------------------------------
-		public @Override @NotNull Holder.Reference<T> register(@NonNull ResourceKey<T> key, T value, @NonNull Lifecycle lifecycle) {
+		public @Override @NotNull Holder.Reference<T> register(@NonNull ResourceKey<T> key, @NonNull T value) {
 			Registry.register(this.registry, key, value);
 			return Holder.Reference.createStandAlone(this.registry, key);
+		}
+		// ==================================================
+		public @Override <S> @NonNull Stream<Holder.Reference<S>> listContextElements(@NonNull ResourceKey<? extends Registry<? extends S>> key) {
+			return ((HolderLookup.RegistryLookup<S>) this.lookup(key)).listElements();
 		}
 		// ==================================================
 	}

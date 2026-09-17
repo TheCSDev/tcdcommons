@@ -1,6 +1,6 @@
 package com.thecsdev.commonmc.api.client.gui.render;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import com.thecsdev.commonmc.resource.TSprites;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

@@ -38,7 +38,7 @@ import static com.thecsdev.commonmc.api.client.gui.util.TInputContext.InputDisco
 import static com.thecsdev.commonmc.api.client.gui.util.TInputContext.InputType.MOUSE_PRESS;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.sdl.SDLScancode.SDL_SCANCODE_ESCAPE;
 
 /**
  * A {@link TContextMenu} is a specialized {@link TElement} that represents a context menu
@@ -63,10 +63,10 @@ public @Virtual class TContextMenu extends TElement
 		focusableProperty().set(true, TContextMenu.class);
 		//in order to have child context menus be visible, we need not clip descendants
 		clipsDescendantsProperty().set(false, TContextMenu.class);
-		clipsDescendantsProperty().addFilter(__ -> false, TContextMenu.class);
+		clipsDescendantsProperty().addFilter(_ -> false, TContextMenu.class);
 
 		//handle being assigned to a new screen
-		screenProperty().addChangeListener((p, o, n) -> {
+		screenProperty().addChangeListener((_, _, n) -> {
 			//ignore removals from screens (aka screen becoming null)
 			if(n == null) return;
 			//remove other dropdown elements "branches". there cannot be more than one
@@ -82,7 +82,7 @@ public @Virtual class TContextMenu extends TElement
 		});
 
 		//ensure the parent is always a screen or another context menu
-		parentProperty().addChangeListener((p, o, n) -> {
+		parentProperty().addChangeListener((_, _, n) -> {
 			if(n == null) return;
 			if(!(n instanceof TScreen) && !(n instanceof TContextMenu)) {
 				n.remove(this); //restore to stable state - caution: re-invokes this change listener
@@ -93,13 +93,13 @@ public @Virtual class TContextMenu extends TElement
 		//tracking the root context menu element (this has to be placed last)
 		this.rootContextMenu.setReadOnly(true, TContextMenu.class);
 		this.rootContextMenu.setOwner(PropertyAccessor.class, TContextMenu.class);
-		this.rootContextMenu.addChangeListener((p, o, n) -> {
+		this.rootContextMenu.addChangeListener((_, _, n) -> {
 			//propagate the new root context menu to all child context menus
 			for(final var child : this)
 				if(child instanceof TContextMenu childMenu)
 					setRootCtxMenuValue(childMenu, n);
 		});
-		parentProperty().addChangeListener((p, o, n) -> {
+		parentProperty().addChangeListener((_, _, _) -> {
 			//find the root context menu and set it
 			@NotNull  TContextMenu root = this;
 			@Nullable TElement     next = this;
@@ -139,7 +139,7 @@ public @Virtual class TContextMenu extends TElement
 				//close this dropdown if a key press happens without focus
 				//to this dropdown or one of its (grand/)children
 				case KEY_PRESS: {
-					if(!isFocusAncestor() || context.getKeyCode() == GLFW_KEY_ESCAPE)
+					if(!isFocusAncestor() || context.getScanCode() == SDL_SCANCODE_ESCAPE)
 						return remove();
 					else break;
 				}
@@ -299,7 +299,7 @@ public @Virtual class TContextMenu extends TElement
 			btn.setBounds(0, 0, this.client.font.width(text) + (TButtonWidget.LBL_PAD_X * 2), 15);
 			btn.eClicked.addListener(onClick); //on-click goes first, as is may rely on btn#getClient()
 			btn.eClicked.addListener(          //then remove, which also clears the screen/client property value
-					__ -> btn.getParentMenu().rootContextMenuProperty().get().remove());
+					_ -> btn.getParentMenu().rootContextMenuProperty().get().remove());
 			this.entries.add(btn);
 			return this;
 		}
@@ -319,7 +319,7 @@ public @Virtual class TContextMenu extends TElement
 			btn.getLabel().setText(text);
 			btn.getLabel().textAlignmentProperty().set(CompassDirection.WEST, Builder.class);
 			btn.setBounds(0, 0, this.client.font.width(text) + (TButtonWidget.LBL_PAD_X * 2), 15);
-			btn.eClicked.addListener(__ -> {
+			btn.eClicked.addListener(_ -> {
 				//add the context menu
 				final var menu = Objects.requireNonNull(menuBuilder.apply(btn), "Context menu Supplier returned 'null'");
 				btn.getParentMenu().add(menu);

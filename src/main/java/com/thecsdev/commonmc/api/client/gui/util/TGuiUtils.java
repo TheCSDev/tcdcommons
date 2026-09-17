@@ -19,13 +19,16 @@ import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.sdl.SDLKeyboard.SDL_GetModState;
+import static org.lwjgl.sdl.SDLKeycode.SDL_KMOD_CAPS;
+import static org.lwjgl.sdl.SDLKeycode.SDL_KMOD_NUM;
+import static org.lwjgl.sdl.SDLScancode.*;
 
 /**
  * {@link TCDCommons} API's GUI-related utility methods.
@@ -82,30 +85,41 @@ public final class TGuiUtils
 	}
 	// ==================================================
 	/**
-	 * Returns {@code true} is a given key is currently held down
-	 * for the current game window.
-	 * @param keyCode The {@link GLFW} key code.
+	 * Returns {@code true} is a given key is currently held down.
+	 * @param scanCode The key's scan-code from {@link SDLScancode}.
 	 */
-	public static final boolean isKeyDown(int keyCode) {
-		return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keyCode);
+	public static final boolean isKeyDown(int scanCode) {
+		return InputConstants.isKeyDown(scanCode);
 	}
 
 	/**
-	 * Returns {@code true} is either the left or right control key is currently held down
-	 * for the current game window.
+	 * Returns {@code true} is either the left or right control key is currently held down.
 	 * @see #isKeyDown(int)
 	 */
 	public static final boolean isCtrlDown() {
-		return isKeyDown(GLFW_KEY_LEFT_CONTROL) || isKeyDown(GLFW_KEY_RIGHT_CONTROL);
+		return isKeyDown(SDL_SCANCODE_LCTRL) || isKeyDown(SDL_SCANCODE_RCTRL);
 	}
 
 	/**
-	 * Returns {@code true} is either the left or right shift key is currently held down
-	 * for the current game window.
+	 * Returns {@code true} is either the left or right shift key is currently held down.
 	 * @see #isKeyDown(int)
 	 */
 	public static final boolean isShiftDown() {
-		return isKeyDown(GLFW_KEY_LEFT_SHIFT) || isKeyDown(GLFW_KEY_RIGHT_SHIFT);
+		return isKeyDown(SDL_SCANCODE_LSHIFT) || isKeyDown(SDL_SCANCODE_RSHIFT);
+	}
+	// --------------------------------------------------
+	/**
+	 * Returns {@code true} if the "caps lock" state is "on".
+	 */
+	public static final boolean isCapsLockOn() {
+		return (SDL_GetModState() & SDL_KMOD_CAPS) != 0;
+	}
+
+	/**
+	 * Returns {@code true} if the "num lock" state is "on".
+	 */
+	public static final boolean isNumLockOn() {
+		return (SDL_GetModState() & SDL_KMOD_NUM) != 0;
 	}
 	// ==================================================
 	/**
@@ -308,7 +322,7 @@ public final class TGuiUtils
 		Objects.requireNonNull(target);
 		Objects.requireNonNull(bounds);
 
-		//calculate the detla x and delta y
+		//calculate the data x and delta y
 		final var bb  = target.getBounds();
 		int dX = 0, dY = 0;
 		if(bb.endY > bounds.endY) dY = bounds.endY - bb.endY;

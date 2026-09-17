@@ -1,5 +1,6 @@
 package com.thecsdev.commonmc.api.client.gui.screen.promise;
 
+import com.mojang.blaze3d.Blaze3D;
 import com.sun.jna.Platform;
 import com.sun.jna.platform.win32.KnownFolders;
 import com.sun.jna.platform.win32.Shell32Util;
@@ -27,7 +28,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Util;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +53,9 @@ import static com.thecsdev.commonmc.resource.TSprites.gui_icon_fsFolder;
 import static java.nio.file.Files.readAttributes;
 import static org.apache.commons.io.FilenameUtils.isExtension;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.sdl.SDLMouse.SDL_BUTTON_X1;
+import static org.lwjgl.sdl.SDLMouse.SDL_BUTTON_X2;
+import static org.lwjgl.sdl.SDLScancode.SDL_SCANCODE_F5;
 
 /**
  * {@link TScreen} implementation that provides a user-friendly interface for selecting
@@ -130,8 +132,8 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>>
 
 		//handle refreshing (F5)
 		if(context.getInputType() == TInputContext.InputType.KEY_RELEASE) {
-			assert (context.getKeyCode() != null);
-			if(context.getKeyCode() == GLFW_KEY_F5) {
+			assert (context.getScanCode() != null);
+			if(context.getScanCode() == SDL_SCANCODE_F5) {
 				refresh();
 				return true;
 			}
@@ -140,10 +142,10 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>>
 		//handle mouse navigation
 		if(context.getInputType() == TInputContext.InputType.MOUSE_RELEASE) {
 			assert (context.getMouseButton() != null);
-			if(context.getMouseButton() == GLFW_MOUSE_BUTTON_4) {
+			if(context.getMouseButton() == SDL_BUTTON_X1) {
 				this.controller.navigateBack();
 				return true;
-			} else if(context.getMouseButton() == GLFW_MOUSE_BUTTON_5) {
+			} else if(context.getMouseButton() == SDL_BUTTON_X2) {
 				this.controller.navigateForward();
 				return true;
 			}
@@ -909,7 +911,7 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>>
 						return;
 					case EXPLORE:
 						if(input.isEmpty() || !Files.exists(choice)) return;
-						Util.getPlatform().openUri(choice.toUri());
+						Blaze3D.openUri(choice.toUri());
 						return;
 					default:
 						break;
@@ -937,7 +939,8 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>>
 		private static final Function<FileEntryElement, TContextMenu> CONTEXT_MENU = (fee) ->
 		{
 			//create the builder instance
-			final var builder = new TContextMenu.Builder(Objects.requireNonNull(fee.getClient()));
+			final var client  = Objects.requireNonNull(fee.getClient());
+			final var builder = new TContextMenu.Builder(client);
 
 			//file "Select" / "Open"
 			switch(fee.controller.getMode()) {
@@ -959,10 +962,10 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>>
 					_ -> fee.openInAppCallback());
 			builder.addContextMenu(
 					gui(TSprites.gui_icon_fsFolder()).append(" ").append(TLanguage.gui_fileChooser_ctxmenu_openWith()),
-					_ -> new TContextMenu.Builder(fee.getClient())
+					_ -> new TContextMenu.Builder(client)
 							.addButton(
 									gui(TSprites.gui_icon_fsFile()).append(" ").append(TLanguage.gui_fileChooser_ctxmenu_openWith_assocApp()),
-									_ -> Util.getPlatform().openUri(fee.path.toUri()))
+									_ -> Blaze3D.openUri(fee.path.toUri()))
 							.build());
 
 			//build and return
@@ -1053,7 +1056,7 @@ public final class TFileChooserScreen extends TCompletableScreen<List<Path>>
 		/**
 		 * Opens the {@link #path} with the default external application.
 		 */
-		private final void openInAppCallback() { Util.getPlatform().openUri(this.path.toUri()); }
+		private final void openInAppCallback() { Blaze3D.openUri(this.path.toUri()); }
 
 		protected final @Override void focusGainedCallback() {
 			TFileChooserScreen.this.findChild(el -> el instanceof ActionPanel, true)

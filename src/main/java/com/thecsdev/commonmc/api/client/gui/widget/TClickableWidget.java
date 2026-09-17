@@ -16,9 +16,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-import static com.mojang.blaze3d.platform.InputConstants.KEY_NUMPADENTER;
-import static com.mojang.blaze3d.platform.InputConstants.KEY_RETURN;
 import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.playGuiButtonClickSound;
+import static org.lwjgl.sdl.SDLMouse.SDL_BUTTON_LEFT;
+import static org.lwjgl.sdl.SDLScancode.SDL_SCANCODE_KP_ENTER;
+import static org.lwjgl.sdl.SDLScancode.SDL_SCANCODE_RETURN;
 
 /**
  * A {@link TElement} that can be clicked via mouse or keyboard inputs.
@@ -102,24 +103,24 @@ public @Virtual class TClickableWidget extends TElement
 		{
 			//mouse-based inputs
 			case MOUSE_PRESS:
-				if(context.getMouseButton() != 0) break; //only accept LMB
+				if(context.getMouseButton() != SDL_BUTTON_LEFT) break; //only accept LMB
 				return true;
 			case MOUSE_RELEASE:
-				if(context.getMouseButton() != 0) break; //only accept LMB
+				if(context.getMouseButton() != SDL_BUTTON_LEFT) break; //only accept LMB
 				if(isHovered()) click(); //just like in standardized GUI frameworks
 				return true;
 
 			//key-based inputs
 			case KEY_PRESS: {
-				final int kc = context.getKeyCode();
-				if(!(kc == KEY_RETURN || kc == KEY_NUMPADENTER)) break;
+				final int sc = context.getScanCode();
+				if(!(sc == SDL_SCANCODE_RETURN || sc == SDL_SCANCODE_KP_ENTER)) break;
 				this.pressed.set(true, TClickableWidget.class);
 				click();
 				return true;
 			}
 			case KEY_RELEASE: {
-				final int kc = context.getKeyCode();
-				if(!(kc == KEY_RETURN || kc == KEY_NUMPADENTER)) break;
+				final int sc = context.getScanCode();
+				if(!(sc == SDL_SCANCODE_RETURN || sc == SDL_SCANCODE_KP_ENTER)) break;
 				this.pressed.set(false, TClickableWidget.class);
 				return true;
 			}

@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.COLOR_OUTLINE;
 import static com.thecsdev.commonmc.api.client.gui.panel.TPanelElement.COLOR_OUTLINE_FOCUSED;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_BACKSPACE;
+import static org.lwjgl.sdl.SDLScancode.SDL_SCANCODE_BACKSPACE;
 
 /**
  * Text input widget where the user may type in text. Very minimal and
@@ -53,17 +53,17 @@ public final class TSimpleTextFieldWidget extends TClickableWidget
 		this.lbl_placeholder.textColorProperty().set(0x55FFFFFF, TSimpleTextFieldWidget.class);
 
 		//change listeners
-		boundsProperty().addChangeListener((p, o, n) -> refreshAlignment());
-		this.font.addChangeListener((p, o, n) -> {
+		boundsProperty().addChangeListener((_, _, _) -> refreshAlignment());
+		this.font.addChangeListener((_, _, n) -> {
 			this.lbl_placeholder.fontProperty().set(n, TSimpleTextFieldWidget.class);
 			this.lbl_text.fontProperty().set(n, TSimpleTextFieldWidget.class);
 			refreshAlignment();
 		});
-		this.placeholder.addChangeListener((p, o, n) -> {
+		this.placeholder.addChangeListener((_, _, n) -> {
 			this.lbl_placeholder.setText(n);
 			refreshAlignment();
 		});
-		this.text.addChangeListener((p, o, n) -> {
+		this.text.addChangeListener((_, _, n) -> {
 			this.lbl_text.setText(Component.literal(n));
 			this.lbl_placeholder.visibleProperty().set(n.isEmpty(), TSimpleTextFieldWidget.class);
 			refreshAlignment();
@@ -160,9 +160,9 @@ public final class TSimpleTextFieldWidget extends TClickableWidget
 
 		//handle based on input type
 		final boolean typed = switch(context.getInputType()) {
-			//on click, handle to cath focus
+			//on click, handle to catch focus
 			case CHAR_TYPE -> inputText(context.getCharacter().toString());
-			case KEY_PRESS -> context.getKeyCode() == GLFW_KEY_BACKSPACE && inputBackspace(1);
+			case KEY_PRESS -> context.getScanCode() == SDL_SCANCODE_BACKSPACE && inputBackspace(1);
 			default -> false;
 		};
 		if(typed) TGuiUtils.playGuiTypingSound();

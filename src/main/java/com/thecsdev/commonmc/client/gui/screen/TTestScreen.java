@@ -14,6 +14,7 @@ import com.thecsdev.commonmc.api.client.gui.widget.TToggleButtonWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TBlockStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TEntityStatsWidget;
 import com.thecsdev.commonmc.api.client.gui.widget.stats.TItemStatsWidget;
+import com.thecsdev.commonmc.api.client.gui.widget.text.TSimpleTextFieldWidget;
 import com.thecsdev.commonmc.api.stats.RandomStatsProvider;
 import com.thecsdev.commonmc.resource.TComponent;
 import net.fabricmc.api.EnvType;
@@ -106,6 +107,12 @@ public final @ApiStatus.Internal class TTestScreen extends TScreenPlus implement
 		btn_tog2.toggledProperty().addChangeListener((_, _, n) ->
 				btn_tog1.toggledProperty().set(n, TTestScreen.class));
 		panel.add(btn_tog2);
+
+		//test text input field
+		final var in_text = new TSimpleTextFieldWidget();
+		in_text.setBounds(10, 100, 200, 20);
+		in_text.placeholderProperty().set(Component.literal("Type here..."), TTestScreen.class);
+		panel.add(in_text);
 
 		//test statistics
 		initEnityStats(panel);
