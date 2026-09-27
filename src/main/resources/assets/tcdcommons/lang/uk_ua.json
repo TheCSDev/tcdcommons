@@ -1,0 +1,42 @@
+{
+	"modmenu.nameTranslation.tcdcommons": "TCDCommons API",
+	"modmenu.summaryTranslation.tcdcommons": "Особиста бібліотека TheCSDev для створення модів Minecraft.",
+
+	"tcdcommons.config.common": "Параметри клієнта й сервера",
+	"tcdcommons.config.client": "Параметри клієнта",
+	"tcdcommons.config.client.update_item_groups_on_join": "Оновлювати групи предметів під час входу",
+	"tcdcommons.config.client.update_item_groups_on_join.tooltip": "Функція для підвищення продуктивності. У звичайній грі групи предметів оновлюються під час відкриття інвентарю, що у великих збірках модів спричиняє короткочасне зависання. Ця функція виконує оновлення на екранах завантаження, щоб уникнути такого зависання безпосередньо під час гри.",
+	"tcdcommons.config.server": "Параметри сервера",
+	"tcdcommons.config.property_value": "Значення",
+
+	"tcdcommons.stat_type.minecraft.custom": "Загальне",
+	"tcdcommons.stat_type.minecraft.killed": "Убито",
+	"tcdcommons.stat_type.minecraft.killed_by": "Загинув від",
+	"tcdcommons.stat_type.morestats.damaged": "Завдано шкоди",
+	"tcdcommons.stat_type.morestats.damaged_by": "Отримано шкоди",
+	"tcdcommons.stat_type.morestats.totem_popped_by": "Спрацювання тотемів через",
+
+	"tcdcommons.gui.screen.text_dialog.default_title": "Діалог",
+	"tcdcommons.gui.screen.text_dialog.error_title": "Щось пішло не так",
+
+	"tcdcommons.gui.dropdown.default_label": "Виберіть варіант...",
+
+	"tcdcommons.gui.filechooser.mode.explore": "Провідник файлів",
+	"tcdcommons.gui.filechooser.mode.choose_file": "Вибрати файл",
+	"tcdcommons.gui.filechooser.mode.create_file": "Створити файл",
+	"tcdcommons.gui.filechooser.quick_access": "Швидкий доступ",
+	"tcdcommons.gui.filechooser.quick_access.mount_points": "Точки монтування",
+	"tcdcommons.gui.filechooser.ctxmenu.select": "Вибрати",
+	"tcdcommons.gui.filechooser.ctxmenu.open": "Відкрити",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with": "Відкрити за допомогою",
+	"tcdcommons.gui.filechooser.ctxmenu.open_with.assoc_app": "Пов’язана програма",
+	"tcdcommons.gui.filechooser.action.file_name": "Ім’я файлу",
+	"tcdcommons.gui.filechooser.action.file_type": "Тип файлу",
+
+	"tcdcommons.misc.loading": "Завантаження...",
+	"tcdcommons.misc.something_went_wrong": "Щось пішло не так",
+	"tcdcommons.misc.coming_soon": "Незабаром",
+	"tcdcommons.misc.preview": "Попередній перегляд",
+	"tcdcommons.misc.from": "Від",
+	"tcdcommons.misc.to": "До"
+}
