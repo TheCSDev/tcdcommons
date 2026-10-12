@@ -13,6 +13,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -25,7 +26,7 @@ import java.util.Optional;
 
 import static com.thecsdev.commonmc.TCDCommons.LOGGER;
 import static com.thecsdev.commonmc.TCDCommonsConfig.FLAG_DEV_ENV;
-import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.*;
+import static com.thecsdev.commonmc.api.client.gui.util.TGuiUtils.isShiftDown;
 import static java.lang.System.nanoTime;
 import static org.lwjgl.sdl.SDLMouse.SDL_BUTTON_RIGHT;
 import static org.lwjgl.sdl.SDLScancode.*;
@@ -92,7 +93,13 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	// ==================================================
 	public final @Override void added() {
 		this.minecraft.schedule(() -> {
-			if(this.minecraft.gui.screen() == this) this.target.openCallback();
+			//do nothing in case something closed this screen by the time this method got called
+			if(this.minecraft.gui.screen() != this) return;
+
+			//invoke the corresponding callback method
+			this.target.openCallback();
+			//tell the game's input manager to start handling text input for this screen
+			Minecraft.getInstance().textInputManager().startTextInput(this);
 		});
 	}
 	// --------------------------------------------------
@@ -119,6 +126,8 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 
 			//invoke the corresponding callback method
 			this.target.closeCallback();
+			//tell the game's input manager to stop handling text input for this screen
+			Minecraft.getInstance().textInputManager().stopTextInput(this);
 
 			//FIXME - Hacky workaround for allowing "last/previous screens" to be rendered in the background.
 			//        Problem is that this workaround enables a route thru which #clear() is never called.
@@ -142,21 +151,16 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	// ==================================================
 	public final @Override boolean keyPressed(@NotNull KeyEvent e) {
 		if(super.keyPressed(e)) return true;
-		else if(sendInput(TInputContext.ofKeyPress(e.keycode(), e.input(), e.modifiers()))) return true;
-		else {
-			//FIXME - REPLACE THIS BAND-AID CODE WITH PROPER SDL 'TYPING' HANDLING
-			final var typedChar = getCharFromSdlScancode(e.input(), isShiftDown(), isCapsLockOn(), isNumLockOn());
-			return typedChar != 0 && sendInput(TInputContext.ofCharType(typedChar, 0));
-		}
+		else return sendInput(TInputContext.ofKeyPress(e.keycode(), e.input(), e.modifiers()));
 	}
 	public final @Override boolean keyReleased(@NotNull KeyEvent e) {
 		if(super.keyReleased(e)) return true;
 		else return sendInput(TInputContext.ofKeyRelease(e.keycode(), e.input(), e.modifiers()));
 	}
-	/*public final @Override boolean charTyped(@NotNull CharacterEvent e) { -- they changed something here
+	public final @Override boolean charTyped(@NotNull CharacterEvent e) {
 		if(super.charTyped(e)) return true;
 		else return sendInput(TInputContext.ofCharType((char) e.codepoint(), 0));
-	}*/
+	}
 	// --------------------------------------------------
 	public final @Override boolean mouseClicked(@NotNull MouseButtonEvent e, boolean doubled) {
 		if(super.mouseClicked(e, doubled)) return true;
@@ -357,8 +361,7 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	 * @return {@link Character} from SDL scan-code, or {@code 0} is character is not printable.
 	 * @implNote Supports English keyboard layout only, which is problematic.
 	 */
-	@Deprecated
-	@SuppressWarnings("DeprecatedIsStillUsed")
+	@Deprecated(forRemoval = true)
 	public static final char getCharFromSdlScancode(
 			int sdlScanCode,
 			boolean isShiftDown, boolean isCapsLockOn, boolean isNumLockOn)

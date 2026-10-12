@@ -141,7 +141,6 @@ public final class TSimpleTextFieldWidget extends TClickableWidget
 		final var bb = getBounds();
 		pencil.fillColor(bb.x, bb.y, bb.width, bb.height, 0xFF000000);
 	}
-
 	public @Virtual @Override void postRenderCallback(@NotNull TGuiGraphics pencil) {
 		final var bb = getBounds();
 		if(isHoveredOrFocused())
