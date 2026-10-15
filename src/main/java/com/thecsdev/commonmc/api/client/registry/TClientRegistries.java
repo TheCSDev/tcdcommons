@@ -1,6 +1,9 @@
 package com.thecsdev.commonmc.api.client.registry;
 
 import com.thecsdev.commonmc.TCDCommons;
+import com.thecsdev.commonmc.api.client.gui.screen.hud.THudCanvasScreen;
+import com.thecsdev.commonmc.api.client.gui.screen.hud.THudElement;
+import com.thecsdev.commonmc.api.client.gui.screen.hud.THudElementType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
@@ -36,11 +39,24 @@ public final class TClientRegistries
 	 * {@link Screen}s that are to be rendered on the game's HUD (heads-up display).
 	 */
 	public static final Registry<Screen> HUD_SCREEN;
+
+	/**
+	 * {@link Registry} for {@link THudElementType}s.<br>
+	 * Registered entries are the types of {@link THudElement}s that may be
+	 * pinned onto a {@link THudCanvasScreen}.
+	 * <p>
+	 * The {@link Identifier}s in this registry end up in the serialized data of
+	 * every corresponding {@link THudElement}. For that reason, once published,
+	 * an {@link Identifier} and the data it represents must never change.
+	 */
+	@ApiStatus.Experimental
+	public static final Registry<THudElementType<?>> HUD_ELEMENT_TYPE;
 	// ==================================================
 	public static final void bootstrap() { /*invokes <clinit>*/ }
 	static {
 		//create registry instances
-		HUD_SCREEN = new MappedRegistry<>(createRegistryKey(id("hud_screen")), stable());
+		HUD_SCREEN       = new MappedRegistry<>(createRegistryKey(id("hud_screen")), stable());
+		HUD_ELEMENT_TYPE = new MappedRegistry<>(createRegistryKey(id("hud_element_type")), stable());
 	}
 	// --------------------------------------------------
 	/**

@@ -33,6 +33,10 @@
 	"tcdcommons.gui.filechooser.action.file_name": "Файл исеме",
 	"tcdcommons.gui.filechooser.action.file_type": "Файл төре",
 
+	"tcdcommons.gui.hud_canvas.title": "HUD Canvas",
+	"tcdcommons.gui.hud.configure": "Configure...",
+	"tcdcommons.gui.hud.unpin": "Unpin from HUD",
+
 	"tcdcommons.misc.loading": "Йөкләү...",
 	"tcdcommons.misc.something_went_wrong": "Нәрсәдер ялгыш китте",
 	"tcdcommons.misc.coming_soon": "Тиздән",

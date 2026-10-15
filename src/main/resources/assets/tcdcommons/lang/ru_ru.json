@@ -33,6 +33,10 @@
 	"tcdcommons.gui.filechooser.action.file_name" : "Имя файла",
 	"tcdcommons.gui.filechooser.action.file_type" : "Тип файла",
 
+	"tcdcommons.gui.hud_canvas.title": "HUD Canvas",
+	"tcdcommons.gui.hud.configure": "Configure...",
+	"tcdcommons.gui.hud.unpin": "Unpin from HUD",
+
 	"tcdcommons.misc.loading" : "Загрузка...",
 	"tcdcommons.misc.something_went_wrong" : "Что-то пошло не так",
 	"tcdcommons.misc.coming_soon" : "Ожидается в будущем",

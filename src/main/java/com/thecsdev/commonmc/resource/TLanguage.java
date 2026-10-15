@@ -40,6 +40,10 @@ public final class TLanguage
 	public static final MutableComponent gui_fileChooser_action_fileName() { return translatable("tcdcommons.gui.filechooser.action.file_name"); }
 	public static final MutableComponent gui_fileChooser_action_fileType() { return translatable("tcdcommons.gui.filechooser.action.file_type"); }
 	// --------------------------------------------------
+	public static final MutableComponent gui_hudCanvas_title() { return translatable("tcdcommons.gui.hud_canvas.title"); }
+	public static final MutableComponent gui_hud_configure() { return translatable("tcdcommons.gui.hud.configure"); }
+	public static final MutableComponent gui_hud_unpin() { return translatable("tcdcommons.gui.hud.unpin"); }
+	// --------------------------------------------------
 	public static final @Reflected MutableComponent misc_loading() { return translatable("tcdcommons.misc.loading"); }
 	public static final @Reflected MutableComponent misc_somethingWentWrong() { return translatable("tcdcommons.misc.something_went_wrong"); }
 	public static final @Reflected MutableComponent misc_comingSoon() { return translatable("tcdcommons.misc.coming_soon"); }

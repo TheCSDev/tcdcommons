@@ -61,7 +61,8 @@ public abstract class MixinGui
 					if(hudScreen.width != windowW || hudScreen.height != windowH)
 						hudScreen.init(windowW, windowH);
 					//render the screen onto the in-game-hud
-					hudScreen.extractRenderState(graphics, mouseX, mouseY, deltaTracker.getGameTimeDeltaPartialTick(false));
+					if(!this.minecraft.gui.hud.isHidden()) //do not render if in-game gui is hidden (F1 key)
+						hudScreen.extractRenderState(graphics, mouseX, mouseY, deltaTracker.getGameTimeDeltaPartialTick(false));
 					//note: ticking screens is not done here, to avoid weird visual bugs
 				} catch(Exception exc) {
 					//hold modded screens accountable for any exceptions they throw

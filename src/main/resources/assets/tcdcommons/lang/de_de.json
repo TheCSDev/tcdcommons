@@ -33,6 +33,10 @@
 	"tcdcommons.gui.filechooser.action.file_name": "Dateiname",
 	"tcdcommons.gui.filechooser.action.file_type": "Dateityp",
 
+	"tcdcommons.gui.hud_canvas.title": "HUD Canvas",
+	"tcdcommons.gui.hud.configure": "Configure...",
+	"tcdcommons.gui.hud.unpin": "Unpin from HUD",
+
 	"tcdcommons.misc.loading": "Wird Geladen...",
 	"tcdcommons.misc.something_went_wrong": "Etwas ist schiefaufgelaufen",
 	"tcdcommons.misc.coming_soon": "Bald verfügbar",

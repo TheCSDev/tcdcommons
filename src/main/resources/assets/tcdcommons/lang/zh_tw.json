@@ -33,6 +33,10 @@
 	"tcdcommons.gui.filechooser.action.file_name": "檔案名稱",
 	"tcdcommons.gui.filechooser.action.file_type": "檔案類型",
 
+	"tcdcommons.gui.hud_canvas.title": "HUD Canvas",
+	"tcdcommons.gui.hud.configure": "Configure...",
+	"tcdcommons.gui.hud.unpin": "Unpin from HUD",
+
 	"tcdcommons.misc.loading": "載入中……",
 	"tcdcommons.misc.something_went_wrong": "發生錯誤",
 	"tcdcommons.misc.coming_soon": "即將推出",
