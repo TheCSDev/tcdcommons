@@ -13,6 +13,7 @@
 		"MixinClientPacketListener",
 		"MixinClientLevel",
 		"MixinScreen",
-		"MixinHud"
+		"MixinHud",
+		"MixinPictureInPictureRenderer"
 	]
 }
