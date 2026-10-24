@@ -60,7 +60,11 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	 * Creates a {@link TScreenWrapper} instance for a given {@link TScreen}.
 	 * @param target The {@link TScreen} for whom the wrapper is.
 	 * @throws NullPointerException If the argument is {@code null}.
-	 * @throws IllegalArgumentException If the given {@link TScreen} already has a {@link TScreenWrapper}.
+	 * @throws IllegalArgumentException If the given {@link TScreen} already has an associated
+	 *                                  {@link TScreenWrapper}.
+	 * @implNote As of {@code v5.8.0}, this constructor will associate this {@link TScreenWrapper}
+	 *           instance with the given {@link TScreen} instance, creating a permanent link between the
+	 *           two. This behavior is <b>crutial</b> to note!
 	 */
 	protected TScreenWrapper(@NotNull T target) throws NullPointerException, IllegalArgumentException
 	{
@@ -69,9 +73,12 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 		this.target = Objects.requireNonNull(target);
 
 		//enforce "only one TScreenWrapper per TScreen" rule
-		//noinspection ConstantValue | (except, that value should be 'null' at this stage)
-		if(target.screen != null && target.screen != this)
-			throw new IllegalArgumentException("Target already has an assigned wrapper");
+		//noinspection SynchronizationOnLocalVariableOrMethodParameter
+		synchronized (target) {
+			if((target.screen instanceof TScreenWrapper<?> tsw) && tsw != this)
+				throw new IllegalArgumentException("Target already has an assigned wrapper");
+			target.screen = this; //claim the 'TScreen'
+		}
 	}
 	// --------------------------------------------------
 	public @Override String toString() {
