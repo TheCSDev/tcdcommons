@@ -56,9 +56,22 @@ public @Virtual class TScreenWrapper<T extends TScreen> extends Screen
 	// ==================================================
 	private final @NotNull T target;
 	// ==================================================
-	protected TScreenWrapper(@NotNull T target) {
+	/**
+	 * Creates a {@link TScreenWrapper} instance for a given {@link TScreen}.
+	 * @param target The {@link TScreen} for whom the wrapper is.
+	 * @throws NullPointerException If the argument is {@code null}.
+	 * @throws IllegalArgumentException If the given {@link TScreen} already has a {@link TScreenWrapper}.
+	 */
+	protected TScreenWrapper(@NotNull T target) throws NullPointerException, IllegalArgumentException
+	{
+		//initialize super and fields
 		super(Component.empty());
 		this.target = Objects.requireNonNull(target);
+
+		//enforce "only one TScreenWrapper per TScreen" rule
+		//noinspection ConstantValue | (except, that value should be 'null' at this stage)
+		if(target.screen != null && target.screen != this)
+			throw new IllegalArgumentException("Target already has an assigned wrapper");
 	}
 	// --------------------------------------------------
 	public @Override String toString() {
