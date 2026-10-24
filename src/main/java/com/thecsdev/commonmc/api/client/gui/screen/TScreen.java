@@ -31,7 +31,7 @@ import static com.thecsdev.commonmc.api.client.gui.screen.ILastScreenProvider.ge
 public abstract class TScreen extends TElement
 {
 	// ==================================================
-	@Internal final TScreenWrapper<?>          screen  = Objects.requireNonNull(createWrapperScreen());
+	@Internal @Nullable volatile TScreenWrapper<?> screen = null;
 	// --------------------------------------------------
 	@Internal final NotNullProperty<Component> title   = new NotNullProperty<>(Component.empty());
 	@Internal final ObjectProperty<TElement>   hovered = new ObjectProperty<>(null);
@@ -93,14 +93,33 @@ public abstract class TScreen extends TElement
 
 	/**
 	 * Returns the {@link Screen} representation of this {@link TScreen}.
+	 * @implNote As of {@code v5.8.0}, this method calls {@link #createWrapperScreen()}
+	 *           if a {@link TScreenWrapper} has not yet been assigned to this
+	 *           {@link TScreen}. This change in behavior is <b>crutial</b> to note!
 	 */
-	public final @NotNull TScreenWrapper<?> getAsScreen() { return this.screen; }
+	@Contract(pure = false)
+	@SuppressWarnings("DefaultAnnotationParam") //intentional explicitness
+	public final @NotNull TScreenWrapper<?> getAsScreen()
+	{
+		//return wrapper instance if it's already defined
+		if(this.screen instanceof TScreenWrapper<?> tsw)
+			return tsw;
+
+		//crate and assign new wrapper instance, and then return it
+		final var wrapper = Objects.requireNonNull(createWrapperScreen(), "#createWrapperScreen() returned 'null'.");
+		if(wrapper.getTargetTScreen() != this)
+			throw new IllegalStateException("#createWrapperScreen() returned a wrapper for another '" + TScreen.class.getSimpleName() + "'.");
+		return wrapper;
+	}
 
 	/**
-	 * Returns the {@link Minecraft} client instance that last opened
-	 * this {@link TScreen}, if any.
+	 * Returns the {@link Minecraft} client instance associated with
+	 * this {@link TScreen}.
 	 */
-	public final @Override @NotNull Minecraft getClient() { return this.screen.getClient(); }
+	public final @Override @NotNull Minecraft getClient() {
+		return (this.screen instanceof TScreenWrapper<?> tsw) ?
+				tsw.getClient() : Minecraft.getInstance();
+	}
 	// --------------------------------------------------
 	/**
 	 * Returns the {@link NotNullProperty} for this {@link TScreen}'s title.
@@ -129,9 +148,7 @@ public abstract class TScreen extends TElement
 	 */
 	@Contract(pure = true)
 	public final boolean isOpen() {
-		final           var screen = getAsScreen();
-		final @Nullable var client = screen.getClient();
-		return client.gui.screen() == screen;
+		return (this.screen instanceof TScreenWrapper<?> tsw) && tsw.getClient().gui.screen() == screen;
 	}
 
 	/**
@@ -157,7 +174,9 @@ public abstract class TScreen extends TElement
 	 * @return {@code true} if the input event was handled by a GUI element.
 	 * @apiNote Does not affect the native GUI.
 	 */
-	public final boolean sendInput(@NotNull TInputContext context) { return this.screen.sendInput(context); }
+	public final boolean sendInput(@NotNull TInputContext context) {
+		return this.screen instanceof TScreenWrapper<?> tsw && tsw.sendInput(context);
+	}
 	// ==================================================
 	protected abstract @Override void initCallback(); //forced to be overridden
 	// --------------------------------------------------
@@ -185,8 +204,7 @@ public abstract class TScreen extends TElement
 	 */
 	public @Virtual void close() {
 		//set screen to last screen if available, else to null
-		final @Nullable var client = getClient();
-		if(isOpen()) client.gui.setScreen(getLastScreen(this));
+		if(isOpen()) getClient().gui.setScreen(getLastScreen(this));
 	}
 	// ==================================================
 }
