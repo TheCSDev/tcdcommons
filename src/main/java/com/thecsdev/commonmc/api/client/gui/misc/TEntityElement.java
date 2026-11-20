@@ -13,6 +13,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnRequest;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.Level;
@@ -210,7 +211,7 @@ public @Virtual class TEntityElement extends TElement
 				if(level == null) level = SandboxLevel.INSTANCE;
 
 				final var entity = Objects.requireNonNull(
-						entityType.create(level, MOB_SUMMONED),
+						entityType.create(level, new EntitySpawnRequest(MOB_SUMMONED, true)),
 						"'EntityType#create(...)' returned 'null' for " + entityType);
 				entity.setId(nextEntityId());
 				CACHE.put(entityType, entity);
